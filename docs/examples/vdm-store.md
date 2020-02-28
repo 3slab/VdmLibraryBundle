@@ -1,0 +1,1 @@
+# Setup a VDM.store instance to store meteo data
