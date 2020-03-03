@@ -1,14 +1,14 @@
 <?php
 
-namespace App\MessageHandler;
+namespace Vdm\Bundle\LibraryBundle\MessageHandler;
 
-use App\Model\Message;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
 /**
  * Class DefaultHandler
  *
- * @package App\MessageHandler
+ * @package Vdm\Bundle\LibraryBundle\MessageHandler
  */
 class DefaultHandler implements MessageSubscriberInterface
 {

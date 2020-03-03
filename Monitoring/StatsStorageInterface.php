@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Monitoring;
+namespace Vdm\Bundle\LibraryBundle\Monitoring;
 
-use App\Monitoring\Model\ConsumerStat;
-use App\Monitoring\Model\ErrorStateStat;
-use App\Monitoring\Model\ProducedStat;
-use App\Monitoring\Model\RunningStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 
 interface StatsStorageInterface
 {

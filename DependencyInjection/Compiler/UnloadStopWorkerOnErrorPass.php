@@ -1,9 +1,9 @@
 <?php
 
-namespace App\DependencyInjection\Compiler;
+namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
-use App\EventListener\ErrorStopWorkerListener;
-use App\EventListener\ErrorRethrowAfterWorkerStoppedListener;
+use Vdm\Bundle\LibraryBundle\EventListener\ErrorStopWorkerListener;
+use Vdm\Bundle\LibraryBundle\EventListener\ErrorRethrowAfterWorkerStoppedListener;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

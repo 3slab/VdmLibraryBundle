@@ -1,10 +1,9 @@
 <?php
 
+namespace Vdm\Bundle\LibraryBundle\EventListener;
 
-namespace App\EventListener;
-
-use App\Monitoring\Model\ErrorStateStat;
-use App\Monitoring\StatsStorageInterface;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
