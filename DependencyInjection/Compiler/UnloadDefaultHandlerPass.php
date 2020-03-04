@@ -1,9 +1,9 @@
 <?php
 
+namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
-namespace App\DependencyInjection\Compiler;
-use App\Model\Message;
-use App\MessageHandler\DefaultHandler;
+use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\MessageHandler\DefaultHandler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 

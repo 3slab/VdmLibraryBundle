@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Model;
+namespace Vdm\Bundle\LibraryBundle\Model;
 
 /**
  * Class Trace
  *
- * @package App\Model
+ * @package Vdm\Bundle\LibraryBundle\Model
  */
 class Trace
 {

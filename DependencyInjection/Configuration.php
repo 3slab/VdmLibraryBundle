@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DependencyInjection;
+namespace Vdm\Bundle\LibraryBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 /**
  * Class Configuration
  *
- * @package App\DependencyInjection
+ * @package Vdm\Bundle\LibraryBundle\DependencyInjection
  */
 class Configuration implements ConfigurationInterface
 {
@@ -17,7 +17,7 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder('vdm_dataflow');
+        $treeBuilder = new TreeBuilder('vdm_library');
 
         $treeBuilder->getRootNode()
             ->children()

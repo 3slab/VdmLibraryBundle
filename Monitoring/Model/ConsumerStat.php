@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Monitoring\Model;
+namespace Vdm\Bundle\LibraryBundle\Monitoring\Model;
 
 class ConsumerStat
 {

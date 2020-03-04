@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Command;
+namespace Vdm\Bundle\LibraryBundle\Command;
 
-use App\Model\Metadata;
-use App\Model\Trace;
-use App\Model\Message;
+use Vdm\Bundle\LibraryBundle\Model\Metadata;
+use Vdm\Bundle\LibraryBundle\Model\Trace;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SendCommand extends Command
@@ -16,7 +15,7 @@ class SendCommand extends Command
     protected static $defaultName = 'app:send';
 
     /**
-     * @var MessageBus
+     * @var MessageBusInterface $bus
      */
     private $bus;
 

@@ -34,16 +34,16 @@ These features are built on top of the [Symfony Framework](https://symfony.com/)
 
 ## Documentation
 
-* [Getting started](./docs/getting-started.md)
+* [Getting started](./Resources/docs/getting-started.md)
 * Sources :
     * [HTTP pull](./source/http-pull.md)
     * [Kafka](./source/kafka.md)
 * Sync :
     * [Doctrine](./sync/doctrine.md)
     * [Kafka](./sync/kafka.md)
-* [Monitoring](./docs/monitoring.md)
-* [Configuration Reference](./docs/configuration-reference.md)
+* [Monitoring](./Resources/docs/monitoring.md)
+* [Configuration Reference](./Resources/docs/configuration-reference.md)
 * Examples :
-    * [Setup a VDM.collect instance to pull meteo data](./docs/examples/vdm-collect.md)
-    * [Setup a VDM.compute instance to process meteo data](./docs/examples/vdm-compute.md)
-    * [Setup a VDM.store instance to store meteo data](./docs/examples/vdm-store.md)
+    * [Setup a VDM.collect instance to pull meteo data](./Resources/docs/examples/vdm-collect.md)
+    * [Setup a VDM.compute instance to process meteo data](./Resources/docs/examples/vdm-compute.md)
+    * [Setup a VDM.store instance to store meteo data](./Resources/docs/examples/vdm-store.md)

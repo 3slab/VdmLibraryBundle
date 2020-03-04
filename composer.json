@@ -1,10 +1,17 @@
 {
-    "type": "project",
+    "name": "vdm/library-bundle",
+    "type": "symfony-bundle",
     "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Vdm\\Bundle\\LibraryBundle\\": ""
+        }
+    },
     "require": {
         "symfony/console": "4.4.*",
         "symfony/framework-bundle": "4.4.*",
         "symfony/serializer-pack": "^1.0",
-        "symfony/yaml": "4.4.*"
+        "symfony/yaml": "4.4.*",
+        "symfony/messenger": "4.4.*"
     }
 }

@@ -1,12 +1,10 @@
 <?php
 
+namespace Vdm\Bundle\LibraryBundle\EventListener;
 
-namespace App\EventListener;
-
-
-use App\Model\Message;
-use App\Monitoring\Model\ConsumerStat;
-use App\Monitoring\StatsStorageInterface;
+use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
