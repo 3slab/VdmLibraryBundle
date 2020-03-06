@@ -13,5 +13,6 @@
         "symfony/serializer-pack": "^1.0",
         "symfony/yaml": "4.4.*",
         "symfony/messenger": "4.4.*",
+        "symfony/stopwatch": "4.4.*"
     }
 }

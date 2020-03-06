@@ -7,6 +7,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 interface StatsStorageInterface
 {
@@ -17,6 +18,8 @@ interface StatsStorageInterface
     public function sendRunningStat(RunningStat $runningStat);
 
     public function sendErrorStateStat(ErrorStateStat $exitCodeStat);
+    
+    public function sendTimeStat(TimeStat $timeStat);
 
     public function sendErrorStat(ErrorStat $errorStat);
 
