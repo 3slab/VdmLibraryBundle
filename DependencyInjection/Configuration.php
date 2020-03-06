@@ -18,10 +18,17 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('vdm_library');
+        $rootNode = method_exists(TreeBuilder::class, 'getRootNode') ? $treeBuilder->getRootNode() : $treeBuilder->root('vdm_library');
 
-        $treeBuilder->getRootNode()
+        $rootNode
             ->children()
                 ->scalarNode('app_name')->defaultValue('default')->end()
+                ->arrayNode('monitoring')
+                    ->children()
+                        ->scalarNode('type')->treatNullLike('null')->defaultValue('null')->end()
+                        ->variableNode('options')->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

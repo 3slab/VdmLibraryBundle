@@ -9,9 +9,9 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Psr\Log\LoggerInterface;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 
-class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInterface
+class MonitoringWorkerHandleMessageMemorySubscriber implements EventSubscriberInterface
 {
     /**
      * @var StatsStorageInterface
@@ -50,7 +50,7 @@ class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInte
     {
         $this->stopwatch->reset();
         $this->stopwatch->start('WorkerEvent');
-        $this->logger->debug('WorkerStartedEvent - Running time begin');
+        $this->logger->debug('WorkerStartedEvent - Running memory begin');
     }
 
     /**
@@ -60,7 +60,7 @@ class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInte
      */
     public function onWorkerMessageFailed(WorkerMessageFailedEvent $event)
     {
-        $this->timeStatStorage();
+        $this->memoryStatStorage();
     }
 
     /**
@@ -70,7 +70,7 @@ class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInte
      */
     public function onWorkerMessageHandled(WorkerMessageHandledEvent $event): void
     {
-        $this->timeStatStorage();
+        $this->memoryStatStorage();
     }
 
     /**
@@ -85,16 +85,16 @@ class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInte
         ];
     }
 
-    private function timeStatStorage()
+    private function memoryStatStorage()
     {
         $eventStopwatch = $this->stopwatch->stop('WorkerEvent');
 
-        $timeStat = new TimeStat($eventStopwatch->getDuration());
-        $this->storage->sendTimeStat($timeStat);
+        $memoryStat = new MemoryStat($eventStopwatch->getMemory());
+        $this->storage->sendMemoryStat($memoryStat);
 
-        $this->logger->info('WorkerStartedEvent - Running time {end} milliseconds',
+        $this->logger->info('WorkerStartedEvent - Running memory {memory} octets',
             [
-                'end' => $eventStopwatch->getDuration()
+                'memory' => $eventStopwatch->getMemory()
             ]
         );
     }

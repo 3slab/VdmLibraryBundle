@@ -8,6 +8,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 class NullStatsStorage implements StatsStorageInterface
@@ -18,12 +19,23 @@ class NullStatsStorage implements StatsStorageInterface
     protected $logger;
 
     /**
+     * @var array
+     */
+    private $config;
+
+    /**
+     * @var string
+     */
+    private $appName;
+
+    /**
      * NullStatsStorage constructor.
      * @param LoggerInterface $messengerLogger
      */
-    public function __construct(LoggerInterface $messengerLogger)
+    public function __construct($config, string $appName, LoggerInterface $messengerLogger)
     {
         $this->logger = $messengerLogger;
+        $this->config = $config;
     }
 
     /**
@@ -85,11 +97,24 @@ class NullStatsStorage implements StatsStorageInterface
                 'value' => $timeStat->getTime()
             ]
         );
-
     }
 
-    public function flush()
+    public function sendMemoryStat(MemoryStat $memoryStat)
+    {
+        $this->logger->debug('Null stats storage memory state sent with value {value} octets',
+            [
+                'value' => $memoryStat->getMemory()
+            ]
+        );
+    }
+
+    public function flush(bool $force = false)
     {
         $this->logger->debug('Null stats storage flushed');
+    }
+
+    public static function getType()
+    {
+        return 'null';
     }
 }
