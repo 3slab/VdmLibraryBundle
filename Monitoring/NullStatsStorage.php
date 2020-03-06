@@ -7,6 +7,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 
 class NullStatsStorage implements StatsStorageInterface
 {
@@ -65,9 +66,16 @@ class NullStatsStorage implements StatsStorageInterface
                 'code' => $errorStateStat->getCode()
             ]
         );
-
     }
 
+    public function sendErrorStat(ErrorStat $errorStat)
+    {
+        $this->logger->debug('Null stats storage error stats {errors} errors',
+            [
+                'errors' => $errorStat->getError()
+            ]
+        );
+    }
 
     public function flush()
     {
