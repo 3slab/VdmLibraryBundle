@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -19,16 +20,22 @@ class VdmLibraryExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
-        $container->setParameter('vdm_library.app_name', $config['app_name']);
-        
+        $container->registerForAutoconfiguration(StatsStorageInterface::class)
+            ->addTag('vdm_library.stats_storage')
+        ;
+
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(__DIR__.'/../Resources/config')
         );
-        
         $loader->load('services.yaml');
+
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->setParameter('vdm_library.app_name', $config['app_name']);
+        $container->setParameter('vdm_library.monitoring_type', $config['monitoring']['type']);
+        $container->setParameter('vdm_library.monitoring_options', $config['monitoring']['options']);
     }
 
     /**

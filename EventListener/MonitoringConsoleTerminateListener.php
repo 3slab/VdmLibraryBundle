@@ -67,7 +67,7 @@ class MonitoringConsoleTerminateListener implements EventSubscriberInterface
         }
 
         // Flush stats for storage that needs it
-        $this->storage->flush();
+        $this->storage->flush(true);
 
         if (null !== $this->logger) {
             $this->logger->info('ConsoleTerminateEvent - Stats storage flushed');

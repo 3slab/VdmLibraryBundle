@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Vdm\Bundle\LibraryBundle\Monitoring\Model;
-
 
 class ErrorStateStat
 {

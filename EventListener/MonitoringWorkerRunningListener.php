@@ -66,6 +66,13 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
                 ]
             );
         }
+
+        // Flush stats for storage that needs it
+        $this->storage->flush();
+
+        if (null !== $this->logger) {
+            $this->logger->info('WorkerRunningEvent - Stats storage flushed');
+        }
     }
 
     /**
