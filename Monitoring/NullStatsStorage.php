@@ -8,6 +8,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 class NullStatsStorage implements StatsStorageInterface
 {
@@ -75,6 +76,16 @@ class NullStatsStorage implements StatsStorageInterface
                 'errors' => $errorStat->getError()
             ]
         );
+    }
+    
+    public function sendTimeStat(TimeStat $timeStat)
+    {
+        $this->logger->debug('Null stats storage time state sent with value {value} milliseconds',
+            [
+                'value' => $timeStat->getTime()
+            ]
+        );
+
     }
 
     public function flush()
