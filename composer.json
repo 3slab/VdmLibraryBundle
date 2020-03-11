@@ -8,12 +8,12 @@
         }
     },
     "require": {
-        "symfony/console": "4.4.*",
-        "symfony/framework-bundle": "4.4.*",
-        "symfony/serializer-pack": "^1.0",
-        "symfony/yaml": "4.4.*",
-        "symfony/messenger": "4.4.*",
-        "symfony/stopwatch": "4.4.*",
+        "symfony/console": "5.0.*",
+        "symfony/framework-bundle": "5.0.*",
+        "symfony/serializer-pack": "*",
+        "symfony/yaml": "5.0.*",
+        "symfony/messenger": "5.0.*",
+        "symfony/stopwatch": "5.0.*",
         "datadog/php-datadogstatsd": "^1.4"
     }
 }
