@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
+use Vdm\Bundle\LibraryBundle\RequestExecutor\HttpRequestExecutorInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -22,6 +23,9 @@ class VdmLibraryExtension extends Extension
     {
         $container->registerForAutoconfiguration(StatsStorageInterface::class)
             ->addTag('vdm_library.stats_storage')
+        ;
+        $container->registerForAutoconfiguration(HttpRequestExecutorInterface::class)
+            ->addTag('vdm_library.request_executor')
         ;
 
         $loader = new YamlFileLoader(
