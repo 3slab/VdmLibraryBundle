@@ -4,7 +4,7 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
+use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 use Vdm\Bundle\LibraryBundle\RequestExecutor\DefaultRequestExecutor;
 use Vdm\Bundle\LibraryBundle\Transport\HttpTransportFactory;
 
@@ -28,11 +28,6 @@ class SetRequestExecutorCompilerPass implements CompilerPassInterface
             }
         }
 
-        // HttpClientInterface $httpClient,
-        foreach ($taggedServicesRequestExecutor as $class => $tags) {
-            // Pass to HttpTransport RequestExecutor
-            $definitionHttpTransport = $container->findDefinition(HttpTransportFactory::class);
-            $definitionHttpTransport->addMethodCall('setRequestExecutor', [new Reference($class)]);
-        }
+        $container->setAlias(AbstractHttpRequestExecutor::class, array_key_first($taggedServicesRequestExecutor));
     }
 }

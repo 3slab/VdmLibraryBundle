@@ -6,7 +6,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class DefaultRequestExecutor implements HttpRequestExecutorInterface
+class DefaultRequestExecutor extends AbstractHttpRequestExecutor
 {
     /** 
      * @var LoggerInterface 
@@ -18,19 +18,15 @@ class DefaultRequestExecutor implements HttpRequestExecutorInterface
     */
     private $serializer;
 
-    /** 
-     * @var HttpClientInterface $httpClient 
-    */
-    private $httpClient;
-
     public function __construct(
-        LoggerInterface $messengerLogger,
+        LoggerInterface $logger,
         SerializerInterface $serializer,
         HttpClientInterface $httpClient
-    ) {
-        $this->logger = $messengerLogger;
+    ) 
+    {
+        parent::__construct($httpClient);
+        $this->logger = $logger;
         $this->serializer = $serializer;
-        $this->httpClient = $httpClient;
     }
 
     public function execute(string $dsn, string $method, array $options): string
@@ -39,10 +35,6 @@ class DefaultRequestExecutor implements HttpRequestExecutorInterface
         $this->logger->info('Init Http Client...');
         $response = $this->httpClient->request($method, $dsn, $options);
         $this->logger->info('Request exec...');
-
-        if (null === $response) {
-            return [];
-        }
 
         return $response->getContent();
     }
