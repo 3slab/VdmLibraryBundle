@@ -3,13 +3,11 @@
 namespace Vdm\Bundle\LibraryBundle\Transport;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
-use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
-use Symfony\Component\Messenger\Transport\Sender\SenderInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\HttpRequestExecutorInterface;
+use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryRegistry;
+use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 
 class HttpTransportFactory implements TransportFactoryInterface
 {
@@ -22,19 +20,39 @@ class HttpTransportFactory implements TransportFactoryInterface
     ];
 
     /**
-     * @var HttpRequestExecutorInterface $requestExecutor
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
+     * @var AbstractHttpRequestExecutor $requestExecutor
      */
     private $requestExecutor;
 
-    public function __construct(LoggerInterface $logger)
+
+    /**
+     * @var HttpClientBehaviorFactoryRegistry $httpClientBehaviorFactoryRegistry
+     */
+    private $httpClientBehaviorFactoryRegistry;
+
+    public function __construct(
+        LoggerInterface $logger, 
+        AbstractHttpRequestExecutor $requestExecutor, 
+        HttpClientBehaviorFactoryRegistry $httpClientBehaviorFactoryRegistry
+    )
     {
         $this->logger = $logger;
+        $this->requestExecutor = $requestExecutor;
+        $this->httpClientBehaviorFactoryRegistry = $httpClientBehaviorFactoryRegistry;
     }
 
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
         $method = $options['method'];
         $http_options = $options['http_options'];
+
+        $httpClientDecorated = $this->httpClientBehaviorFactoryRegistry->create($this->requestExecutor->getHttpClient(), $options);
+        $this->requestExecutor->setHttpClient($httpClientDecorated);
 
         return new HttpTransport($this->requestExecutor, $dsn, $method, $http_options);
     }
@@ -47,10 +65,5 @@ class HttpTransportFactory implements TransportFactoryInterface
             }
         }
         return false;
-    }
-
-    public function setRequestExecutor(HttpRequestExecutorInterface $requestExecutor)
-    {
-        $this->requestExecutor = $requestExecutor;
     }
 }

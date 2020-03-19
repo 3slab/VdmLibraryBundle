@@ -5,12 +5,12 @@ namespace Vdm\Bundle\LibraryBundle\Transport;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\HttpRequestExecutorInterface;
+use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 
 class HttpTransport implements TransportInterface
 {
     /** 
-     * @var HttpRequestExecutorInterface $requestExecutor
+     * @var AbstractHttpRequestExecutor $requestExecutor
     */
     private $requestExecutor;
 
@@ -29,7 +29,7 @@ class HttpTransport implements TransportInterface
     */
     private $options;
 
-    public function __construct(HttpRequestExecutorInterface $requestExecutor, string $dsn, string $method, array $options)
+    public function __construct(AbstractHttpRequestExecutor $requestExecutor, string $dsn, string $method, array $options)
     {
         $this->requestExecutor = $requestExecutor;
         $this->dsn = $dsn;

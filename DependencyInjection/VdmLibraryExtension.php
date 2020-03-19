@@ -6,8 +6,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\HttpRequestExecutorInterface;
+use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 
 /**
  * Class VdmLibraryExtension
@@ -24,8 +25,11 @@ class VdmLibraryExtension extends Extension
         $container->registerForAutoconfiguration(StatsStorageInterface::class)
             ->addTag('vdm_library.stats_storage')
         ;
-        $container->registerForAutoconfiguration(HttpRequestExecutorInterface::class)
+        $container->registerForAutoconfiguration(AbstractHttpRequestExecutor::class)
             ->addTag('vdm_library.request_executor')
+        ;
+        $container->registerForAutoconfiguration(HttpClientBehaviorFactoryInterface::class)
+            ->addTag('vdm_library.http_decorator_factory')
         ;
 
         $loader = new YamlFileLoader(
