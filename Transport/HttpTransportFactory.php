@@ -7,6 +7,7 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryRegistry;
+use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 
 class HttpTransportFactory implements TransportFactoryInterface
@@ -37,11 +38,13 @@ class HttpTransportFactory implements TransportFactoryInterface
 
     public function __construct(
         LoggerInterface $logger, 
+        StatsStorageInterface $statsStorage, 
         AbstractHttpRequestExecutor $requestExecutor, 
         HttpClientBehaviorFactoryRegistry $httpClientBehaviorFactoryRegistry
     )
     {
         $this->logger = $logger;
+        $this->statsStorage = $statsStorage;
         $this->requestExecutor = $requestExecutor;
         $this->httpClientBehaviorFactoryRegistry = $httpClientBehaviorFactoryRegistry;
     }
@@ -51,8 +54,10 @@ class HttpTransportFactory implements TransportFactoryInterface
         $method = $options['method'];
         $http_options = $options['http_options'];
 
+        $this->logger->debug('Create decorator');
         $httpClientDecorated = $this->httpClientBehaviorFactoryRegistry->create($this->requestExecutor->getHttpClient(), $options);
         $this->requestExecutor->setHttpClient($httpClientDecorated);
+        $this->logger->debug('Set new decorator');
 
         return new HttpTransport($this->requestExecutor, $dsn, $method, $http_options);
     }

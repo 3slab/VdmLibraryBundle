@@ -2,11 +2,17 @@
 
 namespace Vdm\Bundle\LibraryBundle\HttpClient\Behavior;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryInterface;
 
 class HttpClientBehaviorFactoryRegistry
 {
+    /** 
+     * @var LoggerInterface $logger
+    */
+    private $logger;
+
     /** 
      * @var HttpClientInterface $httpClient
     */
@@ -17,8 +23,9 @@ class HttpClientBehaviorFactoryRegistry
     */
     private $httpClientBehavior;
 
-    public function __construct()
+    public function __construct(LoggerInterface $messengerLogger)
     {
+        $this->logger = $messengerLogger;
         $this->httpClientBehavior = [];
     }
 
@@ -34,7 +41,7 @@ class HttpClientBehaviorFactoryRegistry
 
         foreach ($this->httpClientBehavior as $httpClientBehavior) {
             if ($httpClientBehavior->support($options)) {
-                $this->httpClient = $httpClientBehavior->createDecoratedHttpClient($this->httpClient, $options);
+                $this->httpClient = $httpClientBehavior->createDecoratedHttpClient($this->logger, $this->httpClient, $options);
             }
         }
 

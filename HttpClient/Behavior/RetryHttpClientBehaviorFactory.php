@@ -2,17 +2,18 @@
 
 namespace Vdm\Bundle\LibraryBundle\HttpClient\Behavior;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Vdm\Bundle\LibraryBundle\HttpClient\RetryHttpClientBehavior;
 
 class RetryHttpClientBehaviorFactory implements HttpClientBehaviorFactoryInterface
 {
-    public static function priority(int $priority = -100)
+    public static function priority(int $priority = 0)
     {
         return $priority;
     }
 
-    public function createDecoratedHttpClient(HttpClientInterface $httpClient, array $options)
+    public function createDecoratedHttpClient(LoggerInterface $logger, HttpClientInterface $httpClient, array $options)
     {
         $number = 5;
         $timeBeforeRetry = 5;
@@ -24,7 +25,7 @@ class RetryHttpClientBehaviorFactory implements HttpClientBehaviorFactoryInterfa
             $timeBeforeRetry = $options['retry']['timeBeforeRetry'];
         }
 
-        return new RetryHttpClientBehavior($httpClient, $number, $timeBeforeRetry);
+        return new RetryHttpClientBehavior($logger, $httpClient, $number, $timeBeforeRetry);
     }
 
     public function support(array $options)

@@ -8,6 +8,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
@@ -63,6 +64,9 @@ class NullStatsStorage implements StatsStorageInterface
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function sendRunningStat(RunningStat $runningStat)
     {
         $this->logger->debug('Null stats storage running stats {isRunning}',
@@ -72,6 +76,9 @@ class NullStatsStorage implements StatsStorageInterface
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function sendErrorStateStat(ErrorStateStat $errorStateStat)
     {
         $this->logger->debug('Null stats storage error state sent with code {code}',
@@ -81,6 +88,9 @@ class NullStatsStorage implements StatsStorageInterface
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function sendErrorStat(ErrorStat $errorStat)
     {
         $this->logger->debug('Null stats storage error stats {errors} errors',
@@ -90,6 +100,9 @@ class NullStatsStorage implements StatsStorageInterface
         );
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public function sendTimeStat(TimeStat $timeStat)
     {
         $this->logger->debug('Null stats storage time state sent with value {value} milliseconds',
@@ -99,11 +112,36 @@ class NullStatsStorage implements StatsStorageInterface
         );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function sendMemoryStat(MemoryStat $memoryStat)
     {
         $this->logger->debug('Null stats storage memory state sent with value {value} octets',
             [
                 'value' => $memoryStat->getMemory()
+            ]
+        );
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat)
+    {
+        $this->logger->debug('Null stats storage response time state sent with value {value} seconds',
+            [
+                'value' => $httpResponseStat->getTime()
+            ]
+        );
+        $this->logger->debug('Null stats storage reponse body size state sent with value {value}',
+            [
+                'value' => $httpResponseStat->getBodySize()
+            ]
+        );
+        $this->logger->debug('Null stats storage response error code state sent with value {value}',
+            [
+                'value' => $httpResponseStat->getStatusCode()
             ]
         );
     }
