@@ -32,9 +32,9 @@ class DefaultRequestExecutor extends AbstractHttpRequestExecutor
     public function execute(string $dsn, string $method, array $options): string
     {
         // Get a message from "website"
-        $this->logger->info('Init Http Client...');
+        $this->logger->debug('Init Http Client...');
         $response = $this->httpClient->request($method, $dsn, $options);
-        $this->logger->info('Request exec...');
+        $this->logger->debug('Request exec...');
 
         return $response->getContent();
     }

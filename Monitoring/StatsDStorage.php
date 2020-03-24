@@ -9,6 +9,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
@@ -58,7 +59,7 @@ class StatsDStorage implements StatsStorageInterface
 
     public function sendProducedStat(ProducedStat $producedStat)
     {
-        $this->datadog->histogram('vdm.metric.producer.counter', $producedStat->getProduced());
+        $this->datadog->increment('vdm.metric.producer.counter', $producedStat->getProduced());
     }
 
     public function sendRunningStat(RunningStat $runningStat)
@@ -73,7 +74,7 @@ class StatsDStorage implements StatsStorageInterface
 
     public function sendErrorStat(ErrorStat $errorStat)
     {
-        $this->datadog->histogram('vdm.metric.error.counter', $errorStat->getError());
+        $this->datadog->increment('vdm.metric.error.counter', $errorStat->getError());
     }
     
     public function sendTimeStat(TimeStat $timeStat)
@@ -84,6 +85,21 @@ class StatsDStorage implements StatsStorageInterface
     public function sendMemoryStat(MemoryStat $memoryStat)
     {
         $this->datadog->gauge('vdm.metric.memory', $memoryStat->getMemory());
+    }
+    
+    public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat)
+    {
+        $tags = [
+            "statusCode" => $httpResponseStat->getStatusCode()
+        ];
+
+        if ($httpResponseStat->getTime() !== null) {
+            $this->datadog->gauge('vdm.metric.http.response_time', $httpResponseStat->getTime());
+        }
+        if ($httpResponseStat->getBodySize() !== null) {
+            $this->datadog->gauge('vdm.metric.http.body_size', $httpResponseStat->getBodySize());
+        }
+        $this->datadog->increment('vdm.metric.http.status_code.counter', 1, $tags);
     }
 
     public function flush(bool $force = false)
