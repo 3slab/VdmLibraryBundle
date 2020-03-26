@@ -9,6 +9,7 @@ use Symfony\Component\Config\FileLocator;
 use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
+use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -27,6 +28,9 @@ class VdmLibraryExtension extends Extension
         ;
         $container->registerForAutoconfiguration(AbstractHttpRequestExecutor::class)
             ->addTag('vdm_library.request_executor')
+        ;
+        $container->registerForAutoconfiguration(FtpFileExecutorInterface::class)
+            ->addTag('vdm_library.ftp_file_executor')
         ;
         $container->registerForAutoconfiguration(HttpClientBehaviorFactoryInterface::class)
             ->addTag('vdm_library.http_decorator_factory')
