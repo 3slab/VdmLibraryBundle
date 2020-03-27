@@ -10,6 +10,7 @@ use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryInterf
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
 use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
+use Vdm\Bundle\LibraryBundle\FtpClient\Behavior\FtpClientBehaviorFactoryInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -34,6 +35,9 @@ class VdmLibraryExtension extends Extension
         ;
         $container->registerForAutoconfiguration(HttpClientBehaviorFactoryInterface::class)
             ->addTag('vdm_library.http_decorator_factory')
+        ;
+        $container->registerForAutoconfiguration(FtpClientBehaviorFactoryInterface::class)
+            ->addTag('vdm_library.ftp_decorator_factory')
         ;
 
         $loader = new YamlFileLoader(

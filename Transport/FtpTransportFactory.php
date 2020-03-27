@@ -7,6 +7,7 @@ use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
+use Vdm\Bundle\LibraryBundle\FtpClient\Behavior\FtpClientBehaviorFactoryRegistry;
 use Vdm\Bundle\LibraryBundle\FtpClient\FtpClientInterface;
 
 class FtpTransportFactory implements TransportFactoryInterface
@@ -34,15 +35,22 @@ class FtpTransportFactory implements TransportFactoryInterface
      */
     private $fileExecutor;
 
+    /**
+     * @var FtpClientBehaviorFactoryRegistry $ftpClientBehaviorFactoryRegistry
+     */
+    private $ftpClientBehaviorFactoryRegistry;
+
     public function __construct(
         LoggerInterface $logger, 
         FtpClientInterface $ftpClient,
-        FtpFileExecutorInterface $fileExecutor
+        FtpFileExecutorInterface $fileExecutor,
+        FtpClientBehaviorFactoryRegistry $ftpClientBehaviorFactoryRegistry
     )
     {
         $this->logger = $logger;
         $this->ftpClient = $ftpClient;
         $this->fileExecutor = $fileExecutor;
+        $this->ftpClientBehaviorFactoryRegistry = $ftpClientBehaviorFactoryRegistry;
     }
 
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
@@ -57,6 +65,8 @@ class FtpTransportFactory implements TransportFactoryInterface
         if ($mode === 'move' && !isset($ftp_options['storage'])) {
             throw new \InvalidArgumentException('With mode "move", storage ftp_options has to defined');
         }
+
+        $this->ftpClient = $this->ftpClientBehaviorFactoryRegistry->create($this->ftpClient, $options);
 
         return new FtpTransport($this->logger, $this->ftpClient, $this->fileExecutor, $dsn, $mode, $ftp_options);
     }
