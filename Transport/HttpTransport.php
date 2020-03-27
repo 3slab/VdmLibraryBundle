@@ -6,6 +6,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
+use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
 class HttpTransport implements TransportInterface
 {
@@ -41,8 +42,14 @@ class HttpTransport implements TransportInterface
     {
         $content = $this->requestExecutor->execute($this->dsn, $this->method, $this->options);
 
+        if ($content instanceof Envelope) {
+            $content->with(new StopAfterHandleStamp());
+            
+            return [$content];
+        }
+
         $message = new Message($content);
-        $envelope = new Envelope($message);
+        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
 
         return [$envelope];
     }

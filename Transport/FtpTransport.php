@@ -8,6 +8,8 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
 use Vdm\Bundle\LibraryBundle\FtpClient\FtpClientInterface;
+use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
 class FtpTransport implements TransportInterface
 {
@@ -62,13 +64,13 @@ class FtpTransport implements TransportInterface
     {
         $file = $this->ftpClient->get($this->dsn, $this->options);
 
-        if ($file === null) {
-            return [];
+        if ($file !== null) {
+            $message = $this->fileExecutor->execute($file);
+        } else {
+            $message = new Message("");
         }
-
-        $message = $this->fileExecutor->execute($file);
-
-        $envelope = new Envelope($message);
+        
+        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
 
         return [$envelope];
     }

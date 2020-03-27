@@ -3,8 +3,10 @@
 namespace Vdm\Bundle\LibraryBundle\RequestExecutor;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class DefaultRequestExecutor extends AbstractHttpRequestExecutor
 {
@@ -29,13 +31,16 @@ class DefaultRequestExecutor extends AbstractHttpRequestExecutor
         $this->serializer = $serializer;
     }
 
-    public function execute(string $dsn, string $method, array $options): string
+    public function execute(string $dsn, string $method, array $options)
     {
         // Get a message from "website"
         $this->logger->debug('Init Http Client...');
         $response = $this->httpClient->request($method, $dsn, $options);
         $this->logger->debug('Request exec...');
 
-        return $response->getContent();
+        $message = new Message($response->getContent());
+        $envelope = new Envelope($message);
+        
+        return $envelope;
     }
 }
