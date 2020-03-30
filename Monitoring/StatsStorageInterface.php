@@ -5,6 +5,7 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
@@ -31,6 +32,8 @@ interface StatsStorageInterface
     public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat);
 
     public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat);
+
+    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat);
 
     public function flush(bool $force = false);
 

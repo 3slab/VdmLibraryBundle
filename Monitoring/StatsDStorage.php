@@ -9,6 +9,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
@@ -105,12 +106,14 @@ class StatsDStorage implements StatsStorageInterface
 
     public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
     {
-        if ($ftpResponseStat->getError() !== null) {
-            $this->datadog->increment('vdm.metric.ftp.error.counter', 1);
-        }
         if ($ftpResponseStat->getSize() !== null) {
             $this->datadog->gauge('vdm.metric.ftp.size', $ftpResponseStat->getSize());
         }
+    }
+
+    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
+    {
+        $this->datadog->increment('vdm.metric.ftp.error.counter', $ftpErrorStat->getError());
     }
     
     public function flush(bool $force = false)

@@ -5,7 +5,9 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
+use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientErrorEvent;
 use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientReceivedEvent;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 
 class MonitoringFtpClientSubscriber implements EventSubscriberInterface
@@ -37,23 +39,30 @@ class MonitoringFtpClientSubscriber implements EventSubscriberInterface
      *
      * @param FtpClientReceivedEvent $event
      */
-    public function onFtpClientReceivedResponseEvent(FtpClientReceivedEvent $event)
+    public function onFtpClientReceivedEvent(FtpClientReceivedEvent $event)
     {
         $file = $event->getFile();
-        $size = null;
-        $error = null;
-
-        if ($file !== null) {
-            $size = $file['size'];
-        } else {
-            $error = true;
-        }
+        $size = $file['size'];
         
         $this->logger->debug(sprintf('size: %s', $size));
+
+        $ftpClientResponseStat = new FtpClientResponseStat($size);
+        $this->storage->sendFtpResponseStat($ftpClientResponseStat);
+    }
+
+    /**
+     * Method executed on FtpClientErrorEvent event
+     *
+     * @param FtpClientErrorEvent $event
+     */
+    public function onFtpClientErrorEvent(FtpClientErrorEvent $event)
+    {
+        $error = $event->getError();
+        
         $this->logger->debug(sprintf('error: %d', $error));
 
-        $ftpClientResponseStat = new FtpClientResponseStat($error, $size);
-        $this->storage->sendFtpResponseStat($ftpClientResponseStat);
+        $ftpClienErrorStat = new FtpClientErrorStat($error);
+        $this->storage->sendFtpErrorStat($ftpClienErrorStat);
     }
 
     /**
@@ -62,7 +71,8 @@ class MonitoringFtpClientSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FtpClientReceivedEvent::class => 'onFtpClientReceivedResponseEvent',
+            FtpClientReceivedEvent::class => 'onFtpClientReceivedEvent',
+            FtpClientErrorEvent::class => 'onFtpClientErrorEvent',
         ];
     }
 }
