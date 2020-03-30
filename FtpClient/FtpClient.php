@@ -5,6 +5,7 @@ namespace Vdm\Bundle\LibraryBundle\FtpClient;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Ftp as Adapter;
 use League\Flysystem\Sftp\SftpAdapter;
+use Psr\Log\LoggerInterface;
 
 class FtpClient implements FtpClientInterface
 {
@@ -12,9 +13,18 @@ class FtpClient implements FtpClientInterface
     private const DSN_PROTOCOL_SFTP = 'sftp';
 
     /**
+     * @var LoggerInterface $messengerLogger
+     */
+    private $logger;
+
+    /**
      * @var Filesystem $filesystem
      */
     private $filesystem;
+
+    public function __construct(LoggerInterface $messengerLogger) {
+        $this->logger = $messengerLogger;
+    }
 
     protected function getClient(array $result, array $options, bool $sftp = false): Filesystem
     {
@@ -73,6 +83,8 @@ class FtpClient implements FtpClientInterface
                 $files[0]['content'] = $this->filesystem->read($options['dirpath'].'/'.$files[0]['basename']);
                 $fichier = $files[0];
             }
+        } else {
+            $this->logger->info(sprintf('Directory %s inexistant sur le serveur', $options['dirpath']));
         }
         
         return $fichier;
