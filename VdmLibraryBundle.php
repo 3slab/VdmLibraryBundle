@@ -4,6 +4,7 @@ namespace Vdm\Bundle\LibraryBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\FtpClientBehaviorCreateCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\HttpClientBehaviorCreateCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetRequestExecutorCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetFtpFileExecutorCompilerPass;
@@ -21,5 +22,6 @@ class VdmLibraryBundle extends Bundle
         $container->addCompilerPass(new SetRequestExecutorCompilerPass());
         $container->addCompilerPass(new SetFtpFileExecutorCompilerPass());
         $container->addCompilerPass(new HttpClientBehaviorCreateCompilerPass());
+        $container->addCompilerPass(new FtpClientBehaviorCreateCompilerPass());
     }
 }
