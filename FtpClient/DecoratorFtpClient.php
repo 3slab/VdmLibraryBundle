@@ -36,6 +36,6 @@ abstract class DecoratorFtpClient implements FtpClientInterface
      */
     public function getFileSystem(): Filesystem
     {
-        return $this->httpClientDecorated->getFileSystem();
+        return $this->ftpClientDecorated->getFileSystem();
     }
 }

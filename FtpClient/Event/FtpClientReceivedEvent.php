@@ -4,19 +4,25 @@ namespace Vdm\Bundle\LibraryBundle\FtpClient\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 
-class FtpClientReceivedResponseEvent extends Event
+class FtpClientReceivedEvent extends Event
 {
     /**
      * @var array|null $file
      */
     private $file;
-    
+
+    /**
+     * FtpClientReceivedEvent constructor
+     */
     public function __construct(?array $file)
     {
         $this->file = $file;
     }
 
-    public function getFile()
+    /**
+     * @return array|null
+     */
+    public function getFile(): ?array
     {
         return $this->file;
     }

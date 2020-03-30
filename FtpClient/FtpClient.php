@@ -5,7 +5,6 @@ namespace Vdm\Bundle\LibraryBundle\FtpClient;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Ftp as Adapter;
 use League\Flysystem\Sftp\SftpAdapter;
-use League\Flysystem\FileNotFoundException;
 
 class FtpClient implements FtpClientInterface
 {
@@ -53,7 +52,7 @@ class FtpClient implements FtpClientInterface
     public function get(string $dsn, array $options): ?array
     {
         $dsn_regex = '/^((?P<driver>\w+):\/\/)?((?P<user>\w+)?(:(?P<password>\w+))?@)?(?P<host>[\w-\.]+)(:(?P<port>\d+))?$/Uim';
-
+        
         if (false == preg_match($dsn_regex, $dsn, $result)) {
             throw new \InvalidArgumentException("DSN invalide"); 
         }
@@ -75,7 +74,7 @@ class FtpClient implements FtpClientInterface
                 $fichier = $files[0];
             }
         }
-
+        
         return $fichier;
     }
 

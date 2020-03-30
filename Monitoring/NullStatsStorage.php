@@ -8,6 +8,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
@@ -134,7 +135,7 @@ class NullStatsStorage implements StatsStorageInterface
                 'value' => $httpResponseStat->getTime()
             ]
         );
-        $this->logger->debug('Null stats storage reponse body size state sent with value {value}',
+        $this->logger->debug('Null stats storage response body size state sent with value {value}',
             [
                 'value' => $httpResponseStat->getBodySize()
             ]
@@ -142,6 +143,20 @@ class NullStatsStorage implements StatsStorageInterface
         $this->logger->debug('Null stats storage response error code state sent with value {value}',
             [
                 'value' => $httpResponseStat->getStatusCode()
+            ]
+        );
+    }
+
+    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
+    {
+        $this->logger->debug('Null stats storage ftp error state sent with value {value}',
+            [
+                'value' => $ftpResponseStat->getError()
+            ]
+        );
+        $this->logger->debug('Null stats storage ftp size state sent with value {value}',
+            [
+                'value' => $ftpResponseStat->getSize()
             ]
         );
     }

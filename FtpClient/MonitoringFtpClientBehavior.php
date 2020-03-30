@@ -5,7 +5,7 @@ namespace Vdm\Bundle\LibraryBundle\FtpClient;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\FtpClient\FtpClientInterface;
-use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientReceivedResponseEvent;
+use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientReceivedEvent;
 
 class MonitoringFtpClientBehavior extends DecoratorFtpClient
 {
@@ -45,8 +45,14 @@ class MonitoringFtpClientBehavior extends DecoratorFtpClient
         try {
             $file = $this->ftpClientDecorated->get($dsn, $options);
 
-            $this->eventDispatcher->dispatch(new FtpClientReceivedResponseEvent($file));
+            $this->eventDispatcher->dispatch(new FtpClientReceivedEvent($file));
         } catch(\InvalidArgumentException $exception) {
+            $this->eventDispatcher->dispatch(new FtpClientReceivedEvent(null));
+            $this->logger->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
+
+            throw $exception;
+        } catch(\Exception $exception) {
+            $this->eventDispatcher->dispatch(new FtpClientReceivedEvent(null));
             $this->logger->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
 
             throw $exception;

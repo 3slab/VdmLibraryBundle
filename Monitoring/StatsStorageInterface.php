@@ -6,6 +6,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
@@ -28,6 +29,8 @@ interface StatsStorageInterface
     public function sendMemoryStat(MemoryStat $timeStat);
 
     public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat);
+
+    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat);
 
     public function flush(bool $force = false);
 
