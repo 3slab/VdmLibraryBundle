@@ -70,7 +70,7 @@ class FtpTransport implements TransportInterface
             $message = new Message("");
         }
         
-        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
+        $envelope = new Envelope($message);
 
         return [$envelope];
     }
