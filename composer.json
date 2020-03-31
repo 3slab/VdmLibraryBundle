@@ -1,7 +1,18 @@
 {
-    "name": "vdm/library-bundle",
+    "name": "3slab/vdm-library-bundle",
+    "description": "Standardize vdm block development",
     "type": "symfony-bundle",
     "license": "proprietary",
+    "authors": [
+        {
+            "name": "Jonathan Bouzekri",
+            "email": "jonathan.bouzekri@suez.com"
+        },
+        {
+            "name": "Julian Marié",
+            "email": "julian.marie@free.fr"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Vdm\\Bundle\\LibraryBundle\\": ""
