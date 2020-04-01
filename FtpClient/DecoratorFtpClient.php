@@ -26,9 +26,9 @@ abstract class DecoratorFtpClient implements FtpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function get(string $dsn, array $options): ?array
+    public function get(string $dirpath): ?array
     {
-        return $this->ftpClientDecorated->get($dsn, $options);
+        return $this->ftpClientDecorated->get($dirpath);
     }
 
     /**

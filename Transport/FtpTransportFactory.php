@@ -8,6 +8,7 @@ use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
 use Vdm\Bundle\LibraryBundle\FtpClient\Behavior\FtpClientBehaviorFactoryRegistry;
+use Vdm\Bundle\LibraryBundle\FtpClient\FtpClientFactoryInterface;
 use Vdm\Bundle\LibraryBundle\FtpClient\FtpClientInterface;
 
 class FtpTransportFactory implements TransportFactoryInterface
@@ -26,6 +27,11 @@ class FtpTransportFactory implements TransportFactoryInterface
     private $logger;
 
     /**
+     * @var FtpClientFactoryInterface $ftpClientFactory
+     */
+    private $ftpClientFactory;
+
+    /**
      * @var FtpClientInterface $ftpClient
      */
     private $ftpClient;
@@ -42,13 +48,13 @@ class FtpTransportFactory implements TransportFactoryInterface
 
     public function __construct(
         LoggerInterface $logger, 
-        FtpClientInterface $ftpClient,
+        FtpClientFactoryInterface $ftpClientFactory,
         FtpFileExecutorInterface $fileExecutor,
         FtpClientBehaviorFactoryRegistry $ftpClientBehaviorFactoryRegistry
     )
     {
         $this->logger = $logger;
-        $this->ftpClient = $ftpClient;
+        $this->ftpClientFactory = $ftpClientFactory;
         $this->fileExecutor = $fileExecutor;
         $this->ftpClientBehaviorFactoryRegistry = $ftpClientBehaviorFactoryRegistry;
     }
@@ -66,6 +72,7 @@ class FtpTransportFactory implements TransportFactoryInterface
             throw new \InvalidArgumentException('With mode "move", storage ftp_options has to defined');
         }
 
+        $this->ftpClient = $this->ftpClientFactory->create($dsn, $options);
         $this->ftpClient = $this->ftpClientBehaviorFactoryRegistry->create($this->ftpClient, $options);
 
         return new FtpTransport($this->logger, $this->ftpClient, $this->fileExecutor, $dsn, $mode, $ftp_options);
