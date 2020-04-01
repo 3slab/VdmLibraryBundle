@@ -4,6 +4,7 @@ namespace Vdm\Bundle\LibraryBundle\MessageHandler;
 
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * Class DefaultHandler

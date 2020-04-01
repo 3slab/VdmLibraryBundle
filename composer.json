@@ -28,5 +28,8 @@
         "datadog/php-datadogstatsd": "^1.4",
         "league/flysystem-sftp": "^1.0",
         "league/flysystem": "^1.0"
+    },
+    "suggest": {
+        "elasticsearch/elasticsearch": "^7.0"
     }
 }
