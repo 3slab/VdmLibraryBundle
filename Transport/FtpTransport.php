@@ -62,7 +62,7 @@ class FtpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        $file = $this->ftpClient->get($this->dsn, $this->options);
+        $file = $this->ftpClient->get($this->options['dirpath']);
 
         if ($file !== null) {
             $message = $this->fileExecutor->execute($file);
