@@ -41,8 +41,8 @@ class MonitoringFtpClientSubscriber implements EventSubscriberInterface
      */
     public function onFtpClientReceivedEvent(FtpClientReceivedEvent $event)
     {
-        $content = $event->getContent();
-        $size = strlen($content);
+        $file = $event->getFile();
+        $size = $file['size'];
         
         $this->logger->debug(sprintf('size: %s', $size));
 

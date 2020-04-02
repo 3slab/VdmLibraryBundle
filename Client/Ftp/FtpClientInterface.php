@@ -6,7 +6,7 @@ use League\Flysystem\Filesystem;
 
 interface FtpClientInterface
 {
-    public function get(string $filename): ?string;
+    public function get(string $dirpath, array &$file): void;
 
     public function list(string $dirpath): ?array;
     

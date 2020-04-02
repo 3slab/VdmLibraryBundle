@@ -7,23 +7,23 @@ use Symfony\Contracts\EventDispatcher\Event;
 class FtpClientReceivedEvent extends Event
 {
     /**
-     * @var string|null $content
+     * @var array|null $file
      */
-    private $content;
+    private $file;
 
     /**
      * FtpClientReceivedEvent constructor
      */
-    public function __construct(?string $content)
+    public function __construct(?array $file)
     {
-        $this->content = $content;
+        $this->file = $file;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getContent(): ?string
+    public function getFile(): ?array
     {
-        return $this->content;
+        return $this->file;
     }
 }

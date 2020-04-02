@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class FtpTransport implements TransportInterface
 {
@@ -52,11 +53,20 @@ class FtpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        return $this->ftpExecutor->execute($this->options);
+        $this->logger->debug('get called');
+        $envelopes = $this->ftpExecutor->execute($this->options);
+
+        if (count($envelopes) === 0) {
+            $message = new Message("");
+            $envelopes[] = new Envelope($message);
+        }
+
+        return $envelopes;
     }
 
     public function ack(Envelope $envelope): void
     {
+        $this->logger->debug('ack called');
         $filesystem = $this->ftpExecutor->getFtpClient()->getFilesystem();
         $message = $envelope->getMessage();
         $metadatas = $message->getMetadatas();  
@@ -83,9 +93,11 @@ class FtpTransport implements TransportInterface
 
     public function reject(Envelope $envelope): void
     {        
+        $this->logger->debug('reject called');
     }
 
     public function send(Envelope $envelope): Envelope
     {
+        $this->logger->debug('send called');
     }
 }
