@@ -54,37 +54,32 @@ class FtpTransport implements TransportInterface
     public function get(): iterable
     {
         $this->logger->debug('get called');
-        $envelopes = $this->ftpExecutor->execute($this->options);
 
-        if (count($envelopes) === 0) {
-            $message = new Message("");
-            $envelopes[] = new Envelope($message);
-        }
+        $files = $this->ftpExecutor->getFtpClient()->list($this->options['dirpath']);
 
-        return $envelopes;
+        return $this->ftpExecutor->execute($files);
     }
 
     public function ack(Envelope $envelope): void
     {
         $this->logger->debug('ack called');
         $filesystem = $this->ftpExecutor->getFtpClient()->getFilesystem();
-        $message = $envelope->getMessage();
-        $metadatas = $message->getMetadatas();  
+        $data = $envelope->getMessage()->getPayload();
         
         switch ($this->mode) {
             case 'move':    
                 try {
-                    $filesystem->copy($metadatas['path'], $this->options['storage'].'/'.$metadatas['basename']);
-                    $filesystem->delete($metadatas['path']);
-                    $this->logger->info(sprintf('Move file %s to folder %s', $metadatas['basename'], $this->options['storage']));
+                    $filesystem->copy($data['path'], $this->options['storage'].'/'.$data['basename']);
+                    $filesystem->delete($data['path']);
+                    $this->logger->info(sprintf('Move file %s to folder %s', $data['basename'], $this->options['storage']));
                 } catch (FileExistsException $exception) {
                     // Que faire si le fichier existe déjà ?
                     throw $exception;
                 }
             break;
             case 'delete':
-                $filesystem->delete($metadatas['path']);
-                $this->logger->info(sprintf('Delete file %s', $metadatas['basename']));
+                $filesystem->delete($data['path']);
+                $this->logger->info(sprintf('Delete file %s', $data['basename']));
             break;
             default:
             break;

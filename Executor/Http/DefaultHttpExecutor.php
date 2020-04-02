@@ -7,6 +7,7 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
 class DefaultHttpExecutor extends AbstractHttpExecutor
 {
@@ -31,7 +32,7 @@ class DefaultHttpExecutor extends AbstractHttpExecutor
         $this->serializer = $serializer;
     }
 
-    public function execute(string $dsn, string $method, array $options)
+    public function execute(string $dsn, string $method, array $options): iterable
     {
         // Get a message from "website"
         $this->logger->debug('Init Http Client...');
@@ -39,8 +40,6 @@ class DefaultHttpExecutor extends AbstractHttpExecutor
         $this->logger->debug('Request exec...');
 
         $message = new Message($response->getContent());
-        $envelope = new Envelope($message);
-        
-        return $envelope;
+        yield new Envelope($message, [new StopAfterHandleStamp()]);
     }
 }

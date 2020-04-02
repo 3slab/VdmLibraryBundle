@@ -41,10 +41,10 @@ class MonitoringFtpClientBehavior extends DecoratorFtpClient
     /**
      * {@inheritDoc}
      */
-    public function get(string $dirpath, array $file): array
+    public function get(array $file): array
     {        
         try {
-            $file = $this->ftpClientDecorated->get($dirpath, $file);
+            $file = $this->ftpClientDecorated->get($file);
 
             $this->eventDispatcher->dispatch(new FtpClientReceivedEvent($file));
         } catch(\Exception $exception) {

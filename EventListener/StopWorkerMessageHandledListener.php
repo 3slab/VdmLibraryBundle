@@ -48,7 +48,7 @@ class StopWorkerMessageHandledListener implements EventSubscriberInterface
 
         $stamps = $event->getEnvelope()->all();
         if (in_array(StopAfterHandleStamp::class, array_keys($stamps))) {
-            $this->logger->debug('WorkerMessageHandledEvent - StopAfterHandleStamp detected so whe stop the worker');
+            $this->logger->debug('WorkerMessageHandledEvent - StopAfterHandleStamp detected so we stop the worker');
             $this->stopWorker->setFlag(true);
         }
         
