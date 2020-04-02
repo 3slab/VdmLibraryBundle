@@ -43,7 +43,7 @@ class ElasticClient implements ElasticClientInterface
 
         $params = [
             'index' => $index,
-            'body'  => [ 'message' => $body ]
+            'body'  => (is_array($body)) ? $body : [ 'message' => $body ]
         ];
 
         return $this->client->index($params);

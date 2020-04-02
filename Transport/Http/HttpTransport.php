@@ -40,18 +40,7 @@ class HttpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        $content = $this->httpExecutor->execute($this->dsn, $this->method, $this->options);
-
-        if ($content instanceof Envelope) {
-            $content->with(new StopAfterHandleStamp());
-            
-            return [$content];
-        }
-
-        $message = new Message($content);
-        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
-
-        return [$envelope];
+        return $this->httpExecutor->execute($this->dsn, $this->method, $this->options);
     }
 
     public function ack(Envelope $envelope): void

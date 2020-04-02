@@ -63,9 +63,9 @@ class FtpClient implements FtpClientInterface
      * 
      * @return array
      */
-    public function get(string $dirpath, array $file): array
+    public function get(array $file): array
     {
-        $file['content'] = $this->filesystem->read($dirpath.'/'.$file['basename']);
+        $file['content'] = $this->filesystem->read($file['path']);
 
         return $file;
     }

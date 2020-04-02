@@ -15,7 +15,7 @@ abstract class AbstractHttpExecutor
         $this->httpClient = $httpClient;
     }
 
-    abstract public function execute(string $dsn, string $method, array $options);
+    abstract public function execute(string $dsn, string $method, array $options): iterable;
 
     public function getHttpClient(): HttpClientInterface
     {

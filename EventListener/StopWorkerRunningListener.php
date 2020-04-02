@@ -39,7 +39,7 @@ class StopWorkerRunningListener implements EventSubscriberInterface
     public function onWorkerRunning(WorkerRunningEvent $event)
     {
         $this->logger->debug('Check stop flag to true');
-        if ($this->stopWorker->getFlag()) {
+        if ($this->stopWorker->getFlag() || $event->isWorkerIdle()) {
             $event->getWorker()->stop();
             $this->logger->debug('Worker stopped because of true stop flag');
         }

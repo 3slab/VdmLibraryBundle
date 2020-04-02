@@ -19,10 +19,17 @@ class DefaultHandler implements MessageSubscriberInterface
     */
     protected $messengerLogger;
 
-    public function __construct(LoggerInterface $messengerLogger) {
+    /** 
+     * @var MessageBusInterface $bus
+    */
+    protected $bus;
+
+    public function __construct(LoggerInterface $messengerLogger, MessageBusInterface $bus)
+    {
         $this->messengerLogger = $messengerLogger;
+        $this->bus = $bus;
     }
-    
+
     /**
      * Default handler implementation.
      * Does nothing on message because it is override by project code.
@@ -31,7 +38,9 @@ class DefaultHandler implements MessageSubscriberInterface
      */
     public function __invoke(Message $message)
     {
-        $this->messengerLogger->debug(sprintf("Execution of handler with message %s", $message->getPayload()));
+        $this->messengerLogger->debug("Execution of default handler");
+
+        $this->bus->dispatch($message);
     }
 
     /**
