@@ -2,6 +2,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\MessageHandler;
 
+use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -13,6 +14,15 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 class DefaultHandler implements MessageSubscriberInterface
 {
+    /** 
+     * @var LoggerInterface $messengerLogger
+    */
+    protected $messengerLogger;
+
+    public function __construct(LoggerInterface $messengerLogger) {
+        $this->messengerLogger = $messengerLogger;
+    }
+    
     /**
      * Default handler implementation.
      * Does nothing on message because it is override by project code.
@@ -21,6 +31,7 @@ class DefaultHandler implements MessageSubscriberInterface
      */
     public function __invoke(Message $message)
     {
+        $this->messengerLogger->debug(sprintf("Execution of handler with message %s", $message->getPayload()));
     }
 
     /**

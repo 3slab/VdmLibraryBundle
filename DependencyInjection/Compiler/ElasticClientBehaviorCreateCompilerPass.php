@@ -20,6 +20,6 @@ class ElasticClientBehaviorCreateCompilerPass implements CompilerPassInterface
 
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall('addFactory', [new Reference($id), $id::priority()]);
-        }     
+        }
     }
 }

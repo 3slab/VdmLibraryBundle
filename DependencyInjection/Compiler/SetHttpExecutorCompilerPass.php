@@ -8,7 +8,7 @@ use Vdm\Bundle\LibraryBundle\Executor\Http\AbstractHttpExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Http\DefaultHttpExecutor;
 use Vdm\Bundle\LibraryBundle\Transport\Http\HttpTransportFactory;
 
-class SetRequestExecutorCompilerPass implements CompilerPassInterface
+class SetHttpExecutorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
@@ -16,18 +16,18 @@ class SetRequestExecutorCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $taggedServicesRequestExecutor = $container->findTaggedServiceIds('vdm_library.request_executor');
+        $taggedServicesHttpExecutor = $container->findTaggedServiceIds('vdm_library.http_executor');
 
-        // Unload default request executor if multiple requestExecutor
-        if (count($taggedServicesRequestExecutor) > 1) {
-            foreach ($taggedServicesRequestExecutor as $id => $tags) {
+        // Unload default http executor if multiple httpExecutor
+        if (count($taggedServicesHttpExecutor) > 1) {
+            foreach ($taggedServicesHttpExecutor as $id => $tags) {
                 if ($id === DefaultHttpExecutor::class) {
-                    unset($taggedServicesRequestExecutor[$id]);
+                    unset($taggedServicesHttpExecutor[$id]);
                     break;
                 }
             }
         }
 
-        $container->setAlias(AbstractHttpExecutor::class, array_key_first($taggedServicesRequestExecutor));
+        $container->setAlias(AbstractHttpExecutor::class, array_key_first($taggedServicesHttpExecutor));
     }
 }

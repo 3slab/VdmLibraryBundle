@@ -44,6 +44,11 @@ class TraceAddEnterListener implements EventSubscriberInterface
             return;
         }
 
+        $payload = $message->getPayload();
+        if (empty($payload)) {
+            return;
+        }
+
         $message->addTrace(new Trace($this->appName, Trace::ENTER));
 
         if (null !== $this->logger) {

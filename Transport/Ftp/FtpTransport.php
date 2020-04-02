@@ -6,8 +6,7 @@ use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
-use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
-use Vdm\Bundle\LibraryBundle\Client\Ftp\FtpClientInterface;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class FtpTransport implements TransportInterface
@@ -18,14 +17,9 @@ class FtpTransport implements TransportInterface
     private $logger;
 
     /** 
-     * @var FtpClientInterface $ftpClient
+     * @var AbstractFtpExecutor $ftpExecutor
     */
-    private $ftpClient;
-
-    /** 
-     * @var FtpExecutorInterface $fileExecutor
-    */
-    private $fileExecutor;
+    private $ftpExecutor;
 
     /** 
      * @var string $dsn
@@ -43,17 +37,15 @@ class FtpTransport implements TransportInterface
     private $options;
 
     public function __construct(
-        LoggerInterface $logger, 
-        FtpClientInterface $ftpClient, 
-        FtpExecutorInterface $fileExecutor, 
+        LoggerInterface $logger,
+        AbstractFtpExecutor $ftpExecutor, 
         string $dsn, 
         string $mode, 
         array $options
     )
     {
         $this->logger = $logger;
-        $this->ftpClient = $ftpClient;
-        $this->fileExecutor = $fileExecutor;
+        $this->ftpExecutor = $ftpExecutor;
         $this->dsn = $dsn;
         $this->mode = $mode;
         $this->options = $options;
@@ -61,22 +53,21 @@ class FtpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        $file = $this->ftpClient->get($this->options['dirpath']);
+        $this->logger->debug('get called');
+        $envelopes = $this->ftpExecutor->execute($this->options);
 
-        if ($file !== null) {
-            $message = $this->fileExecutor->execute($file);
-        } else {
+        if (count($envelopes) === 0) {
             $message = new Message("");
+            $envelopes[] = new Envelope($message);
         }
-        
-        $envelope = new Envelope($message);
 
-        return [$envelope];
+        return $envelopes;
     }
 
     public function ack(Envelope $envelope): void
     {
-        $filesystem = $this->ftpClient->getFilesystem();
+        $this->logger->debug('ack called');
+        $filesystem = $this->ftpExecutor->getFtpClient()->getFilesystem();
         $message = $envelope->getMessage();
         $metadatas = $message->getMetadatas();  
         
@@ -102,9 +93,11 @@ class FtpTransport implements TransportInterface
 
     public function reject(Envelope $envelope): void
     {        
+        $this->logger->debug('reject called');
     }
 
     public function send(Envelope $envelope): Envelope
     {
+        $this->logger->debug('send called');
     }
 }
