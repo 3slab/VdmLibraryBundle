@@ -24,7 +24,7 @@ abstract class AbstractFtpExecutor
 
         foreach ($files as $file) {
             if (isset($file) && $file['type'] === 'file') {
-                $this->ftpClient->get($options['dirpath'], $file);
+                $file = $this->ftpClient->get($options['dirpath'], $file);
                 $message = new Message($file['content']);
                 unset($file['content']);
                 $message->setMetadatas($file);
