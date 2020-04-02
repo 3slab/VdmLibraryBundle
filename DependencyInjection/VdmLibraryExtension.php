@@ -6,11 +6,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
-use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryInterface;
+use Vdm\Bundle\LibraryBundle\Client\Http\Behavior\HttpClientBehaviorFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
-use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
-use Vdm\Bundle\LibraryBundle\FtpClient\Behavior\FtpClientBehaviorFactoryInterface;
+use Vdm\Bundle\LibraryBundle\Executor\Http\AbstractHttpExecutor;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
+use Vdm\Bundle\LibraryBundle\Client\Ftp\Behavior\FtpClientBehaviorFactoryInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -27,10 +27,10 @@ class VdmLibraryExtension extends Extension
         $container->registerForAutoconfiguration(StatsStorageInterface::class)
             ->addTag('vdm_library.stats_storage')
         ;
-        $container->registerForAutoconfiguration(AbstractHttpRequestExecutor::class)
+        $container->registerForAutoconfiguration(AbstractHttpExecutor::class)
             ->addTag('vdm_library.request_executor')
         ;
-        $container->registerForAutoconfiguration(FtpFileExecutorInterface::class)
+        $container->registerForAutoconfiguration(FtpExecutorInterface::class)
             ->addTag('vdm_library.ftp_file_executor')
         ;
         $container->registerForAutoconfiguration(HttpClientBehaviorFactoryInterface::class)

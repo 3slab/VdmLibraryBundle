@@ -19,6 +19,6 @@ services:
         resource: '../../Controller'
         tags: ['controller.service_arguments']
 
-    Vdm\Bundle\LibraryBundle\Transport\HttpTransportFactory:
+    Vdm\Bundle\LibraryBundle\Transport\Http\HttpTransportFactory:
         autowire: true
         tags: [messenger.transport_factory]

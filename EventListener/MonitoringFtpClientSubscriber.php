@@ -5,8 +5,8 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
-use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientErrorEvent;
-use Vdm\Bundle\LibraryBundle\FtpClient\Event\FtpClientReceivedEvent;
+use Vdm\Bundle\LibraryBundle\Client\Ftp\Event\FtpClientErrorEvent;
+use Vdm\Bundle\LibraryBundle\Client\Ftp\Event\FtpClientReceivedEvent;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 
