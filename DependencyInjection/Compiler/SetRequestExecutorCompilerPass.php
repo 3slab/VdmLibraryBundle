@@ -4,9 +4,9 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\AbstractHttpRequestExecutor;
-use Vdm\Bundle\LibraryBundle\RequestExecutor\DefaultRequestExecutor;
-use Vdm\Bundle\LibraryBundle\Transport\HttpTransportFactory;
+use Vdm\Bundle\LibraryBundle\Executor\Http\AbstractHttpExecutor;
+use Vdm\Bundle\LibraryBundle\Executor\Http\DefaultHttpExecutor;
+use Vdm\Bundle\LibraryBundle\Transport\Http\HttpTransportFactory;
 
 class SetRequestExecutorCompilerPass implements CompilerPassInterface
 {
@@ -21,13 +21,13 @@ class SetRequestExecutorCompilerPass implements CompilerPassInterface
         // Unload default request executor if multiple requestExecutor
         if (count($taggedServicesRequestExecutor) > 1) {
             foreach ($taggedServicesRequestExecutor as $id => $tags) {
-                if ($id === DefaultRequestExecutor::class) {
+                if ($id === DefaultHttpExecutor::class) {
                     unset($taggedServicesRequestExecutor[$id]);
                     break;
                 }
             }
         }
 
-        $container->setAlias(AbstractHttpRequestExecutor::class, array_key_first($taggedServicesRequestExecutor));
+        $container->setAlias(AbstractHttpExecutor::class, array_key_first($taggedServicesRequestExecutor));
     }
 }

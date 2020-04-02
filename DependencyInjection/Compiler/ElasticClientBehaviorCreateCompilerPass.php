@@ -5,21 +5,21 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Vdm\Bundle\LibraryBundle\Client\Ftp\Behavior\FtpClientBehaviorFactoryRegistry;
+use Vdm\Bundle\LibraryBundle\Client\Elastic\Behavior\ElasticClientBehaviorFactoryRegistry;
 
-class FtpClientBehaviorCreateCompilerPass implements CompilerPassInterface
+class ElasticClientBehaviorCreateCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(FtpClientBehaviorFactoryRegistry::class)) {
+        if (!$container->has(ElasticClientBehaviorFactoryRegistry::class)) {
             return;
         }
 
-        $definition = $container->findDefinition(FtpClientBehaviorFactoryRegistry::class);
-        $taggedServices = $container->findTaggedServiceIds('vdm_library.ftp_decorator_factory');
+        $definition = $container->findDefinition(ElasticClientBehaviorFactoryRegistry::class);
+        $taggedServices = $container->findTaggedServiceIds('vdm_library.es_decorator_factory');
 
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall('addFactory', [new Reference($id), $id::priority()]);
-        }
+        }     
     }
 }

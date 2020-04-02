@@ -4,9 +4,9 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Vdm\Bundle\LibraryBundle\FileExecutor\FtpFileExecutorInterface;
-use Vdm\Bundle\LibraryBundle\FileExecutor\DefaultFileExecutor;
-use Vdm\Bundle\LibraryBundle\Transport\FtpTransportFactory;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\DefaultFtpExecutor;
+use Vdm\Bundle\LibraryBundle\Transport\Ftp\FtpTransportFactory;
 
 class SetFtpFileExecutorCompilerPass implements CompilerPassInterface
 {
@@ -21,13 +21,13 @@ class SetFtpFileExecutorCompilerPass implements CompilerPassInterface
         // Unload default file executor if multiple fileExecutor
         if (count($taggedServicesFileExecutor) > 1) {
             foreach ($taggedServicesFileExecutor as $id => $tags) {
-                if ($id === DefaultFileExecutor::class) {
+                if ($id === DefaultFtpExecutor::class) {
                     unset($taggedServicesFileExecutor[$id]);
                     break;
                 }
             }
         }
 
-        $container->setAlias(FtpFileExecutorInterface::class, array_key_first($taggedServicesFileExecutor));
+        $container->setAlias(FtpExecutorInterface::class, array_key_first($taggedServicesFileExecutor));
     }
 }

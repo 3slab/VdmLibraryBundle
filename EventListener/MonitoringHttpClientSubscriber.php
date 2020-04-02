@@ -5,7 +5,7 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Psr\Log\LoggerInterface;
-use Vdm\Bundle\LibraryBundle\HttpClient\Event\HttpClientReceivedResponseEvent;
+use Vdm\Bundle\LibraryBundle\Client\Http\Event\HttpClientReceivedResponseEvent;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 
 class MonitoringHttpClientSubscriber implements EventSubscriberInterface

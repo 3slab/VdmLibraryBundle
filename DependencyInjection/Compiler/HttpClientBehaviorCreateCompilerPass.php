@@ -5,7 +5,7 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Vdm\Bundle\LibraryBundle\HttpClient\Behavior\HttpClientBehaviorFactoryRegistry;
+use Vdm\Bundle\LibraryBundle\Client\Http\Behavior\HttpClientBehaviorFactoryRegistry;
 
 class HttpClientBehaviorCreateCompilerPass implements CompilerPassInterface
 {
