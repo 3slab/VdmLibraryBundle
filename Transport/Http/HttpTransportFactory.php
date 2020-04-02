@@ -26,9 +26,9 @@ class HttpTransportFactory implements TransportFactoryInterface
     private $logger;
 
     /**
-     * @var AbstractHttpExecutor $requestExecutor
+     * @var AbstractHttpExecutor $httpExecutor
      */
-    private $requestExecutor;
+    private $httpExecutor;
 
 
     /**
@@ -39,13 +39,13 @@ class HttpTransportFactory implements TransportFactoryInterface
     public function __construct(
         LoggerInterface $logger, 
         StatsStorageInterface $statsStorage, 
-        AbstractHttpExecutor $requestExecutor, 
+        AbstractHttpExecutor $httpExecutor, 
         HttpClientBehaviorFactoryRegistry $httpClientBehaviorFactoryRegistry
     )
     {
         $this->logger = $logger;
         $this->statsStorage = $statsStorage;
-        $this->requestExecutor = $requestExecutor;
+        $this->httpExecutor = $httpExecutor;
         $this->httpClientBehaviorFactoryRegistry = $httpClientBehaviorFactoryRegistry;
     }
 
@@ -55,11 +55,11 @@ class HttpTransportFactory implements TransportFactoryInterface
         $http_options = $options['http_options'];
 
         $this->logger->debug('Create decorator');
-        $httpClientDecorated = $this->httpClientBehaviorFactoryRegistry->create($this->requestExecutor->getHttpClient(), $options);
-        $this->requestExecutor->setHttpClient($httpClientDecorated);
+        $httpClientDecorated = $this->httpClientBehaviorFactoryRegistry->create($this->httpExecutor->getHttpClient(), $options);
+        $this->httpExecutor->setHttpClient($httpClientDecorated);
         $this->logger->debug('Set new decorator');
 
-        return new HttpTransport($this->requestExecutor, $dsn, $method, $http_options);
+        return new HttpTransport($this->httpExecutor, $dsn, $method, $http_options);
     }
 
     public function supports(string $dsn, array $options): bool

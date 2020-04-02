@@ -6,9 +6,7 @@ use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
-use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
-use Vdm\Bundle\LibraryBundle\Client\Ftp\FtpClientInterface;
-use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
 
 class FtpTransport implements TransportInterface
 {
@@ -18,14 +16,9 @@ class FtpTransport implements TransportInterface
     private $logger;
 
     /** 
-     * @var FtpClientInterface $ftpClient
+     * @var AbstractFtpExecutor $ftpExecutor
     */
-    private $ftpClient;
-
-    /** 
-     * @var FtpExecutorInterface $fileExecutor
-    */
-    private $fileExecutor;
+    private $ftpExecutor;
 
     /** 
      * @var string $dsn
@@ -43,17 +36,15 @@ class FtpTransport implements TransportInterface
     private $options;
 
     public function __construct(
-        LoggerInterface $logger, 
-        FtpClientInterface $ftpClient, 
-        FtpExecutorInterface $fileExecutor, 
+        LoggerInterface $logger,
+        AbstractFtpExecutor $ftpExecutor, 
         string $dsn, 
         string $mode, 
         array $options
     )
     {
         $this->logger = $logger;
-        $this->ftpClient = $ftpClient;
-        $this->fileExecutor = $fileExecutor;
+        $this->ftpExecutor = $ftpExecutor;
         $this->dsn = $dsn;
         $this->mode = $mode;
         $this->options = $options;
@@ -61,22 +52,12 @@ class FtpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        $file = $this->ftpClient->get($this->options['dirpath']);
-
-        if ($file !== null) {
-            $message = $this->fileExecutor->execute($file);
-        } else {
-            $message = new Message("");
-        }
-        
-        $envelope = new Envelope($message);
-
-        return [$envelope];
+        return $this->ftpExecutor->execute($this->options);
     }
 
     public function ack(Envelope $envelope): void
     {
-        $filesystem = $this->ftpClient->getFilesystem();
+        $filesystem = $this->ftpExecutor->getFtpClient()->getFilesystem();
         $message = $envelope->getMessage();
         $metadatas = $message->getMetadatas();  
         

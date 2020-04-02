@@ -4,11 +4,11 @@ namespace Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\DefaultFtpExecutor;
 use Vdm\Bundle\LibraryBundle\Transport\Ftp\FtpTransportFactory;
 
-class SetFtpFileExecutorCompilerPass implements CompilerPassInterface
+class SetFtpExecutorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
@@ -16,18 +16,18 @@ class SetFtpFileExecutorCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $taggedServicesFileExecutor = $container->findTaggedServiceIds('vdm_library.ftp_file_executor');
+        $taggedServicesFtpExecutor = $container->findTaggedServiceIds('vdm_library.ftp_executor');
 
-        // Unload default file executor if multiple fileExecutor
-        if (count($taggedServicesFileExecutor) > 1) {
-            foreach ($taggedServicesFileExecutor as $id => $tags) {
+        // Unload default ftp executor if multiple ftpExecutor
+        if (count($taggedServicesFtpExecutor) > 1) {
+            foreach ($taggedServicesFtpExecutor as $id => $tags) {
                 if ($id === DefaultFtpExecutor::class) {
-                    unset($taggedServicesFileExecutor[$id]);
+                    unset($taggedServicesFtpExecutor[$id]);
                     break;
                 }
             }
         }
 
-        $container->setAlias(FtpExecutorInterface::class, array_key_first($taggedServicesFileExecutor));
+        $container->setAlias(AbstractFtpExecutor::class, array_key_first($taggedServicesFtpExecutor));
     }
 }

@@ -6,7 +6,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
-use Vdm\Bundle\LibraryBundle\Executor\Ftp\FtpExecutorInterface;
+use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
 use Vdm\Bundle\LibraryBundle\Client\Ftp\Behavior\FtpClientBehaviorFactoryRegistry;
 use Vdm\Bundle\LibraryBundle\Client\Ftp\FtpClientFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Client\Ftp\FtpClientInterface;
@@ -37,9 +37,9 @@ class FtpTransportFactory implements TransportFactoryInterface
     private $ftpClient;
 
     /**
-     * @var FtpExecutorInterface $fileExecutor
+     * @var AbstractFtpExecutor $ftpExecutor
      */
-    private $fileExecutor;
+    private $ftpExecutor;
 
     /**
      * @var FtpClientBehaviorFactoryRegistry $ftpClientBehaviorFactoryRegistry
@@ -49,13 +49,13 @@ class FtpTransportFactory implements TransportFactoryInterface
     public function __construct(
         LoggerInterface $logger, 
         FtpClientFactoryInterface $ftpClientFactory,
-        FtpExecutorInterface $fileExecutor,
+        AbstractFtpExecutor $ftpExecutor,
         FtpClientBehaviorFactoryRegistry $ftpClientBehaviorFactoryRegistry
     )
     {
         $this->logger = $logger;
         $this->ftpClientFactory = $ftpClientFactory;
-        $this->fileExecutor = $fileExecutor;
+        $this->ftpExecutor = $ftpExecutor;
         $this->ftpClientBehaviorFactoryRegistry = $ftpClientBehaviorFactoryRegistry;
     }
 
@@ -73,9 +73,12 @@ class FtpTransportFactory implements TransportFactoryInterface
         }
 
         $this->ftpClient = $this->ftpClientFactory->create($dsn, $options);
+
         $this->ftpClient = $this->ftpClientBehaviorFactoryRegistry->create($this->ftpClient, $options);
 
-        return new FtpTransport($this->logger, $this->ftpClient, $this->fileExecutor, $dsn, $mode, $ftp_options);
+        $this->ftpExecutor->setFtpClient($this->ftpClient);
+
+        return new FtpTransport($this->logger, $this->ftpExecutor, $dsn, $mode, $ftp_options);
     }
 
     public function supports(string $dsn, array $options): bool

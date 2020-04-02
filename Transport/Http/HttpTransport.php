@@ -11,9 +11,9 @@ use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 class HttpTransport implements TransportInterface
 {
     /** 
-     * @var AbstractHttpExecutor $requestExecutor
+     * @var AbstractHttpExecutor $httpExecutor
     */
-    private $requestExecutor;
+    private $httpExecutor;
 
     /** 
      * @var string $dsn
@@ -30,9 +30,9 @@ class HttpTransport implements TransportInterface
     */
     private $options;
 
-    public function __construct(AbstractHttpExecutor $requestExecutor, string $dsn, string $method, array $options)
+    public function __construct(AbstractHttpExecutor $httpExecutor, string $dsn, string $method, array $options)
     {
-        $this->requestExecutor = $requestExecutor;
+        $this->httpExecutor = $httpExecutor;
         $this->dsn = $dsn;
         $this->method = $method;
         $this->options = $options;
@@ -40,7 +40,7 @@ class HttpTransport implements TransportInterface
 
     public function get(): iterable
     {
-        $content = $this->requestExecutor->execute($this->dsn, $this->method, $this->options);
+        $content = $this->httpExecutor->execute($this->dsn, $this->method, $this->options);
 
         if ($content instanceof Envelope) {
             $content->with(new StopAfterHandleStamp());

@@ -58,21 +58,40 @@ class FtpClient implements FtpClientInterface
         
     }
 
-    public function get(string $dirpath): ?array
+    /**
+     * Get file content
+     * 
+     * @return string|null content of the file
+     */
+    public function get(string $filename): ?string
     {
-        $fichier = null;
+        $file = null;
+        if ($this->filesystem->has($filename)) {
+            $file = $this->filesystem->read($filename);
+        } else {
+            $this->logger->info(sprintf('File %s inexistant sur le serveur', $filename));
+        }
+        
+        return $file;
+    }
+
+    /**
+     * Get all files/directories in this directory
+     * 
+     * @param string $dirpath directory path to list
+     * 
+     * @return array|null list of files or directories in this path
+     */
+    public function list(string $dirpath): ?array
+    {
+        $files = null;
         if ($this->filesystem->has($dirpath)) {
             $files = $this->filesystem->listContents($dirpath);
-
-            if (isset($files[0]) && $files[0]['type'] === 'file') {
-                $files[0]['content'] = $this->filesystem->read($dirpath.'/'.$files[0]['basename']);
-                $fichier = $files[0];
-            }
         } else {
             $this->logger->info(sprintf('Directory %s inexistant sur le serveur', $dirpath));
         }
-        
-        return $fichier;
+
+        return $files;
     }
 
     /**
