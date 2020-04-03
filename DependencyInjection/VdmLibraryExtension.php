@@ -6,11 +6,12 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Config\FileLocator;
+use Vdm\Bundle\LibraryBundle\Client\Elastic\Behavior\ElasticClientBehaviorFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Client\Http\Behavior\HttpClientBehaviorFactoryInterface;
-use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
-use Vdm\Bundle\LibraryBundle\Executor\Http\AbstractHttpExecutor;
 use Vdm\Bundle\LibraryBundle\Client\Ftp\Behavior\FtpClientBehaviorFactoryInterface;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
+use Vdm\Bundle\LibraryBundle\Executor\Http\AbstractHttpExecutor;
+use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -38,6 +39,9 @@ class VdmLibraryExtension extends Extension
         ;
         $container->registerForAutoconfiguration(FtpClientBehaviorFactoryInterface::class)
             ->addTag('vdm_library.ftp_decorator_factory')
+        ;
+        $container->registerForAutoconfiguration(ElasticClientBehaviorFactoryInterface::class)
+            ->addTag('vdm_library.elastic_decorator_factory')
         ;
 
         $loader = new YamlFileLoader(

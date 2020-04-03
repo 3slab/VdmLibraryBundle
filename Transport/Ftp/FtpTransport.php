@@ -94,5 +94,7 @@ class FtpTransport implements TransportInterface
     public function send(Envelope $envelope): Envelope
     {
         $this->logger->debug('send called');
+        
+        return $envelope;
     }
 }

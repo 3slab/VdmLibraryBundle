@@ -21,7 +21,11 @@ class RetryElasticClientBehaviorFactory implements ElasticClientBehaviorFactoryI
             $number = $options['retry']['number'];
         }
 
-        return new RetryElasticClientBehavior($logger, $elasticClient, $number);
+        if (isset($options['retry']['timeBeforeRetry'])) {
+            $timeBeforeRetry = $options['retry']['timeBeforeRetry'];
+        }
+
+        return new RetryElasticClientBehavior($logger, $elasticClient, $number, $timeBeforeRetry);
     }
 
     public function support(array $options)

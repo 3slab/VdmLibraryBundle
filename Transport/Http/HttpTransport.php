@@ -53,5 +53,6 @@ class HttpTransport implements TransportInterface
 
     public function send(Envelope $envelope): Envelope
     {
+        return $envelope;
     }
 }

@@ -16,7 +16,7 @@ class ElasticClientBehaviorCreateCompilerPass implements CompilerPassInterface
         }
 
         $definition = $container->findDefinition(ElasticClientBehaviorFactoryRegistry::class);
-        $taggedServices = $container->findTaggedServiceIds('vdm_library.es_decorator_factory');
+        $taggedServices = $container->findTaggedServiceIds('vdm_library.elastic_decorator_factory');
 
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall('addFactory', [new Reference($id), $id::priority()]);
