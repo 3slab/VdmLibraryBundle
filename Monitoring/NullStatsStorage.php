@@ -13,6 +13,8 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
@@ -156,7 +158,6 @@ class NullStatsStorage implements StatsStorageInterface
 
     public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
     {
-        
         $this->logger->debug('Null stats storage ftp size state sent with value {value}',
             [
                 'value' => $ftpResponseStat->getSize()
@@ -169,6 +170,17 @@ class NullStatsStorage implements StatsStorageInterface
         $this->logger->debug('Null stats storage ftp error state sent with value {value}',
             [
                 'value' => $ftpErrorStat->getError()
+            ]
+        );
+    }
+
+    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
+    {
+        $this->logger->debug('Null stats storage elastic success state sent with value {value}',
+            [
+                'value' => $elasticResponseStat->getSuccess(),
+                'index' => $elasticResponseStat->getIndex(),
+                'response' => $elasticResponseStat->getResponse(),
             ]
         );
     }

@@ -11,6 +11,8 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 use DataDog\BatchedDogStatsd;
 use DataDog\DogStatsd;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientErrorStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
@@ -120,6 +122,15 @@ class StatsDStorage implements StatsStorageInterface
     public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
     {
         $this->datadog->increment('vdm.metric.ftp.error.counter', $ftpErrorStat->getError());
+    }
+
+    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
+    {
+        $tags = [
+            "index" => $elasticResponseStat->getIndex(),
+            "response" => $elasticResponseStat->getResponse(),
+        ];
+        $this->datadog->increment('vdm.metric.elastic.response', 1.0, $tags, $elasticResponseStat->getSuccess());
     }
     
     public function flush(bool $force = false)

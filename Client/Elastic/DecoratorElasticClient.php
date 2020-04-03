@@ -25,8 +25,8 @@ abstract class DecoratorElasticClient implements ElasticClientInterface
     protected $elasticClientDecorated;
 
     public function __construct(LoggerInterface $logger, ElasticClientInterface $elasticClient) {
-        $this->elasticClientDecorated = $elasticClient;
         $this->logger = $logger;
+        $this->elasticClientDecorated = $elasticClient;
     }
     
     /**

@@ -18,7 +18,6 @@ class FtpClientResponseStat
     /**
      * FtpClientResponseStat constructor.
      *
-     * @param int|null $error
      * @param int|null $size
      */
     public function __construct(?int $size = null)
