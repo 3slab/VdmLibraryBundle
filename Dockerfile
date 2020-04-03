@@ -30,7 +30,7 @@ RUN apk update && apk upgrade \
   && docker-php-ext-install iconv gd intl xsl json dom zip opcache
 
 #Download rdkafka
-ENV LIBRDKAFKA_VERSION 1.0.1
+ENV LIBRDKAFKA_VERSION 1.4.0
 ENV EXT_RDKAFKA_VERSION 4.0.3
 
 RUN git clone --depth 1 --branch v$LIBRDKAFKA_VERSION https://github.com/edenhill/librdkafka.git \
@@ -49,6 +49,3 @@ RUN wget https://getcomposer.org/installer -O composer-setup.php \
   && php ./composer-setup.php  --install-dir=/usr/local/bin \
   && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer \
   && composer global require hirak/prestissimo
-
-COPY . /var/www/html
-WORKDIR /var/www/html

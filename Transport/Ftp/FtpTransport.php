@@ -2,13 +2,11 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Ftp;
 
-use Exception;
 use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
-use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class FtpTransport implements TransportInterface
 {
@@ -96,6 +94,6 @@ class FtpTransport implements TransportInterface
     {
         $this->logger->debug('send called');
 
-        throw Exception('Problème to send on your producer');
+        throw new \Exception('This transport does not support the send action');
     }
 }

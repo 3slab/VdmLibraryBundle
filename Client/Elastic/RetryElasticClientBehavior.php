@@ -5,7 +5,6 @@ namespace Vdm\Bundle\LibraryBundle\Client\Elastic;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Vdm\Bundle\LibraryBundle\Client\Elastic\DecoratorElasticClient;
-use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 
 class RetryElasticClientBehavior extends DecoratorElasticClient
 {
