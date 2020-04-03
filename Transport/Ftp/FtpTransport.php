@@ -7,7 +7,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
-use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class FtpTransport implements TransportInterface
 {
@@ -94,5 +93,7 @@ class FtpTransport implements TransportInterface
     public function send(Envelope $envelope): Envelope
     {
         $this->logger->debug('send called');
+
+        throw new \Exception('This transport does not support the send action');
     }
 }
