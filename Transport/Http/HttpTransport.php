@@ -2,6 +2,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Http;
 
+use Exception;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
@@ -53,6 +54,6 @@ class HttpTransport implements TransportInterface
 
     public function send(Envelope $envelope): Envelope
     {
-        return $envelope;
+        throw Exception('Problème to send on your producer');
     }
 }

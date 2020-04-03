@@ -2,6 +2,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Ftp;
 
+use Exception;
 use League\Flysystem\FileExistsException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -94,7 +95,7 @@ class FtpTransport implements TransportInterface
     public function send(Envelope $envelope): Envelope
     {
         $this->logger->debug('send called');
-        
-        return $envelope;
+
+        throw Exception('Problème to send on your producer');
     }
 }
