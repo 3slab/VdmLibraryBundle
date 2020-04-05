@@ -49,3 +49,7 @@ RUN wget https://getcomposer.org/installer -O composer-setup.php \
   && php ./composer-setup.php  --install-dir=/usr/local/bin \
   && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer \
   && composer global require hirak/prestissimo
+
+WORKDIR /var/www/html
+
+CMD php bin/console messenger:consume consumer -vv
