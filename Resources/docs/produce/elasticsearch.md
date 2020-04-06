@@ -1,6 +1,12 @@
 # Sync Elasticsearch
 
-In case of you want to push data in your elsaticsearch cluster, you can use this producer.
+In case of you want to push data in your elsaticsearch cluster, you can use this producer. You can use this [client](https://www.elastic.co/guide/en/elasticsearch/client/php-api/current/index.html) to help you
+
+## Elasticsearch client install
+
+```
+composer require elasticsearch/elasticsearch
+```
 
 ## Configuration reference
 
