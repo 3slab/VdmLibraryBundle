@@ -13,23 +13,23 @@ use Symfony\Contracts\EventDispatcher\Event;
 class ElasticClientReceivedEvent extends Event
 {
     /**
-     * @var array|null $file
+     * @var array|null $elasticResponse
      */
-    private $file;
+    private $elasticResponse;
 
     /**
      * ElasticClientReceivedEvent constructor
      */
-    public function __construct(?array $file)
+    public function __construct(?array $elasticResponse)
     {
-        $this->file = $file;
+        $this->elasticResponse = $elasticResponse;
     }
 
     /**
      * @return array|null
      */
-    public function getFile(): ?array
+    public function getElasticResponse(): ?array
     {
-        return $this->file;
+        return $this->elasticResponse;
     }
 }

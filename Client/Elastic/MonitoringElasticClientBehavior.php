@@ -11,8 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\Client\Elastic;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
-use Vdm\Bundle\LibraryBundle\Client\Elastic\ElasticClientInterface;
-use Vdm\Bundle\LibraryBundle\Client\Elastic\Event\ElasticClientErrorEvent;
+use Vdm\Bundle\LibraryBundle\Client\Elastic\DecoratorElasticClient;
 use Vdm\Bundle\LibraryBundle\Client\Elastic\Event\ElasticClientReceivedEvent;
 
 class MonitoringElasticClientBehavior extends DecoratorElasticClient
@@ -50,6 +49,18 @@ class MonitoringElasticClientBehavior extends DecoratorElasticClient
      */
     public function post(Envelope $envelope, string $index): ?array
     {        
-        return null;
+        try {
+            $this->logger->info(sprintf('Trying push in elasticsearch in this index %s', $index));
+            $response = $this->elasticClientDecorated->post($envelope, $index);
+            $this->logger->info(sprintf('Request done with status: %s', $response['result']));
+
+            $this->eventDispatcher->dispatch(new ElasticClientReceivedEvent($response));
+        } catch(\Exception $exception) {
+            $this->logger->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
+
+            throw $exception;
+        }
+
+        return $response;
     }
 }
