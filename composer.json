@@ -25,6 +25,7 @@
         "symfony/yaml": "5.0.*",
         "symfony/messenger": "5.0.*",
         "symfony/stopwatch": "5.0.*",
+        "symfony/http-client": "5.0.*",
         "datadog/php-datadogstatsd": "^1.4",
         "league/flysystem-sftp": "^1.0",
         "league/flysystem": "^1.0"
