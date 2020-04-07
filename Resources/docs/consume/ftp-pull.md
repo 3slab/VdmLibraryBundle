@@ -47,6 +47,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\Executor\Ftp\AbstractFtpExecutor;
+use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
 class CustomFtpExecutor implements AbstractFtpExecutor
 {
@@ -63,20 +64,32 @@ class CustomFtpExecutor implements AbstractFtpExecutor
 
     public function execute(array $files): iterable
     {
+        if (count($files) === 0) {
+            yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
+        }
         foreach ($files as $file) {
             if (isset($file['type']) && $file['type'] === 'file') {
                 $file = $this->ftpClient->get($file);
                 $message = new Message($file);
-                yield new Envelope($message);
+                // Put the stop stamp on the last file
+                if (next($files) === true){
+                    yield new Envelope($message);
+                } else {
+                    yield new Envelope($message, [new StopAfterHandleStamp()]);
+                }
+            } else {
+                yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
             }
         }
     }
 }
 ```
 
-There are 1 important thing your custom executor needs to do :
+There are 2 important things your custom executor needs to do :
 
 * `yield` a new envelope with a VDM Message instance
+* Add a `StopAfterHandleStamp` stamp to the yielded envelope if you want to stop after handling the last file (if not, 
+  the messenger worker loop over and will execute it once again).
 
 *Note : thanks to the yield system, you can implement a loop in your execute function and return items once at a time*
 
