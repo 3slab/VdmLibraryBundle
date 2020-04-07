@@ -46,7 +46,7 @@ class DefaultHandler implements MessageSubscriberInterface
     {
         $this->messengerLogger->debug("Execution of default handler");
 
-        $this->bus->dispatch($message);
+        // If the Handler dispatches the message further, you will need to add the HandledStamp to the message during dispatch.
     }
 
     /**
