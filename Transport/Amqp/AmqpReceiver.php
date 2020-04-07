@@ -18,6 +18,7 @@ use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
 use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 
 // Didn't extend the original AmqpReceiver, since half is code it private.
 class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
@@ -69,7 +70,8 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
             throw new MessageDecodingFailedException($msg);
         }
 
-        $envelope = new Envelope($body);
+        $message  = new Message($body);
+        $envelope = new Envelope($message);
 
         yield $envelope->with(new AmqpReceivedStamp($amqpEnvelope, $queueName));
     }

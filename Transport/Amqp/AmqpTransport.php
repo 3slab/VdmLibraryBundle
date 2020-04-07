@@ -13,6 +13,8 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\AmqpExt\AmqpSender;
 use Symfony\Component\Messenger\Transport\AmqpExt\Connection;
 use Symfony\Component\Messenger\Transport\Receiver\MessageCountAwareInterface;
+use Symfony\Component\Messenger\Transport\Receiver\ReceiverInterface;
+use Symfony\Component\Messenger\Transport\Sender\SenderInterface;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\SetupableTransportInterface;
@@ -36,6 +38,16 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
      * @var SerializerInterface
      */
     protected $serializer;
+
+    /**
+     * @var ReceiverInterface
+     */
+    protected $receiver;
+
+    /**
+     * @var SenderInterface
+     */
+    protected $sender;
 
     /**
      * @param LoggerInterface          $logger
