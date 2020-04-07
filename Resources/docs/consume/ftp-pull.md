@@ -1,4 +1,4 @@
-# Source HTTP Pull
+# Source Ftp Pull
 
 This source can collect data from a ftp server.
 
@@ -74,7 +74,7 @@ class CustomFtpExecutor implements AbstractFtpExecutor
 }
 ```
 
-There are 2 important things your custom executor needs to do :
+There are 1 important thing your custom executor needs to do :
 
 * `yield` a new envelope with a VDM Message instance
 
