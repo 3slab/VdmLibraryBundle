@@ -26,9 +26,7 @@ class ElasticClientFactory implements ElasticClientFactoryInterface
         $dsn_regex = '/^((?P<driver>\w+):\/\/)?((?P<user>\w+)?(:(?P<password>\w+))?@)?(?P<host>[\w\-\.]+)(:(?P<port>\d+))?$/Uim';
         
         $scheme =  (isset($options['scheme'])) ? $options['scheme'] : "https";
-        if (false == preg_match($dsn_regex, $dsn, $result)) {
-            throw new \InvalidArgumentException("DSN invalide"); 
-        }
+        preg_match($dsn_regex, $dsn, $result);
 
         return new ElasticClient($result['host'], $result['port'], $result['user'], $result['password'], $scheme, $this->logger);   
     }

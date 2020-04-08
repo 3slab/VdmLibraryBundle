@@ -12,5 +12,4 @@ use Symfony\Component\Messenger\Stamp\StampInterface;
 
 final class StopAfterHandleStamp implements StampInterface
 {
-
 }

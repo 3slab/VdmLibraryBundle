@@ -63,6 +63,7 @@ class MonitoringHttpClientSubscriber implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

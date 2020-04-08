@@ -43,15 +43,24 @@ class ElasticTransport implements TransportInterface
         $this->options = $options;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function get(): iterable
     {
         return [];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function ack(Envelope $envelope): void
     {
     }
-
+    
+    /**
+     * @codeCoverageIgnore
+     */
     public function reject(Envelope $envelope): void
     {        
     }

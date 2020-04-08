@@ -10,6 +10,7 @@ namespace Vdm\Bundle\LibraryBundle\Client\Ftp;
 
 use League\Flysystem\Filesystem;
 use League\Flysystem\Adapter\Ftp as Adapter;
+use League\Flysystem\FilesystemInterface;
 use League\Flysystem\Sftp\SftpAdapter;
 use Psr\Log\LoggerInterface;
 
@@ -96,10 +97,21 @@ class FtpClient implements FtpClientInterface
     }
 
     /**
-     * @return Filesystem
+     * @return FilesystemInterface
      */
-    public function getFileSystem(): Filesystem
+    public function getFileSystem(): FilesystemInterface
     {
         return $this->filesystem;
+    }
+
+    /**
+     * @param FilesystemInterface $filesystem
+     * @return $this
+     */
+    public function setFileSystem(FilesystemInterface $filesystem): self
+    {
+        $this->filesystem = $filesystem;
+
+        return $this;
     }
 }

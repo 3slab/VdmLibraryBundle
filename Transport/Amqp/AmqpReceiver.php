@@ -42,7 +42,7 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
         }
     }
 
-    private function getEnvelope(string $queueName): iterable
+    protected function getEnvelope(string $queueName): iterable
     {
         try {
             $amqpEnvelope = $this->connection->get($queueName);
@@ -78,6 +78,7 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function ack(Envelope $envelope): void
     {
@@ -95,6 +96,7 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function reject(Envelope $envelope): void
     {
@@ -108,6 +110,7 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function getMessageCount(): int
     {
@@ -118,7 +121,10 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
         }
     }
 
-    private function rejectAmqpEnvelope(\AMQPEnvelope $amqpEnvelope, string $queueName): void
+    /**
+     * @codeCoverageIgnore
+     */
+    protected function rejectAmqpEnvelope(\AMQPEnvelope $amqpEnvelope, string $queueName): void
     {
         try {
             $this->connection->nack($amqpEnvelope, $queueName, AMQP_NOPARAM);
@@ -127,6 +133,9 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function findAmqpStamp(Envelope $envelope): AmqpReceivedStamp
     {
         $amqpReceivedStamp = $envelope->last(AmqpReceivedStamp::class);

@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Transport\Amqp;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\AmqpExt\AmqpSender;
 use Symfony\Component\Messenger\Transport\AmqpExt\Connection;
@@ -56,7 +57,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
      */
     public function __construct(LoggerInterface $logger, Connection $connection, SerializerInterface $serializer = null)
     {
-        $this->logger     = $logger;
+        $this->logger     = $logger ?? new NullLogger();
         $this->connection = $connection;
         $this->serializer = $serializer ?? new PhpSerializer();
     }
@@ -75,6 +76,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function ack(Envelope $envelope): void
     {
@@ -83,6 +85,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function reject(Envelope $envelope): void
     {
@@ -91,6 +94,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function send(Envelope $envelope): Envelope
     {
@@ -99,6 +103,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
 
     /**
      * {@inheritdoc}
+     * @codeCoverageIgnore
      */
     public function setup(): void
     {
@@ -113,12 +118,15 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
         return ($this->receiver ?? $this->getReceiver())->getMessageCount();
     }
 
-    private function getReceiver(): AmqpReceiver
+    protected function getReceiver(): AmqpReceiver
     {
         return $this->receiver = new AmqpReceiver($this->connection, $this->serializer);
     }
 
-    private function getSender(): AmqpSender
+    /**
+     * @codeCoverageIgnore
+     */
+    protected function getSender(): AmqpSender
     {
         return $this->sender = new AmqpSender($this->connection, $this->serializer);
     }

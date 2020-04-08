@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\RuntimeException;
@@ -34,7 +35,7 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
     public function __construct(ErrorDuringMessageHandlerListener $trackerErrorListener, LoggerInterface $messengerLogger = null)
     {
         $this->trackerErrorListener = $trackerErrorListener;
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -45,16 +46,15 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
     public function onWorkerStopped(WorkerStoppedEvent $event): void
     {
         $throwable = $this->trackerErrorListener->getThrownException();
-        if (!$throwable) {
+
+        if (!($throwable instanceof \Throwable)) {
             return;
         }
 
-        if (null !== $this->logger) {
-            $this->logger->info(
-                'WorkerStoppedEvent- Worker stopped because an error happened' .
-                ' during handling. Rethrowing exception ...'
-            );
-        }
+        $this->logger->info(
+            'WorkerStoppedEvent- Worker stopped because an error happened' .
+            ' during handling. Rethrowing exception ...'
+        );
 
         // Rethrow caught exception in handler after worker stopped to exit cli with an error code different from 0
         throw new RuntimeException('Worker stopped because of handler exception', 1, $throwable);
@@ -62,6 +62,7 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

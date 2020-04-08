@@ -27,10 +27,7 @@ class FtpClientFactory implements FtpClientFactoryInterface
     public function create(string $dsn, array $options): FtpClient
     {
         $dsn_regex = '/^((?P<driver>\w+):\/\/)?((?P<user>\w+)?(:(?P<password>\w+))?@)?(?P<host>[\w\-\.]+)(:(?P<port>\d+))?$/Uim';
-        
-        if (false == preg_match($dsn_regex, $dsn, $result)) {
-            throw new \InvalidArgumentException("DSN invalide"); 
-        }
+        preg_match($dsn_regex, $dsn, $result);
 
         if (0 === strpos($result['driver'], self::DSN_PROTOCOL_FTP)) {
             return new FtpClient($result['host'], $result['port'], $result['user'], $result['password'], false, $options, $this->logger);

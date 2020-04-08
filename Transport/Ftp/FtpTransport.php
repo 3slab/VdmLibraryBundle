@@ -86,11 +86,12 @@ class FtpTransport implements TransportInterface
                 $filesystem->delete($data['path']);
                 $this->logger->info(sprintf('Delete file %s', $data['basename']));
             break;
-            default:
-            break;
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function reject(Envelope $envelope): void
     {        
         $this->logger->debug('reject called');

@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
@@ -33,7 +34,7 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
      */
     public function __construct(LoggerInterface $messengerLogger = null)
     {
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -62,12 +63,10 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
 
         // Keep trace of exception because current instance injected in other listeners which need to know this
         $this->throwable = $throwable;
-
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerMessageFailedEvent - An exception occurred during handling of {class} message', [
-                'class' => \get_class($envelope->getMessage())
-            ]);
-        }
+        
+        $this->logger->info('WorkerMessageFailedEvent - An exception occurred during handling of {class} message', [
+            'class' => \get_class($envelope->getMessage())
+        ]);
     }
 
     /**
@@ -80,6 +79,7 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {
