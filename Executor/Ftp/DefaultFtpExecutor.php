@@ -16,22 +16,19 @@ class DefaultFtpExecutor extends AbstractFtpExecutor
 {
     public function execute(array $files): iterable
     {
-        if (count($files) === 0) {
-            yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
-        }
-        foreach ($files as $file) {
+        foreach ($files as $key => $file) {
             if (isset($file['type']) && $file['type'] === 'file') {
                 $file = $this->ftpClient->get($file);
                 $message = new Message($file);
                 // Put the stop stamp on the last file
-                if (next($files) === true){
-                    yield new Envelope($message);
-                } else {
+                if (array_key_last($files) === $key) {
                     yield new Envelope($message, [new StopAfterHandleStamp()]);
+                } else {
+                    yield new Envelope($message);
                 }
-            } else {
-                yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
             }
         }
+
+        yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
     }
 }
