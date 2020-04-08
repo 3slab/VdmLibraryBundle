@@ -40,6 +40,7 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
 * [Concepts](./Resources/docs/concepts.md)
 * [Getting started](./Resources/docs/getting-started.md)
 * Consume :
+    * [RabbitMQ json](./Resources/docs/consume/rabbitmq-json.md)
     * [HTTP pull](./Resources/docs/consume/http-pull.md)
     * [Kafka](./Resources/docs/consume/kafka.md)
     * [FTP/SFTP](./Resources/docs/consume/ftp.md)

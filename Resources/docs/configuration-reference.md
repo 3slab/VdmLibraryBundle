@@ -18,6 +18,7 @@ monitoring.options | `~` | array passed to monitoring client constructor
 Configuration for transport is in the transport documentation :
 
 * Sources :
+    * [RabbitMQ json](./consume/rabbitmq-json.md)
     * [HTTP pull](./consume/http-pull.md)
     * [Kafka](./consume/kafka.md)
 * Destinations :
