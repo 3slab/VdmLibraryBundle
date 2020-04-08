@@ -23,7 +23,7 @@ class ElasticClientFactory implements ElasticClientFactoryInterface
 
     public function create(string $dsn, ?array $options): ElasticClient
     {
-        $dsn_regex = '/^((?P<driver>\w+):\/\/)?((?P<user>\w+)?(:(?P<password>\w+))?@)?(?P<host>[\w-\.]+)(:(?P<port>\d+))?$/Uim';
+        $dsn_regex = '/^((?P<driver>\w+):\/\/)?((?P<user>\w+)?(:(?P<password>\w+))?@)?(?P<host>[\w\-\.]+)(:(?P<port>\d+))?$/Uim';
         
         $scheme =  (isset($options['scheme'])) ? $options['scheme'] : "https";
         if (false == preg_match($dsn_regex, $dsn, $result)) {
