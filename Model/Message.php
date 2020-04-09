@@ -26,14 +26,14 @@ class Message
     private $metadatas;
 
     /**
-     * @var string|int|float|bool|object|array|null
+     * @var string|int|float|bool|array|null
      */
     private $payload;
 
     /**
      * Model constructor.
      *
-     * @param string|int|float|bool|object|array|null $payload
+     * @param string|int|float|bool|array|null $payload
      * @param Metadata[] $metadatas
      * @param Trace[] $traces
      */
@@ -45,7 +45,7 @@ class Message
     }
 
     /**
-     * @return string|int|float|bool|object|array|null
+     * @return string|int|float|bool|array|null
      */
     public function getPayload()
     {
@@ -53,7 +53,7 @@ class Message
     }
 
     /**
-     * @param string|int|float|bool|object|array|null $payload
+     * @param string|int|float|bool|array|null $payload
      */
     public function setPayload($payload): void
     {
