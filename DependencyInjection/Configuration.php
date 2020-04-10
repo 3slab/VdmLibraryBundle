@@ -35,9 +35,31 @@ class Configuration implements ConfigurationInterface
                         ->variableNode('options')->end()
                     ->end()
                 ->end()
+                ->append($this->addDoctrineNode())
             ->end()
         ;
 
         return $treeBuilder;
+    }
+
+    public function addDoctrineNode()
+    {
+        $treeBuilder = new TreeBuilder('doctrine');
+
+        $node = $treeBuilder->getRootNode()
+            ->treatNullLike([])
+            ->children()
+                ->scalarNode('connection')->defaultValue('default')->end()
+                ->arrayNode('nullable_fields_whitelist')
+                    ->isRequired()
+                    ->useAttributeAsKey('entity')
+                    ->arrayPrototype()
+                        ->scalarPrototype()->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+
+    return $node;
     }
 }

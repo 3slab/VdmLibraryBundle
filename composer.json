@@ -28,9 +28,10 @@
         "symfony/http-client": "5.0.*",
         "datadog/php-datadogstatsd": "^1.4",
         "league/flysystem-sftp": "^1.0",
-        "league/flysystem": "^1.0"
+        "league/flysystem": "^1.0",
+        "doctrine/orm": "^2.7"
     },
     "suggest": {
-        "elasticsearch/elasticsearch": "^7.0"
+        "elasticsearch/elasticsearch": "^7.0",
     }
 }
