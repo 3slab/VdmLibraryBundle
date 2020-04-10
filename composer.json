@@ -32,6 +32,6 @@
         "doctrine/orm": "^2.7"
     },
     "suggest": {
-        "elasticsearch/elasticsearch": "^7.0",
+        "elasticsearch/elasticsearch": "^7.0"
     }
 }
