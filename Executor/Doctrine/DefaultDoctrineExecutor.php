@@ -11,17 +11,15 @@ namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
-use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
 {
-    public function execute(Message $message): void
+    public function execute(object $entity): void
     {
         if (!$this->manager) {
             throw new DefaultDoctrineExecutor('No connection was defined.');
         }
 
-        $entity = $message->getPayload();
         $entity = $this->matchEntity($entity);
 
         $this->manager->persist($entity);
@@ -68,6 +66,13 @@ class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
         return $entity;
     }
 
+    /**
+     * Creates filter array with values from the entity.
+     *
+     * @param  object $entity
+     *
+     * @return array
+     */
     protected function computeFilters(object $entity): array
     {
         $fqcn     = get_class($entity);

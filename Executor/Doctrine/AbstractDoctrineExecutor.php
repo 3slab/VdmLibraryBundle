@@ -47,7 +47,7 @@ abstract class AbstractDoctrineExecutor
     */
     protected $logger;
 
-    abstract public function execute(Message $message): void;
+    abstract public function execute(object $entity): void;
 
     public function getManager(): EntityManagerInterface
     {
@@ -142,7 +142,7 @@ abstract class AbstractDoctrineExecutor
     }
 
     /**
-     * @param EntityRepository $repository
+     * @param string $key
      *
      * @return self
      */

@@ -8,8 +8,6 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 
@@ -22,18 +20,15 @@ class DoctrineSender
 
     /**
      * @param AbstractDoctrineExecutor  $executor
-     * @param LoggerInterface           $logger
      */
     public function __construct(
-        AbstractDoctrineExecutor $executor,
-        LoggerInterface $logger = null
+        AbstractDoctrineExecutor $executor
     ) {
-        $this->executor   = $executor;
-        $this->logger     = $logger ?? new NullLogger();
+        $this->executor = $executor;
     }
 
     /**
-     * Boostraps the send process
+     * Sends the message to the executory
      *
      * @param  Message $message
      *
@@ -41,9 +36,8 @@ class DoctrineSender
      */
     public function send(Message $message): void
     {   
-        var_dump("sending message");
-
         $entity = $message->getPayload();
-        $this->executor->execute($message);
+
+        $this->executor->execute($entity);
     }
 }

@@ -54,6 +54,13 @@ class DoctrineExecutorConfigurator
         ;
     }
 
+    /**
+     * Configures the executor with specificities of each registered entity.
+     *
+     * @param  AbstractDoctrineExecutor $executor
+     *
+     * @return void
+     */
     public function configure(AbstractDoctrineExecutor $executor): void
     {
         $repositories = [];
@@ -81,9 +88,9 @@ class DoctrineExecutorConfigurator
     }
 
     /**
-     * This method defines how to build a filter for the entity when the user provided an explicit configuration.
+     * This method defines how to build a filter for an entity when the user provided an explicit configuration.
      *
-     * @return void
+     * @return array
      */
     protected function getSelectorFilter(string $entityFqcn): array
     {
