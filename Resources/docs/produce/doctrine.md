@@ -22,13 +22,13 @@ framework:
 
 Configuration | Description
 --- | ---
-dsn | Always starts with `vdm+doctrine://`. You can specify the connection to use like with vdm+doctrine://mycustomconnection (fits into `doctrine.orm.xxx_entity_manager`). If you use the default connection, you can use only `vdm+doctrine://`
+dsn | Always starts with `vdm+doctrine://`. You can specify the connection to use with `vdm+doctrine://mycustomconnection` (fits into `doctrine.orm.xxx_entity_manager`). If you use the default connection, you can use only `vdm+doctrine://`
 options.entities | Array of entities to register. At least one entity must be declared.
-options.entities:FQCN.selector | (optional) Define how the executor will try and fetch a pre-existing entity before persisting (see below)
+options.entities.FQCN.selector | (optional) Define how the executor will try and fetch a pre-existing entity before persisting (see below)
 
 ### No data loss policy
 
-By default, the executor won't overwrite a non-null field with null. If you need to bypass this behaviour, your entity should implement `Vdm\Bundle\LibraryBundle\Entity\getNullableFields\NullableFieldsInterface` and declare `getNullableFields()`:
+By default, the executor won't overwrite a non-null field with null. If you need to bypass this behaviour, your entity should implement `Vdm\Bundle\LibraryBundle\Entity\NullableFieldsInterface` and declare `getNullableFields()`:
 
 ```php
 
@@ -72,7 +72,7 @@ __Note__: in this case, the sender will use the  `find` method on the repository
 
 ### Multifield with natural getters
 
-In case you don't have a mono-column primary key (ex: no key at all or composite key), you can turn to another approach and tell the sender which fields should be used to retrieve a pre-existing entity. For instance, if your entity has two fields representing its identity (let's say `code` and `hash`), and they both have a natural getter (i.e. `getCode` and `getHash`), then you need to configure the options like this:
+In case you don't have a mono-column primary key (ex: no key at all or composite key), you can turn to another approach and tell the executor which fields should be used to retrieve a pre-existing entity. For instance, if your entity has two fields representing its identity (let's say `code` and `hash`), and they both have a natural getter (i.e. `getCode` and `getHash`), then you need to configure the options like this:
 
 ```yaml
 framework:
@@ -120,7 +120,8 @@ Under the hood, the repository will be called like:
 
 The same policy as natural getters apply: you have to make sure it returns something as unique as possible.
 
-Finally, you can mix natural and unnattural getters, and multiple entities
+You can define several entities at once, and mix natural and non-natural getters. However, you will have to prefix your natural getters with integer keys. The key itself doesn't matter (as long as you don't create duplicates), it just needs to be an integer. If the key is an integer, the getter will be guessed. Otherwise, the getter will be what you provide
+
 ```yaml
 framework:
     messenger:
@@ -131,6 +132,7 @@ framework:
                     entities:
                         App\Entity\Foo:
                             selector:
+                                0: code # hack to mix natural and non-natural getters
                                 label: getLibelle #non natural getter
                                 hash: hash #non natural getter
                         App\Entity\Bar: ~ # Bar has a single-field identity (id) with natural getter, no configuration needed
