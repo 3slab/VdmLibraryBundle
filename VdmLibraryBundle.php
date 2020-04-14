@@ -31,5 +31,6 @@ class VdmLibraryBundle extends Bundle
         $container->addCompilerPass(new HttpClientBehaviorCreateCompilerPass());
         $container->addCompilerPass(new FtpClientBehaviorCreateCompilerPass());
         $container->addCompilerPass(new ElasticClientBehaviorCreateCompilerPass());
+        $container->addCompilerPass(new SetDoctrineExecutorCompilerPass());
     }
 }
