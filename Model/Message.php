@@ -93,6 +93,18 @@ class Message
     }
 
     /**
+     * @param string $key
+     *
+     * @return Metadata[]
+     */
+    public function getMetadatasByKey(string $key): array
+    {
+        return array_filter($this->metadatas, function(Metadata $metadata) use ($key) {
+            return $metadata->getKey() === $key;
+        });
+    }
+
+    /**
      * @param Metadata[] $metadatas
      */
     public function setMetadatas(array $metadatas): void

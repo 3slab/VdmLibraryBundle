@@ -155,7 +155,7 @@ Under the hood, the repository will fetch the entities like this:
 
 ## Deserializaion
 
-For the transport to know to which class the payload should be deserialized, you must provide the entity's fully qualified class name in the message's metadata, under the key `entity`. Example `[ 'entity' => 'App\Entity\Foo' ]`.
+For the transport to know to which class the payload should be deserialized, you must provide the entity's fully qualified class name in the message's metadata, with key `entity`. Example `new Metadata('entity', 'App\Entity\Foo')`.
 
 ## Limitations
 
