@@ -11,16 +11,19 @@ namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
+use Vdm\Bundle\LibraryBundle\Model\Message;
 
 class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
 {
-    public function execute(object $entity): void
+    public function execute(Message $message): void
     {
         if (!$this->manager) {
             throw new DefaultDoctrineExecutor('No connection was defined.');
         }
 
-        $entity = $this->matchEntity($entity);
+        $entityClass = $message->getMetadatas()['entity'];
+        $entity      = $this->serializer->deserialize($message->getPayload(), $entityClass, 'json');
+        $entity      = $this->matchEntity($entity);
 
         $this->manager->persist($entity);
         $this->manager->flush();

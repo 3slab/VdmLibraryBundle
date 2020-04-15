@@ -36,8 +36,6 @@ class DoctrineSender
      */
     public function send(Message $message): void
     {   
-        $entity = $message->getPayload();
-
-        $this->executor->execute($entity);
+        $this->executor->execute($message);
     }
 }

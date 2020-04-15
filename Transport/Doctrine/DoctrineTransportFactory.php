@@ -14,6 +14,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
+use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\UndefinedEntityException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DoctrineExecutorConfigurator;
@@ -42,18 +43,21 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     protected $executor;
 
     /**
-     * @param LoggerInterface               $logger
-     * @param ManagerRegistry               $doctrine
-     * @param AbstractDoctrineExecutor      $executor
+     * @param LoggerInterface          $logger
+     * @param ManagerRegistry          $doctrine
+     * @param AbstractDoctrineExecutor $executor
+     * @param SymfonySerializer        $serializer
      */
     public function __construct(
         LoggerInterface $logger,
         ManagerRegistry $doctrine,
-        AbstractDoctrineExecutor $executor
+        AbstractDoctrineExecutor $executor,
+        SymfonySerializer $serializer
     ) {
-        $this->logger   = $logger;
-        $this->doctrine = $doctrine;
-        $this->executor = $executor;
+        $this->logger     = $logger;
+        $this->doctrine   = $doctrine;
+        $this->executor   = $executor;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -74,7 +78,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
         unset($options['transport_name']);
 
         $manager      = $this->getManager($dsn);
-        $configurator = new DoctrineExecutorConfigurator($manager, $this->logger, $options);
+        $configurator = new DoctrineExecutorConfigurator($manager, $this->logger, $this->serializer, $options);
         $configurator->configure($this->executor);
 
         $doctrineSenderFactory = new DoctrineSenderFactory($this->executor, $this->logger);

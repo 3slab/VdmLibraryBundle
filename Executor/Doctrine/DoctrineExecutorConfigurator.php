@@ -13,6 +13,7 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Serializer\SerializerInterface;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\InvalidIdentifiersCountException;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\UnreadableEntityPropertyException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
@@ -30,6 +31,11 @@ class DoctrineExecutorConfigurator
     protected $logger;
 
     /**
+     * @param SerializerInterface $serializer
+     */
+    protected $serializer;
+
+    /**
      * @var array
      */
     protected $options = [];
@@ -42,10 +48,12 @@ class DoctrineExecutorConfigurator
     public function __construct(
         EntityManagerInterface $entityManager,
         LoggerInterface $logger,
+        SerializerInterface $serializer,
         array $options
     ) {
         $this->entityManager = $entityManager;
         $this->logger        = $logger;
+        $this->serializer    = $serializer;
         $this->options       = $options;
 
         $this->accessor = PropertyAccess::createPropertyAccessorBuilder()
@@ -67,6 +75,7 @@ class DoctrineExecutorConfigurator
 
         $executor->setManager($this->entityManager);
         $executor->setLogger($this->logger);
+        $executor->setSerializer($this->serializer);
 
         foreach (array_keys($this->options['entities']) as $entityFqcn) {
             $executor->addRepository($entityFqcn, $this->entityManager->getRepository($entityFqcn));
