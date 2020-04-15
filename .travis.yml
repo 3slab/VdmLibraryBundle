@@ -3,6 +3,7 @@ php:
   - 7.3
   - 7.4
 before_script:
+  - pecl install amqp
   - composer install -n
   - composer require elasticsearch/elasticsearch
 script:
