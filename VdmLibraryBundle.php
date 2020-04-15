@@ -8,16 +8,17 @@
 
 namespace Vdm\Bundle\LibraryBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\ElasticClientBehaviorCreateCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\FtpClientBehaviorCreateCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\HttpClientBehaviorCreateCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetHttpExecutorCompilerPass;
+use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetDoctrineExecutorCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetFtpExecutorCompilerPass;
+use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetHttpExecutorCompilerPass;
+use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetStatsStorageCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadDefaultHandlerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadStopWorkerOnErrorPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetStatsStorageCompilerPass;
 
 class VdmLibraryBundle extends Bundle
 {
