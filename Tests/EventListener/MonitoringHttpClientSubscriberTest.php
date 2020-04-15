@@ -27,6 +27,8 @@ class MonitoringHttpClientSubscriberTest extends TestCase
     {
         $this->statsStorageInterface = $this->getMockBuilder(StatsStorageInterface::class)->getMock();
         $this->responseInterface = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $this->responseInterface->method('getStatusCode')->willReturn(200);
+        $this->responseInterface->method('getInfo')->willReturn(['size_download' => 0, 'total_time' => 0]);
         $this->statsStorageInterface->expects($calls['sendHttpResponseStat'])->method('sendHttpResponseStat');
 
         return new MonitoringHttpClientSubscriber($this->statsStorageInterface, new NullLogger());

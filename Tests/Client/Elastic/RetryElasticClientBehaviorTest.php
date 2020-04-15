@@ -37,7 +37,9 @@ class RetryElasticClientBehaviorTest extends TestCase
         $this->client = $this->getMockBuilder(\Elasticsearch\Client::class)->disableOriginalConstructor()->setMethods(['index'])->getMock();
         $this->elasticClient = $this->getMockBuilder(ElasticClient::class)->disableOriginalConstructor()->setMethods(['post'])->getMock();
         $this->elasticClient->setClient($this->client);
-        $this->retryElasticClient = new RetryElasticClientBehavior($this->logger, $this->elasticClient, 5, 5);
+        $this->elasticClient->method('post')->willReturn(['result' => 'created']);
+        $this->client->method('index')->willReturn(['result' => 'created']);
+        $this->retryElasticClient = new RetryElasticClientBehavior($this->logger, $this->elasticClient, 5, 1);
     }
 
     public function testPost()
@@ -55,7 +57,6 @@ class RetryElasticClientBehaviorTest extends TestCase
         $reponsePost = $this->retryElasticClient->post($envelope, $index);
 
         $this->assertSame($reponseClient, $reponsePost);
-        
     }
 
     public function testPostException()

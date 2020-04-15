@@ -42,6 +42,8 @@ class MonitoringElasticClientBehaviorTest extends TestCase
         $this->client = $this->getMockBuilder(\Elasticsearch\Client::class)->disableOriginalConstructor()->setMethods(['index'])->getMock();
         $this->elasticClient = $this->getMockBuilder(ElasticClient::class)->disableOriginalConstructor()->setMethods(['post'])->getMock();
         $this->elasticClient->setClient($this->client);
+        $this->elasticClient->method('post')->willReturn(['result' => 'created']);
+        $this->client->method('index')->willReturn(['result' => 'created']);
         $this->eventDispatcher = $this->getMockBuilder(\Psr\EventDispatcher\EventDispatcherInterface::class)->getMock();
 
         $this->monitoringElasticClient = new MonitoringElasticClientBehavior($this->logger, $this->elasticClient, $this->eventDispatcher);
