@@ -39,6 +39,8 @@ class DefaultHandler implements MessageSubscriberInterface
     /**
      * Default handler implementation.
      * Does nothing on message because it is override by project code.
+     * 
+     * @codeCoverageIgnore
      *
      * @param Message $message
      */

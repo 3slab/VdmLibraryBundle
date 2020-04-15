@@ -59,4 +59,16 @@ class ElasticClient implements ElasticClientInterface
     {
         return $this->client;
     }
+
+    /**
+     * @param Client $client
+     * 
+     * @return $this
+     */
+    public function setClient(Client $client): self
+    {
+        $this->client = $client;
+
+        return $this;
+    }
 }

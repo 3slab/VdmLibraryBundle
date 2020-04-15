@@ -73,6 +73,7 @@ class MonitoringFtpClientSubscriber implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

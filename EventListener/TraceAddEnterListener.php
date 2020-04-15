@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Model\Trace;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 
@@ -35,7 +36,7 @@ class TraceAddEnterListener implements EventSubscriberInterface
     public function __construct(string $appName, LoggerInterface $messengerLogger = null)
     {
         $this->appName = $appName;
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -57,16 +58,15 @@ class TraceAddEnterListener implements EventSubscriberInterface
 
         $message->addTrace(new Trace($this->appName, Trace::ENTER));
 
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerMessageReceivedEvent - {appName} {traceType} trace added to message', [
-                'appName' => $this->appName,
-                'traceType' => Trace::ENTER
-            ]);
-        }
+        $this->logger->info('WorkerMessageReceivedEvent - {appName} {traceType} trace added to message', [
+            'appName' => $this->appName,
+            'traceType' => Trace::ENTER
+        ]);
     }
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

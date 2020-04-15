@@ -11,8 +11,9 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Model\Trace;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;;
+use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 
 class TraceAddExitListener implements EventSubscriberInterface
 {
@@ -35,7 +36,7 @@ class TraceAddExitListener implements EventSubscriberInterface
     public function __construct(string $appName, LoggerInterface $messengerLogger = null)
     {
         $this->appName = $appName;
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -52,16 +53,15 @@ class TraceAddExitListener implements EventSubscriberInterface
 
         $message->addTrace(new Trace($this->appName, Trace::EXIT));
 
-        if (null !== $this->logger) {
-            $this->logger->info('SendMessageToTransportsEvent - {appName} {traceType} trace added to message', [
-                'appName' => $this->appName,
-                'traceType' => Trace::EXIT
-            ]);
-        }
+        $this->logger->info('SendMessageToTransportsEvent - {appName} {traceType} trace added to message', [
+            'appName' => $this->appName,
+            'traceType' => Trace::EXIT
+        ]);
     }
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

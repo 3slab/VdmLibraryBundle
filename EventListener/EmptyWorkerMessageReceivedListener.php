@@ -61,6 +61,7 @@ class EmptyWorkerMessageReceivedListener implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

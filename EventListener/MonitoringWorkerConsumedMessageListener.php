@@ -64,6 +64,7 @@ class MonitoringWorkerConsumedMessageListener implements EventSubscriberInterfac
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

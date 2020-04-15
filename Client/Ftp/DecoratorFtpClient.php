@@ -8,7 +8,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\Client\Ftp;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Client\Ftp\FtpClientInterface;
 
@@ -48,7 +48,7 @@ abstract class DecoratorFtpClient implements FtpClientInterface
     /**
      * {@inheritDoc}
      */
-    public function getFileSystem(): Filesystem
+    public function getFileSystem(): FilesystemInterface
     {
         return $this->ftpClientDecorated->getFileSystem();
     }

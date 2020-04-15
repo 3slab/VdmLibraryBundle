@@ -47,10 +47,16 @@ class HttpTransport implements TransportInterface
         return $this->httpExecutor->execute($this->dsn, $this->method, $this->options);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function ack(Envelope $envelope): void
     {
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function reject(Envelope $envelope): void
     {
     }

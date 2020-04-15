@@ -81,6 +81,7 @@ class MonitoringWorkerHandleMessageTimeSubscriber implements EventSubscriberInte
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

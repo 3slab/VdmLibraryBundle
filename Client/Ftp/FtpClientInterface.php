@@ -8,7 +8,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\Client\Ftp;
 
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemInterface;
 
 interface FtpClientInterface
 {
@@ -16,5 +16,5 @@ interface FtpClientInterface
 
     public function list(string $dirpath): ?array;
     
-    public function getFileSystem(): Filesystem;
+    public function getFileSystem(): FilesystemInterface;
 }

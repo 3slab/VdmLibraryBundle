@@ -63,6 +63,7 @@ class MonitoringWorkerMessageFailedListener implements EventSubscriberInterface
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

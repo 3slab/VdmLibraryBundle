@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\EventListener;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 
@@ -45,7 +46,7 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
     ) {
         $this->trackerErrorListener = $trackerErrorListener;
         $this->storage = $storage;
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -65,21 +66,18 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
         $errorStateStat = new ErrorStateStat();
         $this->storage->sendErrorStateStat($errorStateStat);
 
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerRunningEvent - Error state stats sent with code {code}',
-                [
-                    'code' => $errorStateStat->getCode()
-                ]
-            );
-        }
+        $this->logger->info('WorkerRunningEvent - Error state stats sent with code {code}',
+            [
+                'code' => $errorStateStat->getCode()
+            ]
+        );
 
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerRunningEvent - Stats storage flushed');
-        }
+        $this->logger->info('WorkerRunningEvent - Stats storage flushed');
     }
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

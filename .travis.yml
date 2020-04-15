@@ -1,0 +1,12 @@
+language: php
+php:
+  - 7.3
+  - 7.4
+before_install:
+  - sudo apt-get -y install librabbitmq-dev
+before_script:
+  - echo '' | pecl install amqp
+  - composer install -n
+  - composer require elasticsearch/elasticsearch
+script:
+  - ./vendor/bin/phpunit Tests/

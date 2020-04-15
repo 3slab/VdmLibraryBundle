@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Symfony\Component\Messenger\Event\WorkerStartedEvent;
@@ -35,7 +36,7 @@ class ErrorStopWorkerListener implements EventSubscriberInterface
     public function __construct(ErrorDuringMessageHandlerListener $trackerErrorListener, LoggerInterface $messengerLogger = null)
     {
         $this->trackerErrorListener = $trackerErrorListener;
-        $this->logger = $messengerLogger;
+        $this->logger = $messengerLogger ?? new NullLogger();
     }
 
     /**
@@ -46,19 +47,18 @@ class ErrorStopWorkerListener implements EventSubscriberInterface
     public function onWorkerRunning(WorkerRunningEvent $event): void
     {
         $throwable = $this->trackerErrorListener->getThrownException();
-        if (!$throwable) {
+        if (!($throwable instanceof \Throwable)) {
             return;
         }
 
         $event->getWorker()->stop();
 
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerRunningEvent - Worker stopping because an error happened during handling');
-        }
+        $this->logger->info('WorkerRunningEvent - Worker stopping because an error happened during handling');
     }
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {

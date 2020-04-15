@@ -81,6 +81,7 @@ class MonitoringWorkerHandleMessageMemorySubscriber implements EventSubscriberIn
 
     /**
      * {@inheritDoc}
+     * @codeCoverageIgnore
      */
     public static function getSubscribedEvents()
     {
