@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 
 abstract class AbstractDoctrineExecutor
@@ -47,7 +48,12 @@ abstract class AbstractDoctrineExecutor
     */
     protected $logger;
 
-    abstract public function execute(object $entity): void;
+    /** 
+     * @var SerializerInterface $serializer
+    */
+    protected $serializer;
+
+    abstract public function execute(Message $entity): void;
 
     public function getManager(): EntityManagerInterface
     {
@@ -159,6 +165,18 @@ abstract class AbstractDoctrineExecutor
     public function setLogger(LoggerInterface $logger): self
     {
         $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * @param SerializerInterface $serializer $serializer
+     *
+     * @return self
+     */
+    public function setSerializer(SerializerInterface $serializer): self
+    {
+        $this->serializer = $serializer;
 
         return $this;
     }

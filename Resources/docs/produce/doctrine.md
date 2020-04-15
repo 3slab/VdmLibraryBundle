@@ -153,6 +153,10 @@ Under the hood, the repository will fetch the entities like this:
     $repo->findOneBy([ 'reference' => $baz->getReference() ]);
 ```
 
+## Deserializaion
+
+For the transport to know to which class the payload should be deserialized, you must provide the entity's fully qualified class name in the message's metadata, under the key `entity`. Example `[ 'entity' => 'App\Entity\Foo' ]`.
+
 ## Limitations
 
 You cannot use different connections for different entities within one single transport. Should you have such a need, you should define one transport per connection, extends the library's Message (one per producer) and route the correct message to the correct producer.
