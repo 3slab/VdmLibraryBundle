@@ -99,10 +99,16 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     {
         preg_match(static::DSN_PATTERN_MATCHING, $dsn, $match);
 
-        // No need to put it in a variable now. If the connection doesn't exist, Doctrine will throw an exception
-        $this->getManager($dsn);
+        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE)) {
+            // No need to put it in a variable now. If the connection doesn't exist, Doctrine will throw an exception
+            $this->getManager($dsn);
 
-        return (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE));
+            // If we passe the if statement, and getManager(), we're good. 
+            return true;
+        }
+
+        // Otherwise, tranport not supported.
+        return false;
     }
 
     /**
