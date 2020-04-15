@@ -12,6 +12,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Model\Metadata;
 
 class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
 {
@@ -21,9 +22,11 @@ class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
             throw new DefaultDoctrineExecutor('No connection was defined.');
         }
 
-        $entityClass = $message->getMetadatas()['entity'];
-        $entity      = $this->serializer->deserialize($message->getPayload(), $entityClass, 'json');
-        $entity      = $this->matchEntity($entity);
+        $entityMetadatas = $message->getMetadatasByKey('entity');
+        $entityMetadata  = array_shift($entityMetadatas);
+        $entityClass     = $entityMetadata->getValue();
+        $entity          = $this->serializer->denormalize($message->getPayload(), $entityClass);
+        $entity          = $this->matchEntity($entity);
 
         $this->manager->persist($entity);
         $this->manager->flush();
