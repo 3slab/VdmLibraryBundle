@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Vdm\Bundle\LibraryBundle\Entity\NullableFieldsInterface;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Model\Message;
@@ -96,7 +97,6 @@ class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
         $filter = array_combine(array_keys($this->filters[$fqcn]), $filterValues);
 
         return $filter;
-
     }
 
     /**
@@ -117,13 +117,27 @@ class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
         // Remove identifer because it usually doesn't have a setter.
         unset($mapping[$identifierKey]);
 
-        $accessor = PropertyAccess::createPropertyAccessor();
+        $accessor       = PropertyAccess::createPropertyAccessor();
+        $nullableFields = $this->getNullableFields($previousEntity);
 
         foreach($mapping as $property) {
             $newValue = $accessor->getValue($newerEntity, $property);
-            $accessor->setValue($previousEntity, $property, $newValue);
+
+            // To overwrite a value, it must either not be null, or the property should be nullable.
+            if ($newValue || in_array($property, $nullableFields)) {
+                $accessor->setValue($previousEntity, $property, $newValue);
+            }
         }
 
         return $previousEntity;
+    }
+
+    protected function getNullableFields(object $entity): array
+    {
+        if ($entity instanceof NullableFieldsInterface) {
+            return $entity::getNullableFields();
+        }
+
+        return [];
     }
 }
