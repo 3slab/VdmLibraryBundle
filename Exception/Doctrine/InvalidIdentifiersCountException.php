@@ -10,6 +10,6 @@ namespace Vdm\Bundle\LibraryBundle\Exception\Doctrine;
 
 use Exception;
 
-class InvalidConnectionException extends Exception
+class InvalidIdentifiersCountException extends Exception
 {
 }
