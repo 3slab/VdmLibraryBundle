@@ -67,7 +67,7 @@ abstract class AbstractCsvFormatter
                     'countHeader' => count($this->headers),
                     'countRow'    => count($data),
                     'header'      => json_encode($this->headers),
-                    'row'         => json_encode($this->data),
+                    'row'         => json_encode($data),
                 ]);
 
                 $pad  = array_fill(count($data), count($this->headers) - count($data), null);
