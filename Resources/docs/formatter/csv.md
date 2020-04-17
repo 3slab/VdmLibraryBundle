@@ -39,6 +39,10 @@ If the example above suits your need, you don't have anything more to do. But if
 
 **NOTE**: the csv headers are accessible with $this->headers.
 
+## Reading the CSV
+
+If you need to change the default way the CSV file is read, you have full control over how to do so. You can override the `getCsv` method to specify your separator, maxlength, escape character... The default implementation is `fgetcsv($handle, 1000, ";");`
+
 ### Example
 
 The array I want to send is the original csv row, but reversed and uppercase. My formatter shold look like this:

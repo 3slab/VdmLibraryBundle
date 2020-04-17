@@ -54,7 +54,7 @@ abstract class AbstractCsvFormatter
         $pass   = 0;
         $handle = fopen($path, 'r');
 
-        while (($data = fgetcsv($handle, 1000, ";")) !== false) {
+        while (($data = $this->getCsv($handle)) !== false) {
             if (!$pass++) {
                 $this->headers = $data;
 
@@ -90,5 +90,10 @@ abstract class AbstractCsvFormatter
     protected function getRow(array $data): array
     {
         return $data;
+    }
+
+    protected function getCsv($handle)
+    {
+        return fgetcsv($handle, 1000, ";");
     }
 }
