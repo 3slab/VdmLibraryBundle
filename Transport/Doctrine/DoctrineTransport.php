@@ -8,11 +8,9 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Transport\Sender\SenderInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\ReceiverNotSupportedException;
 

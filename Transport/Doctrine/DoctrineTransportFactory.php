@@ -8,8 +8,9 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry as OdmManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry as OrmManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
@@ -18,13 +19,13 @@ use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\UndefinedEntityException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DoctrineExecutorConfigurator;
-use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSender;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSenderFactory;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineTransport;
 
 class DoctrineTransportFactory implements TransportFactoryInterface
 {
-    protected const DSN_PROTOCOL_DOCTRINE = 'vdm+doctrine://';
+    protected const DSN_PROTOCOL_DOCTRINE_ODM = 'vdm+doctrine_odm://';
+    protected const DSN_PROTOCOL_DOCTRINE_ORM = 'vdm+doctrine_orm://';
     protected const DSN_PATTERN_MATCHING  = '/(?P<protocol>[^:]+:\/\/)(?P<connection>.*)/';
 
     /**
@@ -33,9 +34,14 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     protected $logger;
 
     /**
-     * @var ManagerRegistry $doctrine
+     * @var OdmManagerRegistry $doctrineOdm
      */
-    protected $doctrine;
+    protected $doctrineOdm;
+
+    /**
+     * @var OrmManagerRegistry $doctrineOrm
+     */
+    protected $doctrineOrm;
 
     /**
      * @var AbstractDoctrineExecutor $executor
@@ -50,12 +56,14 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      */
     public function __construct(
         LoggerInterface $logger,
-        ManagerRegistry $doctrine,
+        OdmManagerRegistry $doctrineOdm,
+        OrmManagerRegistry $doctrineOrm,
         AbstractDoctrineExecutor $executor,
         SymfonySerializer $serializer
     ) {
         $this->logger     = $logger;
-        $this->doctrine   = $doctrine;
+        $this->doctrineOdm   = $doctrineOdm;
+        $this->doctrineOrm   = $doctrineOrm;
         $this->executor   = $executor;
         $this->serializer = $serializer;
     }
@@ -78,6 +86,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
         unset($options['transport_name']);
 
         $manager      = $this->getManager($dsn);
+        
         $configurator = new DoctrineExecutorConfigurator($manager, $this->logger, $this->serializer, $options);
         $configurator->configure($this->executor);
 
@@ -90,8 +99,8 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     /**
      * Tests if DSN is valid (protocol and valid Doctrine connection).
      *
-     * @param  string $dsn
-     * @param  array  $options
+     * @param string $dsn
+     * @param array  $options
      *
      * @return bool
      */
@@ -99,7 +108,8 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     {
         preg_match(static::DSN_PATTERN_MATCHING, $dsn, $match);
 
-        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE)) {
+        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ODM) 
+        || 0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ORM)) {
             // No need to put it in a variable now. If the connection doesn't exist, Doctrine will throw an exception
             $this->getManager($dsn);
 
@@ -118,14 +128,20 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      *
      * @throws InvalidArgumentException invalid connection
      *
-     * @return EntityManagerInterface
+     * @return ObjectManager
      */
-    protected function getManager(string $dsn): EntityManagerInterface
+    protected function getManager(string $dsn): ObjectManager
     {
         preg_match(static::DSN_PATTERN_MATCHING, $dsn, $match);
-
+        
         $match['connection'] = $match['connection'] ?: 'default';
 
-        return $this->doctrine->getManager($match['connection']);
+        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ODM)) {
+            $manager = $this->doctrineOdm->getManager($match['connection']);
+        }else if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ORM)) {
+            $manager = $this->doctrineOrm->getManager($match['connection']);
+        }
+
+        return $manager;
     }
 }

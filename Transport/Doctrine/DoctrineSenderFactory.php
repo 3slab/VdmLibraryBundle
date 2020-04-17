@@ -8,12 +8,9 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Vdm\Bundle\LibraryBundle\Exception\Doctrine\UndefinedEntityException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
-use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DoctrineExecutorConfigurator;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSender;
 
 class DoctrineSenderFactory

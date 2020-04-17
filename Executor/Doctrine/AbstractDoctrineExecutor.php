@@ -8,8 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
@@ -34,14 +34,14 @@ abstract class AbstractDoctrineExecutor
     protected $filters = [];
 
     /**
-     * @var EntityRepository[]
+     * @var ObjectRepository[]
      */
     protected $repositories = [];
 
     /** 
-     * @var EntityManagerInterface $manager
+     * @var ObjectManager $objectManager
     */
-    protected $manager;
+    protected $objectManager;
 
     /** 
      * @var LoggerInterface $logger
@@ -55,12 +55,12 @@ abstract class AbstractDoctrineExecutor
 
     abstract public function execute(Message $entity): void;
 
-    public function getManager(): EntityManagerInterface
+    public function getManager(): ObjectManager
     {
         return $this->manager;
     }
 
-    public function setManager(EntityManagerInterface $manager)
+    public function setManager(ObjectManager $manager)
     {
         $this->manager = $manager;
     }
@@ -102,11 +102,11 @@ abstract class AbstractDoctrineExecutor
     }
 
     /**
-     * @param string $identifier
+     * @param string $key
      *
      * @return self
      */
-    public function getIdentifier(string $identifier): string
+    public function getIdentifier(string $key): string
     {
         return $this->identifiers[$key];
     }
@@ -136,11 +136,11 @@ abstract class AbstractDoctrineExecutor
 
     /**
      * @param string           $key
-     * @param EntityRepository $repository
+     * @param ObjectRepository $repository
      *
      * @return self
      */
-    public function addRepository(string $key, EntityRepository $repository): self
+    public function addRepository(string $key, ObjectRepository $repository)
     {
         $this->repositories[$key] = $repository;
 
@@ -152,7 +152,7 @@ abstract class AbstractDoctrineExecutor
      *
      * @return self
      */
-    public function getRepository(string $key): EntityRepository
+    public function getRepository(string $key): ObjectRepository
     {
         return $this->repositories[$key];
     }
