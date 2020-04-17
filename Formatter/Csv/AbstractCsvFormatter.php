@@ -8,11 +8,23 @@
 
 namespace Vdm\Bundle\LibraryBundle\Formatter\Csv;
 
+use Psr\Log\LoggerInterface;
+
 /**
  * class AbstractCsvFormatter
  */
 abstract class AbstractCsvFormatter
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     protected const FILE_NAME = null;
 
     /**
@@ -51,6 +63,13 @@ abstract class AbstractCsvFormatter
 
             // In case the row is shorter than the header
             if (count($this->headers) !== count($data)) {
+                $this->logger->warning('Found different lengths in header ({countHeader}) and row ({countRow}). HEADER: {header}. ROW: {row}', [
+                    'countHeader' => count($this->headers),
+                    'countRow'    => count($data),
+                    'header'      => json_encode($this->headers),
+                    'row'         => json_encode($this->data),
+                ]);
+
                 $pad  = array_fill(count($data), count($this->headers) - count($data), null);
                 $data = array_merge($data, $pad);
             }
