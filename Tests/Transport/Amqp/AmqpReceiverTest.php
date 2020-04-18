@@ -24,7 +24,11 @@ class AmqpReceiverTest extends TestCase
     public function testGet($ExceptionGet, $getReturn, $jsonValide)
     {
         $logger = $this->getMockBuilder(\Psr\Log\LoggerInterface::class)->getMock();
+
         $serializer = $this->getMockBuilder(\Symfony\Component\Messenger\Transport\Serialization\SerializerInterface::class)->getMock();
+        // Test case we receive a message not produced by messenger
+        $serializer->method('decode')->willThrowException(new MessageDecodingFailedException('decoding exception'));
+
         $amqpException = new \AMQPException('');
         
         $connection = $this
@@ -33,6 +37,7 @@ class AmqpReceiverTest extends TestCase
                             ->setMethods(['getQueueNames', 'get'])
                             ->getMock();
         $connection->method('getQueueNames')->willReturn(['test']);
+
         if ($ExceptionGet) {
             $connection->method('get')->willThrowException($amqpException);
             $this->expectException(TransportException::class);
@@ -40,8 +45,10 @@ class AmqpReceiverTest extends TestCase
             if ($getReturn === null) {
                 $connection->method('get')->willReturn($getReturn);
             } else {
-                $amqpEnvelope = $this->getMockBuilder(\AMQPEnvelope::class)->disableOriginalConstructor()->setMethods(['getBody'])->getMock();
+                $amqpEnvelope = $this->getMockBuilder(\AMQPEnvelope::class)->disableOriginalConstructor()->setMethods(['getBody', 'getHeaders'])->getMock();
                 $amqpEnvelope->method('getBody')->willReturn($getReturn);
+                $amqpEnvelope->method('getHeaders')->willReturn([]);
+
                 $connection->method('get')->willReturn($amqpEnvelope);
                 if (!$jsonValide) {
                     $this->expectException(MessageDecodingFailedException::class);

@@ -38,6 +38,7 @@
         "ext-xml": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
-        "phpunit/phpunit": "^9"
+        "phpunit/phpunit": "^9",
+        "elasticsearch/elasticsearch": "^7.0"
     }
 }

@@ -54,3 +54,6 @@ composer.lock
 
 # IDE
 .idea
+
+# Bundle
+composer.lock

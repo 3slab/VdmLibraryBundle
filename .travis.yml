@@ -7,6 +7,5 @@ before_install:
 before_script:
   - echo '' | pecl install amqp
   - composer install -n
-  - composer require elasticsearch/elasticsearch
 script:
   - ./vendor/bin/phpunit Tests/
