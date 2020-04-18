@@ -51,15 +51,26 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
     protected $sender;
 
     /**
-     * @param LoggerInterface          $logger
-     * @param Connection               $connection
-     * @param SerializerInterface|null $serializer
+     * @var int
      */
-    public function __construct(LoggerInterface $logger, Connection $connection, SerializerInterface $serializer = null)
-    {
+    protected $nackFlag;
+
+    /**
+     * @param LoggerInterface $logger
+     * @param Connection $connection
+     * @param SerializerInterface|null $serializer
+     * @param int $nackFLag
+     */
+    public function __construct(
+        LoggerInterface $logger,
+        Connection $connection,
+        SerializerInterface $serializer = null,
+        int $nackFLag = 0
+    ) {
         $this->logger     = $logger ?? new NullLogger();
         $this->connection = $connection;
         $this->serializer = $serializer ?? new PhpSerializer();
+        $this->nackFlag   = $nackFLag;
     }
     
     /**
@@ -120,7 +131,7 @@ class AmqpTransport implements TransportInterface, SetupableTransportInterface, 
 
     protected function getReceiver(): AmqpReceiver
     {
-        return $this->receiver = new AmqpReceiver($this->connection, $this->serializer);
+        return $this->receiver = new AmqpReceiver($this->connection, $this->serializer, $this->nackFlag);
     }
 
     /**

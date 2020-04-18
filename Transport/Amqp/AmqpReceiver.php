@@ -25,11 +25,16 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
 {
     private $serializer;
     private $connection;
+    private $nackFlag;
 
-    public function __construct(Connection $connection, SerializerInterface $serializer = null)
-    {
+    public function __construct(
+        Connection $connection,
+        SerializerInterface $serializer = null,
+        int $nackFlag = AMQP_NOPARAM
+    ) {
         $this->connection = $connection;
         $this->serializer = $serializer ?? new PhpSerializer();
+        $this->nackFlag = $nackFlag;
     }
 
     /**
@@ -55,23 +60,32 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
         }
 
         $body = $amqpEnvelope->getBody();
-        $body = json_decode($body);
 
-        if (\json_last_error()) {
-            $this->rejectAmqpEnvelope($amqpEnvelope, $queueName);
+        try {
+            // Allow this transport to handle retried messages
+            $envelope = $this->serializer->decode([
+                'body' => false === $body ? '' : $body, // workaround https://github.com/pdezwart/php-amqp/issues/351
+                'headers' => $amqpEnvelope->getHeaders(),
+            ]);
+        } catch (MessageDecodingFailedException $exception) {
+            $body = json_decode($body, true);
 
-            $msg = sprintf(
-                'Failed to decode json message: %s (err code %s). Original message content: %s',
-                \json_last_error(),
-                \json_last_error_msg(),
-                $amqpEnvelope->getBody()
-            );
+            if (\json_last_error()) {
+                $this->rejectAmqpEnvelope($amqpEnvelope, $queueName);
 
-            throw new MessageDecodingFailedException($msg);
+                $msg = sprintf(
+                    'Failed to decode json message: %s (err code %s). Original message content: %s',
+                    \json_last_error(),
+                    \json_last_error_msg(),
+                    $amqpEnvelope->getBody()
+                );
+
+                throw new MessageDecodingFailedException($msg);
+            }
+
+            $message  = new Message($body);
+            $envelope = new Envelope($message);
         }
-
-        $message  = new Message($body);
-        $envelope = new Envelope($message);
 
         yield $envelope->with(new AmqpReceivedStamp($amqpEnvelope, $queueName));
     }
@@ -127,7 +141,7 @@ class AmqpReceiver implements ReceiverInterface, MessageCountAwareInterface
     protected function rejectAmqpEnvelope(\AMQPEnvelope $amqpEnvelope, string $queueName): void
     {
         try {
-            $this->connection->nack($amqpEnvelope, $queueName, AMQP_NOPARAM);
+            $this->connection->nack($amqpEnvelope, $queueName, $this->nackFlag);
         } catch (\AMQPException $exception) {
             throw new TransportException($exception->getMessage(), 0, $exception);
         }

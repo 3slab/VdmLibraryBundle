@@ -34,7 +34,10 @@ class AmqpTransportFactory implements TransportFactoryInterface
     {
         unset($options['transport_name']);
 
-        return new AmqpTransport($this->logger, Connection::fromDsn($dsn, $options), $serializer);
+        $nackFlag = $options['nack_flag'] ?? 0;
+        unset($options['nack_flag']);
+
+        return new AmqpTransport($this->logger, Connection::fromDsn($dsn, $options), $serializer, $nackFlag);
     }
 
     public function supports(string $dsn, array $options): bool
