@@ -69,8 +69,6 @@ class DoctrineOdmTransportFactory implements TransportFactoryInterface
      */
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
-        dump("ici");
-        exit;
         if (empty($options['entities'])) {
             $errorMessage = sprintf('%s requires that you define at least one entity value in the transport\'s options.', __CLASS__);
             throw new UndefinedEntityException($errorMessage);
