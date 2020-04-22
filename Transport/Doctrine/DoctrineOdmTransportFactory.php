@@ -9,8 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\MongoDBBundle\ManagerRegistry as OdmManagerRegistry;
-use Doctrine\Persistence\ManagerRegistry as OrmManagerRegistry;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
@@ -22,10 +21,9 @@ use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DoctrineExecutorConfigurator;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSenderFactory;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineTransport;
 
-class DoctrineTransportFactory implements TransportFactoryInterface
+class DoctrineOdmTransportFactory implements TransportFactoryInterface
 {
-    protected const DSN_PROTOCOL_DOCTRINE_ODM = 'vdm+doctrine_odm://';
-    protected const DSN_PROTOCOL_DOCTRINE_ORM = 'vdm+doctrine_orm://';
+    protected const DSN_PROTOCOL_DOCTRINE = 'vdm+doctrine_odm://';
     protected const DSN_PATTERN_MATCHING  = '/(?P<protocol>[^:]+:\/\/)(?P<connection>.*)/';
 
     /**
@@ -34,14 +32,9 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     protected $logger;
 
     /**
-     * @var OdmManagerRegistry $doctrineOdm
+     * @var ManagerRegistry $doctrine
      */
-    protected $doctrineOdm;
-
-    /**
-     * @var OrmManagerRegistry $doctrineOrm
-     */
-    protected $doctrineOrm;
+    protected $doctrine;
 
     /**
      * @var AbstractDoctrineExecutor $executor
@@ -56,14 +49,12 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      */
     public function __construct(
         LoggerInterface $logger,
-        OdmManagerRegistry $doctrineOdm,
-        OrmManagerRegistry $doctrineOrm,
+        ManagerRegistry $doctrine,
         AbstractDoctrineExecutor $executor,
         SymfonySerializer $serializer
     ) {
         $this->logger     = $logger;
-        $this->doctrineOdm   = $doctrineOdm;
-        $this->doctrineOrm   = $doctrineOrm;
+        $this->doctrine   = $doctrine;
         $this->executor   = $executor;
         $this->serializer = $serializer;
     }
@@ -78,6 +69,8 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      */
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
+        dump("ici");
+        exit;
         if (empty($options['entities'])) {
             $errorMessage = sprintf('%s requires that you define at least one entity value in the transport\'s options.', __CLASS__);
             throw new UndefinedEntityException($errorMessage);
@@ -86,7 +79,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
         unset($options['transport_name']);
 
         $manager      = $this->getManager($dsn);
-        
+
         $configurator = new DoctrineExecutorConfigurator($manager, $this->logger, $this->serializer, $options);
         $configurator->configure($this->executor);
 
@@ -108,8 +101,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     {
         preg_match(static::DSN_PATTERN_MATCHING, $dsn, $match);
 
-        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ODM) 
-        || 0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ORM)) {
+        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE)) {
             // No need to put it in a variable now. If the connection doesn't exist, Doctrine will throw an exception
             $this->getManager($dsn);
 
@@ -136,11 +128,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
         
         $match['connection'] = $match['connection'] ?: 'default';
 
-        if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ODM)) {
-            $manager = $this->doctrineOdm->getManager($match['connection']);
-        }else if (0 === strpos($match['protocol'], static::DSN_PROTOCOL_DOCTRINE_ORM)) {
-            $manager = $this->doctrineOrm->getManager($match['connection']);
-        }
+        $manager = $this->doctrine->getManager($match['connection']);
 
         return $manager;
     }
