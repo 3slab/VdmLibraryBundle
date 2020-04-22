@@ -6,8 +6,9 @@ php:
   - 7.4
 before_install:
   - sudo apt-get -y install librabbitmq-dev
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 before_script:
-  - echo '' | pecl install amqp mongodb-stable
+  - echo '' | pecl install amqp mongodb
   - composer install -n
 script:
   - ./vendor/bin/phpunit Tests/
