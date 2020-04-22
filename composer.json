@@ -29,7 +29,9 @@
         "datadog/php-datadogstatsd": "^1.4",
         "league/flysystem-sftp": "^1.0",
         "league/flysystem": "^1.0",
-        "doctrine/doctrine-bundle": "^2.0.7"
+        "doctrine/doctrine-bundle": "^2.0.7",
+        "doctrine/mongodb-odm": "^2.0.5",
+        "doctrine/mongodb-odm-bundle": "^4.1"
     },
     "suggest": {
         "elasticsearch/elasticsearch": "^7.0"

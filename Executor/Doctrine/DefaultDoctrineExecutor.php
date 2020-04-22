@@ -10,17 +10,16 @@ namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Vdm\Bundle\LibraryBundle\Entity\NullableFieldsInterface;
+use Vdm\Bundle\LibraryBundle\Exception\Doctrine\NoConnectionException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
-use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Model\Message;
-use Vdm\Bundle\LibraryBundle\Model\Metadata;
 
 class DefaultDoctrineExecutor extends AbstractDoctrineExecutor
 {
     public function execute(Message $message): void
     {
         if (!$this->manager) {
-            throw new DefaultDoctrineExecutor('No connection was defined.');
+            throw new NoConnectionException('No connection was defined.');
         }
 
         $entityMetadatas = $message->getMetadatasByKey('entity');

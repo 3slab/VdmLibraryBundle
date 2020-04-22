@@ -8,7 +8,7 @@
 
 namespace Vdm\Bundle\LibraryBundle\Executor\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -21,12 +21,12 @@ use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 class DoctrineExecutorConfigurator
 {
     /**
-     * @param EntityManagerInterface $entityManager
+     * @param ObjectManager $objectManager
      */
-    protected $entityManager;
+    protected $objectManager;
 
     /**
-     * @param EntityManagerInterface $logger
+     * @param LoggerInterface $logger
      */
     protected $logger;
 
@@ -46,12 +46,12 @@ class DoctrineExecutorConfigurator
     protected $accessor;
 
     public function __construct(
-        EntityManagerInterface $entityManager,
+        ObjectManager $objectManager,
         LoggerInterface $logger,
         SerializerInterface $serializer,
         array $options
     ) {
-        $this->entityManager = $entityManager;
+        $this->objectManager = $objectManager;
         $this->logger        = $logger;
         $this->serializer    = $serializer;
         $this->options       = $options;
@@ -73,12 +73,12 @@ class DoctrineExecutorConfigurator
     {
         $repositories = [];
 
-        $executor->setManager($this->entityManager);
+        $executor->setManager($this->objectManager);
         $executor->setLogger($this->logger);
         $executor->setSerializer($this->serializer);
 
         foreach (array_keys($this->options['entities']) as $entityFqcn) {
-            $executor->addRepository($entityFqcn, $this->entityManager->getRepository($entityFqcn));
+            $executor->addRepository($entityFqcn, $this->objectManager->getRepository($entityFqcn));
 
             // If a selector was defined, no need to check entity's identifiers mapping
             if (!empty($this->options['entities'][$entityFqcn]['selector'])) {
@@ -150,7 +150,7 @@ class DoctrineExecutorConfigurator
             'entity' => $entityFqcn,
         ]);
 
-        $metadata    = $this->entityManager->getClassMetadata($entityFqcn);
+        $metadata    = $this->objectManager->getClassMetadata($entityFqcn);
         $identifiers = $metadata->getIdentifierFieldNames();
 
         // No identifier was defined, we have no way of selecting the entity → stop here.

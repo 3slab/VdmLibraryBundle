@@ -12,13 +12,14 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DefaultDoctrineExecutor;
-use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineTransportFactory;
+use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineOdmTransportFactory;
+use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineOrmTransportFactory;
 
 class SetDoctrineExecutorCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(DoctrineTransportFactory::class)) {
+        if (!$container->has(DoctrineOdmTransportFactory::class) || !$container->has(DoctrineOrmTransportFactory::class)) {
             return;
         }
 

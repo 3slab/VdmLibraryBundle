@@ -8,8 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
@@ -18,13 +18,12 @@ use Symfony\Component\Serializer\SerializerInterface as SymfonySerializer;
 use Vdm\Bundle\LibraryBundle\Exception\Doctrine\UndefinedEntityException;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\AbstractDoctrineExecutor;
 use Vdm\Bundle\LibraryBundle\Executor\Doctrine\DoctrineExecutorConfigurator;
-use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSender;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineSenderFactory;
 use Vdm\Bundle\LibraryBundle\Transport\Doctrine\DoctrineTransport;
 
-class DoctrineTransportFactory implements TransportFactoryInterface
+class DoctrineOdmTransportFactory implements TransportFactoryInterface
 {
-    protected const DSN_PROTOCOL_DOCTRINE = 'vdm+doctrine://';
+    protected const DSN_PROTOCOL_DOCTRINE = 'vdm+doctrine_odm://';
     protected const DSN_PATTERN_MATCHING  = '/(?P<protocol>[^:]+:\/\/)(?P<connection>.*)/';
 
     /**
@@ -70,6 +69,8 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      */
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
+        dump("ici");
+        exit;
         if (empty($options['entities'])) {
             $errorMessage = sprintf('%s requires that you define at least one entity value in the transport\'s options.', __CLASS__);
             throw new UndefinedEntityException($errorMessage);
@@ -78,6 +79,7 @@ class DoctrineTransportFactory implements TransportFactoryInterface
         unset($options['transport_name']);
 
         $manager      = $this->getManager($dsn);
+
         $configurator = new DoctrineExecutorConfigurator($manager, $this->logger, $this->serializer, $options);
         $configurator->configure($this->executor);
 
@@ -90,8 +92,8 @@ class DoctrineTransportFactory implements TransportFactoryInterface
     /**
      * Tests if DSN is valid (protocol and valid Doctrine connection).
      *
-     * @param  string $dsn
-     * @param  array  $options
+     * @param string $dsn
+     * @param array  $options
      *
      * @return bool
      */
@@ -118,14 +120,16 @@ class DoctrineTransportFactory implements TransportFactoryInterface
      *
      * @throws InvalidArgumentException invalid connection
      *
-     * @return EntityManagerInterface
+     * @return ObjectManager
      */
-    protected function getManager(string $dsn): EntityManagerInterface
+    protected function getManager(string $dsn): ObjectManager
     {
         preg_match(static::DSN_PATTERN_MATCHING, $dsn, $match);
-
+        
         $match['connection'] = $match['connection'] ?: 'default';
 
-        return $this->doctrine->getManager($match['connection']);
+        $manager = $this->doctrine->getManager($match['connection']);
+
+        return $manager;
     }
 }
