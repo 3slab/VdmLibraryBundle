@@ -9,7 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Transport\Doctrine;
 
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\MongoDBBundle\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
