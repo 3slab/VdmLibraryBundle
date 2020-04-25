@@ -16,10 +16,8 @@ class DefaultFtpExecutor extends AbstractFtpExecutor
 {
     public function execute(array $files): iterable
     {
-        $files = array_filter($files, function($file) {
-            return (isset($file['type']) && $file['type'] === 'file');
-        });
-        
+        $files = $this->filterFiles($files);
+
         foreach ($files as $key => $file) {
             $file = $this->ftpClient->get($file);
             $message = new Message($file);
@@ -29,7 +27,14 @@ class DefaultFtpExecutor extends AbstractFtpExecutor
 
         yield new Envelope(new Message(""), [new StopAfterHandleStamp()]);
     }
-    
+
+    protected function filterFiles(array $files)
+    {
+        return array_filter($files, function($file) {
+            return (isset($file['type']) && $file['type'] === 'file');
+        });
+    }
+
     private function getEnvelope(array $files, int $key, Message $message): Envelope
     {
         $stamps = [];
