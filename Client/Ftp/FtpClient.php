@@ -72,7 +72,13 @@ class FtpClient implements FtpClientInterface
      */
     public function get(array $file): array
     {
-        $file['content'] = $this->filesystem->read($file['path']);
+        try {
+            $file['content'] = $this->filesystem->read($file['path']);
+        } catch (\Exception $e) {
+            // Most of the errors are because of timeout disconnect. it forces reconnect on next operation
+            $this->filesystem->getAdapter()->disconnect();
+            $file['content'] = $this->filesystem->read($file['path']);
+        }
 
         return $file;
     }
