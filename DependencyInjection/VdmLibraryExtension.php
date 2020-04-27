@@ -35,17 +35,11 @@ class VdmLibraryExtension extends Extension
         $container->registerForAutoconfiguration(StatsStorageInterface::class)
             ->addTag('vdm_library.stats_storage')
         ;
-        $container->registerForAutoconfiguration(AbstractHttpExecutor::class)
-            ->addTag('vdm_library.http_executor')
-        ;
         $container->registerForAutoconfiguration(AbstractFtpExecutor::class)
             ->addTag('vdm_library.ftp_executor')
         ;
         $container->registerForAutoconfiguration(AbstractDoctrineExecutor::class)
             ->addTag('vdm_library.doctrine_executor')
-        ;
-        $container->registerForAutoconfiguration(HttpClientBehaviorFactoryInterface::class)
-            ->addTag('vdm_library.http_decorator_factory')
         ;
         $container->registerForAutoconfiguration(FtpClientBehaviorFactoryInterface::class)
             ->addTag('vdm_library.ftp_decorator_factory')
