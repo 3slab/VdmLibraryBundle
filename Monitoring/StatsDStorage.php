@@ -121,18 +121,6 @@ class StatsDStorage implements StatsStorageInterface
         }
     }
 
-    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
-    {
-        if ($ftpResponseStat->getSize() !== null) {
-            $this->datadog->gauge('vdm.metric.ftp.size', $ftpResponseStat->getSize());
-        }
-    }
-
-    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
-    {
-        $this->datadog->increment('vdm.metric.ftp.error.counter', $ftpErrorStat->getError());
-    }
-
     public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
     {
         $tags = [

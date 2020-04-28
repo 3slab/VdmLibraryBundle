@@ -151,24 +151,6 @@ class NullStatsStorage implements StatsStorageInterface
         }
     }
 
-    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
-    {
-        $this->logger->debug('Null stats storage ftp size state sent with value {value}',
-            [
-                'value' => $ftpResponseStat->getSize()
-            ]
-        );
-    }
-
-    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
-    {
-        $this->logger->debug('Null stats storage ftp error state sent with value {value}',
-            [
-                'value' => $ftpErrorStat->getError()
-            ]
-        );
-    }
-
     public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
     {
         $this->logger->debug('Null stats storage elastic success state sent with value {value}',
