@@ -16,8 +16,6 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\StatModelInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
@@ -121,14 +119,14 @@ class StatsDStorage implements StatsStorageInterface
         }
     }
 
-    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    {
-        $tags = [
-            "index" => $elasticResponseStat->getIndex(),
-            "response" => $elasticResponseStat->getResponse(),
-        ];
-        $this->datadog->increment('vdm.metric.elastic.response', 1.0, $tags, $elasticResponseStat->getSuccess());
-    }
+    // public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
+    // {
+        // $tags = [
+        //     "index" => $elasticResponseStat->getIndex(),
+        //     "response" => $elasticResponseStat->getResponse(),
+        // ];
+        // $this->datadog->increment('vdm.metric.elastic.response', 1.0, $tags, $elasticResponseStat->getSuccess());
+    // }
     
     public function flush(bool $force = false)
     {

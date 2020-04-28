@@ -15,8 +15,6 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\StatModelInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
@@ -151,16 +149,16 @@ class NullStatsStorage implements StatsStorageInterface
         }
     }
 
-    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    {
-        $this->logger->debug('Null stats storage elastic success state sent with value {value}',
-            [
-                'value' => $elasticResponseStat->getSuccess(),
-                'index' => $elasticResponseStat->getIndex(),
-                'response' => $elasticResponseStat->getResponse(),
-            ]
-        );
-    }
+    // public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
+    // {
+    //     $this->logger->debug('Null stats storage elastic success state sent with value {value}',
+    //         [
+    //             'value' => $elasticResponseStat->getSuccess(),
+    //             'index' => $elasticResponseStat->getIndex(),
+    //             'response' => $elasticResponseStat->getResponse(),
+    //         ]
+    //     );
+    // }
 
     public function flush(bool $force = false)
     {
