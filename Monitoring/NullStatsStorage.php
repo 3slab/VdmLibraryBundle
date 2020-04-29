@@ -149,17 +149,6 @@ class NullStatsStorage implements StatsStorageInterface
         }
     }
 
-    // public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    // {
-    //     $this->logger->debug('Null stats storage elastic success state sent with value {value}',
-    //         [
-    //             'value' => $elasticResponseStat->getSuccess(),
-    //             'index' => $elasticResponseStat->getIndex(),
-    //             'response' => $elasticResponseStat->getResponse(),
-    //         ]
-    //     );
-    // }
-
     public function flush(bool $force = false)
     {
         $this->logger->debug('Null stats storage flushed');

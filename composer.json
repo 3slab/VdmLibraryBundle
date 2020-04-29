@@ -25,10 +25,7 @@
         "symfony/yaml": "^5.0",
         "symfony/messenger": "^5.0",
         "symfony/stopwatch": "^5.0",
-        "datadog/php-datadogstatsd": "^1.4",
-        "doctrine/doctrine-bundle": "^2.0.7",
-        "doctrine/mongodb-odm": "^2.0.5",
-        "doctrine/mongodb-odm-bundle": "^4.1"
+        "datadog/php-datadogstatsd": "^1.4"
     },
     "suggest": {
         "3slab/vdm-library-http-transport-bundle": "if you want use http as a source",

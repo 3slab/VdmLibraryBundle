@@ -118,15 +118,6 @@ class StatsDStorage implements StatsStorageInterface
             }
         }
     }
-
-    // public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    // {
-        // $tags = [
-        //     "index" => $elasticResponseStat->getIndex(),
-        //     "response" => $elasticResponseStat->getResponse(),
-        // ];
-        // $this->datadog->increment('vdm.metric.elastic.response', 1.0, $tags, $elasticResponseStat->getSuccess());
-    // }
     
     public function flush(bool $force = false)
     {
