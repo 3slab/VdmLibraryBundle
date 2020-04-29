@@ -28,6 +28,7 @@
         "datadog/php-datadogstatsd": "^1.4"
     },
     "suggest": {
+        "koco/messenger-kafka": "if you want use kafka transport",
         "3slab/vdm-library-http-transport-bundle": "if you want use http as a source",
         "3slab/vdm-library-ftp-transport-bundle": "if you want use ftp as a source",
         "3slab/vdm-library-amqp-transport-bundle": "if you want use amqp as a source",
