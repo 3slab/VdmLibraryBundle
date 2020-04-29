@@ -10,12 +10,6 @@ namespace Vdm\Bundle\LibraryBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\ElasticClientBehaviorCreateCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\FtpClientBehaviorCreateCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\HttpClientBehaviorCreateCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetDoctrineExecutorCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetFtpExecutorCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetHttpExecutorCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetStatsStorageCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadDefaultHandlerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadStopWorkerOnErrorPass;
@@ -27,11 +21,5 @@ class VdmLibraryBundle extends Bundle
         $container->addCompilerPass(new UnloadDefaultHandlerPass());
         $container->addCompilerPass(new UnloadStopWorkerOnErrorPass());
         $container->addCompilerPass(new SetStatsStorageCompilerPass());
-        $container->addCompilerPass(new SetHttpExecutorCompilerPass());
-        $container->addCompilerPass(new SetFtpExecutorCompilerPass());
-        $container->addCompilerPass(new HttpClientBehaviorCreateCompilerPass());
-        $container->addCompilerPass(new FtpClientBehaviorCreateCompilerPass());
-        $container->addCompilerPass(new ElasticClientBehaviorCreateCompilerPass());
-        $container->addCompilerPass(new SetDoctrineExecutorCompilerPass());
     }
 }

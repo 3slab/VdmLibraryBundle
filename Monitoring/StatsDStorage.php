@@ -11,16 +11,13 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 use DataDog\BatchedDogStatsd;
 use DataDog\DogStatsd;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\StatModelInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 class StatsDStorage implements StatsStorageInterface
@@ -97,40 +94,29 @@ class StatsDStorage implements StatsStorageInterface
         $this->datadog->gauge('vdm.metric.memory', $memoryStat->getMemory());
     }
     
-    public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat)
+    public function sendStat(StatModelInterface $statModel)
     {
-        $tags = [
-            "statusCode" => $httpResponseStat->getStatusCode()
-        ];
+        $stats = $statModel->getStats();
 
-        if ($httpResponseStat->getTime() !== null) {
-            $this->datadog->gauge('vdm.metric.http.response_time', $httpResponseStat->getTime());
+        foreach($stats as $stat) {
+            $method = $stat->getMethod();
+            $label = 'vdm.metric.'.$stat->getLabel();
+            $value = $stat->getValue();
+            $sampleRate = $stat->getSampleRate();
+            $tags = $stat->getTags();
+
+            switch ($method) {
+                case 'gauge':
+                    $this->datadog->$method($label, $value, $sampleRate, $tags);
+                break;
+                case 'increment':
+                    $this->datadog->$method($label, $sampleRate, $tags, $value);
+                break;
+                case 'histogram':
+                    $this->datadog->$method($label, $value, $sampleRate, $tags);
+                break;
+            }
         }
-        if ($httpResponseStat->getBodySize() !== null) {
-            $this->datadog->gauge('vdm.metric.http.body_size', $httpResponseStat->getBodySize());
-        }
-        $this->datadog->increment('vdm.metric.http.status_code.counter', 1, $tags);
-    }
-
-    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
-    {
-        if ($ftpResponseStat->getSize() !== null) {
-            $this->datadog->gauge('vdm.metric.ftp.size', $ftpResponseStat->getSize());
-        }
-    }
-
-    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
-    {
-        $this->datadog->increment('vdm.metric.ftp.error.counter', $ftpErrorStat->getError());
-    }
-
-    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    {
-        $tags = [
-            "index" => $elasticResponseStat->getIndex(),
-            "response" => $elasticResponseStat->getResponse(),
-        ];
-        $this->datadog->increment('vdm.metric.elastic.response', 1.0, $tags, $elasticResponseStat->getSuccess());
     }
     
     public function flush(bool $force = false)

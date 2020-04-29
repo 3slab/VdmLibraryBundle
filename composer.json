@@ -19,28 +19,27 @@
         }
     },
     "require": {
-        "symfony/console": "5.0.*",
-        "symfony/framework-bundle": "5.0.*",
+        "symfony/console": "^5.0",
+        "symfony/framework-bundle": "^5.0",
         "symfony/serializer-pack": "*",
-        "symfony/yaml": "5.0.*",
-        "symfony/messenger": "5.0.*",
-        "symfony/stopwatch": "5.0.*",
-        "symfony/http-client": "5.0.*",
-        "datadog/php-datadogstatsd": "^1.4",
-        "league/flysystem-sftp": "^1.0",
-        "league/flysystem": "^1.0",
-        "doctrine/doctrine-bundle": "^2.0.7",
-        "doctrine/mongodb-odm": "^2.0.5",
-        "doctrine/mongodb-odm-bundle": "^4.1"
+        "symfony/yaml": "^5.0",
+        "symfony/messenger": "^5.0",
+        "symfony/stopwatch": "^5.0",
+        "datadog/php-datadogstatsd": "^1.4"
     },
     "suggest": {
-        "elasticsearch/elasticsearch": "^7.0"
+        "koco/messenger-kafka": "if you want use kafka transport",
+        "3slab/vdm-library-http-transport-bundle": "if you want use http as a source",
+        "3slab/vdm-library-ftp-transport-bundle": "if you want use ftp as a source",
+        "3slab/vdm-library-amqp-transport-bundle": "if you want use amqp as a source",
+        "3slab/vdm-library-elasticsearch-transport-bundle": "if you want use elasticsearch as a destination",
+        "3slab/vdm-library-doctrine-orm-transport-bundle": "if you want use doctrine orm as a destination",
+        "3slab/vdm-library-doctrine-odm-transport-bundle": "if you want use doctrine odm as a destination"
     },
     "require-dev": {
         "ext-xml": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
-        "phpunit/phpunit": "^9",
-        "elasticsearch/elasticsearch": "^7.0"
+        "phpunit/phpunit": "^9"
     }
 }

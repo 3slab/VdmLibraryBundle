@@ -13,13 +13,10 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientErrorStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\FtpClientResponseStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\HttpClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\StatModelInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 class NullStatsStorage implements StatsStorageInterface
@@ -48,7 +45,7 @@ class NullStatsStorage implements StatsStorageInterface
         $this->logger = $messengerLogger;
         $this->config = $config;
     }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -137,52 +134,19 @@ class NullStatsStorage implements StatsStorageInterface
     /**
      * {@inheritDoc}
      */
-    public function sendHttpResponseStat(HttpClientResponseStat $httpResponseStat)
+    public function sendStat(StatModelInterface $statModel)
     {
-        $this->logger->debug('Null stats storage response time state sent with value {value} seconds',
-            [
-                'value' => $httpResponseStat->getTime()
-            ]
-        );
-        $this->logger->debug('Null stats storage response body size state sent with value {value}',
-            [
-                'value' => $httpResponseStat->getBodySize()
-            ]
-        );
-        $this->logger->debug('Null stats storage response error code state sent with value {value}',
-            [
-                'value' => $httpResponseStat->getStatusCode()
-            ]
-        );
-    }
+        $stats = $statModel->getStats();
 
-    public function sendFtpResponseStat(FtpClientResponseStat $ftpResponseStat)
-    {
-        $this->logger->debug('Null stats storage ftp size state sent with value {value}',
-            [
-                'value' => $ftpResponseStat->getSize()
-            ]
-        );
-    }
+        foreach($stats as $stat) {
+            $label = 'vdm.metric.'.$stat->getLabel();
 
-    public function sendFtpErrorStat(FtpClientErrorStat $ftpErrorStat)
-    {
-        $this->logger->debug('Null stats storage ftp error state sent with value {value}',
-            [
-                'value' => $ftpErrorStat->getError()
-            ]
-        );
-    }
-
-    public function sendElasticResponseStat(ElasticClientResponseStat $elasticResponseStat)
-    {
-        $this->logger->debug('Null stats storage elastic success state sent with value {value}',
-            [
-                'value' => $elasticResponseStat->getSuccess(),
-                'index' => $elasticResponseStat->getIndex(),
-                'response' => $elasticResponseStat->getResponse(),
-            ]
-        );
+            $this->logger->debug("Null stats storage $label state sent with value {value} seconds",
+                [
+                    'value' => $stat,
+                ]
+            );            
+        }
     }
 
     public function flush(bool $force = false)
