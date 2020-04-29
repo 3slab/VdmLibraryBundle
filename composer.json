@@ -33,7 +33,10 @@
     "suggest": {
         "3slab/vdm-library-http-transport-bundle": "if you want use http as a source",
         "3slab/vdm-library-ftp-transport-bundle": "if you want use ftp as a source",
-        "3slab/vdm-library-elasticsearch-transport-bundle": "if you want use elsatcicsearch as a destination"
+        "3slab/vdm-library-amqp-transport-bundle": "if you want use amqp as a source",
+        "3slab/vdm-library-elasticsearch-transport-bundle": "if you want use elasticsearch as a destination",
+        "3slab/vdm-library-doctrine-orm-transport-bundle": "if you want use doctrine orm as a destination",
+        "3slab/vdm-library-doctrine-odm-transport-bundle": "if you want use doctrine odm as a destination"
     },
     "require-dev": {
         "ext-xml": "*",
