@@ -50,9 +50,17 @@ abstract class AbstractCsvFormatter
      * @return void
      */
     public function readFile(string $path): iterable
-    {   
+    {
+        // BOM as a string for comparison.
+        $bom = "\xef\xbb\xbf";
         $pass   = 0;
         $handle = fopen($path, 'r');
+
+        // Progress file pointer and get first 3 characters to compare to the BOM string.
+        if (fgets($handle, 4) !== $bom) {
+            // BOM not found - rewind pointer to start of file.
+            rewind($handle);
+        }
 
         while (($data = $this->getCsv($handle)) !== false) {
             if (!$pass++) {
