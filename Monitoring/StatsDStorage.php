@@ -13,6 +13,7 @@ use DataDog\DogStatsd;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
@@ -22,6 +23,11 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 
 class StatsDStorage implements StatsStorageInterface
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
     /**
      * @var array
      */
@@ -37,7 +43,7 @@ class StatsDStorage implements StatsStorageInterface
      */
     private $appName;
 
-    public function __construct($config = 'datadog:', string $appName)
+    public function __construct($config = 'datadog:', string $appName, LoggerInterface $messengerLogger)
     {
         if (false === class_exists(DogStatsd::class)) {
             throw new \LogicException('Seems client library is not installed. Please install "datadog/php-datadogstatsd"');
@@ -67,6 +73,11 @@ class StatsDStorage implements StatsStorageInterface
     public function sendProducedStat(ProducedStat $producedStat)
     {
         $this->datadog->increment('vdm.metric.producer.counter', $producedStat->getProduced());
+    }
+
+    public function sendHandledStat(HandledStat $handledStat)
+    {
+        $this->datadog->increment('vdm.metric.handler.counter', $handledStat->getHandled());
     }
 
     public function sendRunningStat(RunningStat $runningStat)
@@ -121,6 +132,9 @@ class StatsDStorage implements StatsStorageInterface
     
     public function flush(bool $force = false)
     {
+        if (true === filter_var($this->config['batched'], FILTER_VALIDATE_BOOLEAN)) {
+            $this->datadog->flush_buffer();
+        }
     }
 
     /**

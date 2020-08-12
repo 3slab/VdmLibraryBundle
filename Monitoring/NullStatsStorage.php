@@ -10,6 +10,7 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
@@ -67,6 +68,18 @@ class NullStatsStorage implements StatsStorageInterface
         $this->logger->debug('Null stats storage produced stats {produced} produced',
             [
                 'produced' => $producedStat->getProduced()
+            ]
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sendHandledStat(HandledStat $handledStat)
+    {
+        $this->logger->debug('Null stats storage handled stats {handled} handled',
+            [
+                'handled' => $handledStat->getHandled()
             ]
         );
     }

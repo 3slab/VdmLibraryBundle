@@ -28,7 +28,7 @@ RUN apk update && apk upgrade \
   && docker-php-ext-enable apcu\
   && docker-php-ext-enable amqp\
   && docker-php-ext-enable mongodb\
-  && docker-php-ext-install iconv gd intl xsl json dom zip opcache
+  && docker-php-ext-install iconv gd intl xsl json dom zip opcache sockets
 
 #Download rdkafka
 ENV LIBRDKAFKA_VERSION 1.4.0
