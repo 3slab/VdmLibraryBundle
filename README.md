@@ -48,7 +48,8 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
 * Produce :
     * [Kafka](./Resources/docs/produce/kafka.md)
     * [Elasticsearch](./Resources/docs/produce/elasticsearch.md)
-    * [Doctrine](./Resources/docs/produce/doctrine.md)
+    * [Doctrine ORM](./Resources/docs/produce/doctrine_orm.md)
+    * [Doctrine ODM](./Resources/docs/produce/doctrine_odm.md)
 * [Monitoring](./Resources/docs/monitoring.md)
 * [Configuration Reference](./Resources/docs/configuration-reference.md)
 * [Docker](./Resources/docs/docker.md)
