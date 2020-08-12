@@ -71,7 +71,7 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
                 'code' => $errorStateStat->getCode()
             ]
         );
-
+        $this->storage->flush(true);
         $this->logger->info('WorkerRunningEvent - Stats storage flushed');
     }
 

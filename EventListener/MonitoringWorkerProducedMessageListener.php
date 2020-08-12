@@ -8,16 +8,14 @@
 
 namespace Vdm\Bundle\LibraryBundle\EventListener;
 
-use Symfony\Component\Messenger\Envelope;
-use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Vdm\Bundle\LibraryBundle\Model\Message;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 
-class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
+class MonitoringWorkerProducedMessageListener implements EventSubscriberInterface
 {
     /**
      * @var StatsStorageInterface
@@ -44,16 +42,11 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
     /**
      * Method executed on WorkerMessageHandledEvent event
      *
-     * @param WorkerMessageHandledEvent $event
+     * @param SendMessageToTransportsEvent $event
      */
-    public function onWorkerMessageHandled(WorkerMessageHandledEvent $event)
+    public function onWorkerMessageProduced(SendMessageToTransportsEvent $event)
     {
         $envelope = $event->getEnvelope();
-
-        if (!$this->isMessageSent($envelope)) {
-            return;
-        }
-
         $message = $envelope->getMessage();
 
         if (!$message instanceof Message) {
@@ -61,11 +54,11 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
         }
 
         // Send produced stats because we check for sentstamp above
-        $handledStat = new HandledStat(1);
-        $this->storage->sendHandledStat($handledStat);
+        $producedStat = new ProducedStat(1);
+        $this->storage->sendProducedStat($producedStat);
 
         if (null !== $this->logger) {
-            $this->logger->info('WorkerMessageHandledEvent - Handled stats sent');
+            $this->logger->info('WorkerMessageHandledEvent - Produced stats sent');
         }
     }
 
@@ -76,25 +69,7 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            WorkerMessageHandledEvent::class => 'onWorkerMessageHandled',
+            SendMessageToTransportsEvent::class => 'onWorkerMessageProduced',
         ];
-    }
-
-    /**
-     * Check if enveloppe has HandleStamp
-     *
-     * @param Envelope $envelope
-     *
-     * @return bool
-     */
-    protected function isMessageSent(Envelope  $envelope): bool
-    {
-        $handledStamp = $envelope->last(HandledStamp::class);
-
-        if (!$handledStamp) {
-            return false;
-        }
-
-        return true;
     }
 }

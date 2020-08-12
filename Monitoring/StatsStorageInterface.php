@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
+use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
@@ -22,6 +23,8 @@ interface StatsStorageInterface
     public function sendConsumerStat(ConsumerStat $consumerStat);
 
     public function sendProducedStat(ProducedStat $producedStat);
+
+    public function sendHandledStat(HandledStat $handledStat);
 
     public function sendRunningStat(RunningStat $runningStat);
 

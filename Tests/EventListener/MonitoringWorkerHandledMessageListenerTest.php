@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Symfony\Component\Messenger\Stamp\SentStamp;
 use Vdm\Bundle\LibraryBundle\EventListener\MonitoringWorkerHandledMessageListener;
 use Vdm\Bundle\LibraryBundle\Model\Message;
@@ -27,7 +28,7 @@ class MonitoringWorkerHandledMessageListenerTest extends TestCase
     protected function getSubscriber(array $calls)
     {
         $this->statsStorageInterface = $this->getMockBuilder(StatsStorageInterface::class)->getMock();
-        $this->statsStorageInterface->expects($calls['sendProducedStat'])->method('sendProducedStat');
+        $this->statsStorageInterface->expects($calls['sendHandledStat'])->method('sendHandledStat');
 
         return new MonitoringWorkerHandledMessageListener($this->statsStorageInterface, new NullLogger());
     }
@@ -37,7 +38,7 @@ class MonitoringWorkerHandledMessageListenerTest extends TestCase
      */
     public function testOnWorkerMessageHandled($methodCall, $envelopeValue, $stamps)
     {
-        $listener = $this->getSubscriber(['sendProducedStat' => $methodCall]);
+        $listener = $this->getSubscriber(['sendHandledStat' => $methodCall]);
 
         $envelope = new Envelope($envelopeValue, $stamps);
         $event = new WorkerMessageHandledEvent($envelope, '');
@@ -60,12 +61,12 @@ class MonitoringWorkerHandledMessageListenerTest extends TestCase
         yield [
             $this->never(),
             new \stdClass(),
-            [new SentStamp('', '')]
+            [new HandledStamp('', '')]
         ];
         yield [
             $this->once(),
             new Message(''),
-            [new SentStamp('', '')]
+            [new HandledStamp('', '')]
         ];
     }
 }
