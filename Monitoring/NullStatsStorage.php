@@ -14,7 +14,6 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Psr\Log\LoggerInterface;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\MemoryStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\StatModelInterface;
@@ -23,7 +22,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 class NullStatsStorage implements StatsStorageInterface
 {
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface $logger
      */
     protected $logger;
 

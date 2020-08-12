@@ -11,7 +11,7 @@ class StatsStorageFactory
     protected $statsStorageClasses = [];
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface $logger
      */
     protected $logger;
 

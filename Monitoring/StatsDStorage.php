@@ -10,8 +10,8 @@ namespace Vdm\Bundle\LibraryBundle\Monitoring;
 
 use DataDog\BatchedDogStatsd;
 use DataDog\DogStatsd;
+use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\ElasticClientResponseStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ErrorStateStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ProducedStat;
@@ -24,7 +24,7 @@ use Vdm\Bundle\LibraryBundle\Monitoring\Model\TimeStat;
 class StatsDStorage implements StatsStorageInterface
 {
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface $logger
      */
     protected $logger;
 
@@ -49,6 +49,7 @@ class StatsDStorage implements StatsStorageInterface
             throw new \LogicException('Seems client library is not installed. Please install "datadog/php-datadogstatsd"');
         }
 
+        $this->logger = $messengerLogger;
         $this->appName = $appName;
         $this->config = $this->prepareConfig($config);
         
