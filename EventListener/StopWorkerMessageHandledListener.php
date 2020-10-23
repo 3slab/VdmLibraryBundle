@@ -47,17 +47,17 @@ class StopWorkerMessageHandledListener implements EventSubscriberInterface
     public function onWorkerMessageHandledEvent(WorkerMessageHandledEvent $event)
     {
         $message = $event->getEnvelope()->getMessage();
-        
-        if (!$message instanceof Message) {
-            return;
-        }
 
         $stamps = $event->getEnvelope()->all();
         if (in_array(StopAfterHandleStamp::class, array_keys($stamps))) {
             $this->logger->debug('WorkerMessageHandledEvent - StopAfterHandleStamp detected so we stop the worker');
             $this->stopWorker->setFlag(true);
         }
-        
+
+        if (!$message instanceof Message) {
+            return;
+        }
+
         $payload = $message->getPayload();
         if (empty($payload)) {
             $this->logger->debug('WorkerMessageHandledEvent - Empty payload detected so we stop worker');
