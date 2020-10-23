@@ -50,6 +50,7 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
     * [Elasticsearch](./Resources/docs/produce/elasticsearch.md)
     * [Doctrine ORM](./Resources/docs/produce/doctrine_orm.md)
     * [Doctrine ODM](./Resources/docs/produce/doctrine_odm.md)
+* [Manual Tranport](./Resources/docs/manual_transport.md)    
 * [Monitoring](./Resources/docs/monitoring.md)
 * [Configuration Reference](./Resources/docs/configuration-reference.md)
 * [Docker](./Resources/docs/docker.md)
