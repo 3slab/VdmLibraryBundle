@@ -39,6 +39,8 @@ class AbstractExcelFormatter
 
     protected const SHEETS = [];
 
+    protected const OVERWRITE_VALUES = [];
+
     protected const IGNORE_CELLS = [];
 
     protected const DATE_FIELDS = [];
@@ -110,7 +112,11 @@ class AbstractExcelFormatter
                 continue;
             }
             $value = $cell->getValue();
-            if (is_string($value) && '=' === $value[0]) {
+            $overwriteValue = static::OVERWRITE_VALUES[$worksheetTitle][$coordinate] ?? null;
+            if ($overwriteValue) {
+                $value = $overwriteValue;
+            }
+            if (is_string($value) && ''!== $value && '=' === $value[0]) {
                 try {
                     $value = $cell->getCalculatedValue();
                 } catch (CalculationException $e) {
