@@ -35,6 +35,8 @@ class AbstractExcelFormatter
 
     protected const FILE_NAME = null;
 
+    protected const HEADER_ROW_INDEX = 1;
+
     protected const FILE_EXTENSION = 'Xlsx';
 
     protected const SHEETS = [];
@@ -102,7 +104,7 @@ class AbstractExcelFormatter
     protected function readRow(Row $row, int $index, string $worksheetTitle): iterable
     {
         $worksheetInfo = $this->worksheets[$worksheetTitle];
-        $head = 1 === $row->getRowIndex();
+        $head = static::HEADER_ROW_INDEX === $row->getRowIndex();
         $cellIterator = $row->getCellIterator();
         $cellIterator->setIterateOnlyExistingCells(false);
         $cells = [];
@@ -133,16 +135,19 @@ class AbstractExcelFormatter
                 $cells[] = $value;
             }
         }
-        if ($head) {
-            $headers = $cells;
-            $this->worksheets[$worksheetTitle]['headers'] = $headers;
-            $this->worksheets[$worksheetTitle]['countColumn'] = count($headers);
-        } else {
-            $row = array_combine($worksheetInfo['headers'], array_slice($cells, 0, $worksheetInfo['countColumn']));
-            $data['data'] = $row;
-            $data['rowIndex'] = $index;
-            $data['worksheet'] = $worksheetTitle;
-            yield $this->getRow($data);
+
+        if (!empty($cells)) {
+            if ($head) {
+                $headers = $cells;
+                $this->worksheets[$worksheetTitle]['headers'] = $headers;
+                $this->worksheets[$worksheetTitle]['countColumn'] = count($headers);
+            } elseif (!empty($worksheetInfo['headers'])) {
+                $cellsData = array_combine($worksheetInfo['headers'], array_slice($cells, 0, $worksheetInfo['countColumn']));
+                $data['data'] = $cellsData;
+                $data['rowIndex'] = $index;
+                $data['worksheet'] = $worksheetTitle;
+                yield $this->getRow($data);
+            }
         }
     }
 
