@@ -73,7 +73,7 @@ class AbstractExcelFormatter
         $worksheets = $spreadsheet->getAllSheets();
         foreach ($worksheets as $worksheet) {
             $worksheetTitle = $worksheet->getTitle();
-            if (!in_array($worksheetTitle, static::SHEETS, true)) {
+            if (!empty(static::SHEETS) && !in_array($worksheetTitle, static::SHEETS, true)) {
                 continue;
             }
             yield from $this->readWorksheet($worksheet);
