@@ -172,7 +172,7 @@ class AbstractExcelFormatter
     public function formatDateFromExcel($data): array
     {
         foreach (static::DATE_FIELDS as $field) {
-            if (isset($data[$field])) {
+            if (!empty($data[$field])) {
                 try {
                     $data[$field] = ExcelDate::excelToDateTimeObject($data[$field])->format(static::DATE_FORMAT);
                 } catch (\Exception $e) {
