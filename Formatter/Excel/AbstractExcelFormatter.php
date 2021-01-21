@@ -51,6 +51,8 @@ class AbstractExcelFormatter
 
     protected const DATA_ONLY = true;
 
+    protected const KEEP_EMPTY_HEADER = false;
+
     protected $worksheets = [];
 
     public function supports(string $fileName): bool
@@ -130,8 +132,16 @@ class AbstractExcelFormatter
                     $value = null;
                 }
             }
-            // Clean null of header values but not data values
-            if (!$head || ($head && !is_null($value))) {
+            // KEEP_EMPTY_HEADER is false by default to clean empty header values but not data values
+            // set KEEP_EMPTY_HEADER to true when there is merge of cells in header lines
+            if (static::KEEP_EMPTY_HEADER ||
+                (
+                    !static::KEEP_EMPTY_HEADER &&
+                    (
+                        !$head || !is_null($value)
+                    )
+                )
+            ) {
                 $cells[] = $value;
             }
         }
