@@ -177,6 +177,7 @@ class AbstractExcelFormatter
                     $data[$field] = ExcelDate::excelToDateTimeObject($data[$field])->format(static::DATE_FORMAT);
                 } catch (\Exception $e) {
                     $this->logger->warning('[Excel] Extraction of date failed. Value: "'.$data[$field].'"');
+                    $data[$field] = null;
                 }
             }
         }
