@@ -43,6 +43,8 @@ class AbstractExcelFormatter
 
     protected const OVERWRITE_VALUES = [];
 
+    protected const COLUMN_RANGE = [];
+
     protected const IGNORE_CELLS = [];
 
     protected const DATE_FIELDS = [];
@@ -107,7 +109,11 @@ class AbstractExcelFormatter
     {
         $worksheetInfo = $this->worksheets[$worksheetTitle];
         $head = static::HEADER_ROW_INDEX === $row->getRowIndex();
-        $cellIterator = $row->getCellIterator();
+
+        $startColumn = static::COLUMN_RANGE[$worksheetTitle]['start'] ?? 'A';
+        $endColumn = static::COLUMN_RANGE[$worksheetTitle]['end'] ?? null;
+        $cellIterator = $row->getCellIterator($startColumn, $endColumn);
+
         $cellIterator->setIterateOnlyExistingCells(false);
         $cells = [];
         foreach ($cellIterator as $cell) {
