@@ -190,7 +190,12 @@ class AbstractExcelFormatter
         foreach (static::DATE_FIELDS as $field) {
             if (!empty($data[$field])) {
                 try {
-                    $data[$field] = ExcelDate::excelToDateTimeObject($data[$field])->format(static::DATE_FORMAT);
+                    if (is_numeric($data[$field])) {
+                        $dateTime = ExcelDate::excelToDateTimeObject($data[$field]);
+                        $data[$field] = $dateTime->format(static::DATE_FORMAT);
+                    } else {
+                        $data[$field] = null;
+                    }
                 } catch (\Exception $e) {
                     $this->logger->warning('[Excel] Extraction of date failed. Value: "'.$data[$field].'"');
                     $data[$field] = null;
