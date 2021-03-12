@@ -43,6 +43,8 @@ class AbstractExcelFormatter
 
     protected const OVERWRITE_VALUES = [];
 
+    protected const COLUMN_RANGE = [];
+
     protected const IGNORE_CELLS = [];
 
     protected const DATE_FIELDS = [];
@@ -50,6 +52,8 @@ class AbstractExcelFormatter
     protected const DATE_FORMAT = 'Y-m-d';
 
     protected const DATA_ONLY = true;
+
+    protected const KEEP_EMPTY_HEADER = false;
 
     protected $worksheets = [];
 
@@ -105,7 +109,11 @@ class AbstractExcelFormatter
     {
         $worksheetInfo = $this->worksheets[$worksheetTitle];
         $head = static::HEADER_ROW_INDEX === $row->getRowIndex();
-        $cellIterator = $row->getCellIterator();
+
+        $startColumn = static::COLUMN_RANGE[$worksheetTitle]['start'] ?? 'A';
+        $endColumn = static::COLUMN_RANGE[$worksheetTitle]['end'] ?? null;
+        $cellIterator = $row->getCellIterator($startColumn, $endColumn);
+
         $cellIterator->setIterateOnlyExistingCells(false);
         $cells = [];
         foreach ($cellIterator as $cell) {
@@ -130,8 +138,16 @@ class AbstractExcelFormatter
                     $value = null;
                 }
             }
-            // Clean null of header values but not data values
-            if (!$head || ($head && !is_null($value))) {
+            // KEEP_EMPTY_HEADER is false by default to clean empty header values but not data values
+            // set KEEP_EMPTY_HEADER to true when there is merge of cells in header lines
+            if (static::KEEP_EMPTY_HEADER ||
+                (
+                    !static::KEEP_EMPTY_HEADER &&
+                    (
+                        !$head || !is_null($value)
+                    )
+                )
+            ) {
                 $cells[] = $value;
             }
         }
@@ -174,9 +190,15 @@ class AbstractExcelFormatter
         foreach (static::DATE_FIELDS as $field) {
             if (!empty($data[$field])) {
                 try {
-                    $data[$field] = ExcelDate::excelToDateTimeObject($data[$field])->format(static::DATE_FORMAT);
+                    if (is_numeric($data[$field])) {
+                        $dateTime = ExcelDate::excelToDateTimeObject($data[$field]);
+                        $data[$field] = $dateTime->format(static::DATE_FORMAT);
+                    } else {
+                        $data[$field] = null;
+                    }
                 } catch (\Exception $e) {
                     $this->logger->warning('[Excel] Extraction of date failed. Value: "'.$data[$field].'"');
+                    $data[$field] = null;
                 }
             }
         }
