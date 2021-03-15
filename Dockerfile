@@ -1,4 +1,4 @@
-FROM php:7.3-cli-alpine
+FROM php:8-cli-alpine
 
 RUN apk add --no-cache --virtual .build-deps \
   g++ git make autoconf yaml-dev libpng-dev cyrus-sasl-dev \
@@ -24,15 +24,15 @@ RUN apk update && apk upgrade \
         icu-dev \
         libxslt-dev \
         rabbitmq-c-dev \
-  && pecl install apcu amqp mongodb \
+  && pecl install apcu amqp-1.11.0beta mongodb \
   && docker-php-ext-enable apcu\
   && docker-php-ext-enable amqp\
   && docker-php-ext-enable mongodb\
-  && docker-php-ext-install iconv gd intl xsl json dom zip opcache sockets
+  && docker-php-ext-install gd intl xsl zip opcache sockets
 
 #Download rdkafka
-ENV LIBRDKAFKA_VERSION 1.4.0
-ENV EXT_RDKAFKA_VERSION 4.0.3
+ENV LIBRDKAFKA_VERSION 1.6.1
+ENV EXT_RDKAFKA_VERSION 5.0.0
 
 RUN git clone --depth 1 --branch v$LIBRDKAFKA_VERSION https://github.com/edenhill/librdkafka.git \
   && cd librdkafka \
@@ -48,8 +48,7 @@ RUN pecl channel-update pecl.php.net \
 
 RUN wget https://getcomposer.org/installer -O composer-setup.php \
   && php ./composer-setup.php  --install-dir=/usr/local/bin \
-  && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer \
-  && composer global require hirak/prestissimo
+  && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 WORKDIR /var/www/html
 
