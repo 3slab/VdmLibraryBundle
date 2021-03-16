@@ -21,7 +21,7 @@ class Trace
     /**
      * @var string
      */
-    private $app;
+    private $name;
 
     /**
      * @var string
@@ -36,13 +36,13 @@ class Trace
     /**
      * Trace constructor.
      *
-     * @param string $app
+     * @param string $name
      * @param string $event
      * @param float $timestamp
      */
-    public function __construct(string $app, string $event, float $timestamp = null)
+    public function __construct(string $name, string $event, float $timestamp = null)
     {
-        $this->app = $app;
+        $this->name = $name;
         $this->event = $event;
         $this->timestamp = $timestamp ?: microtime(true);
     }
@@ -50,9 +50,9 @@ class Trace
     /**
      * @return string
      */
-    public function getApp(): string
+    public function getName(): string
     {
-        return $this->app;
+        return $this->name;
     }
 
     /**

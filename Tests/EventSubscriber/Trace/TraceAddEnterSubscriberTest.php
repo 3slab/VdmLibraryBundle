@@ -13,17 +13,17 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
-use Vdm\Bundle\LibraryBundle\EventSubscriber\TraceAddEnterListener;
+use Vdm\Bundle\LibraryBundle\EventSubscriber\Trace\TraceAddEnterSubscriber;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 
-class TraceAddEnterListenerTest extends TestCase
+class TraceAddEnterSubscriberTest extends TestCase
 {
     public function testOnWorkerMessageReceived()
     {
         $envelope = new Envelope(new \stdClass());
         $event = new WorkerMessageReceivedEvent($envelope, '');
 
-        $listener = new TraceAddEnterListener('', new NullLogger());
+        $listener = new TraceAddEnterSubscriber('', new NullLogger());
         $result = $listener->onWorkerMessageReceived($event);
 
         $this->assertNull($result);
@@ -40,7 +40,7 @@ class TraceAddEnterListenerTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($methodCall)->method('info');
 
-        $listener = new TraceAddEnterListener('', $logger);
+        $listener = new TraceAddEnterSubscriber('', $logger);
         $listener->onWorkerMessageReceived($event);
     }
 

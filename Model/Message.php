@@ -13,12 +13,9 @@ namespace Vdm\Bundle\LibraryBundle\Model;
  *
  * @package Vdm\Bundle\LibraryBundle\Model
  */
-class Message
+class Message implements TraceableMessageInterface
 {
-    /**
-     * @var Trace[]
-     */
-    private $traces;
+    use TraceableTrait;
 
     /**
      * @var Metadata[]
@@ -60,29 +57,6 @@ class Message
         $this->payload = $payload;
     }
 
-    /**
-     * @return Trace[]
-     */
-    public function getTraces(): array
-    {
-        return $this->traces;
-    }
-
-    /**
-     * @param Trace[] $traces
-     */
-    public function setTraces(array $traces): void
-    {
-        $this->traces = $traces;
-    }
-
-    /**
-     * @param Trace $trace
-     */
-    public function addTrace(Trace $trace): void
-    {
-        $this->traces[] = $trace;
-    }
 
     /**
      * @return Metadata[]

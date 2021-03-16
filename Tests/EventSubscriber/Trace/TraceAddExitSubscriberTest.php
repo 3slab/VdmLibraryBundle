@@ -13,17 +13,17 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
-use Vdm\Bundle\LibraryBundle\EventSubscriber\TraceAddExitListener;
+use Vdm\Bundle\LibraryBundle\EventSubscriber\Trace\TraceAddExitSubscriber;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 
-class TraceAddExitListenerTest extends TestCase
+class TraceAddExitSubscriberTest extends TestCase
 {
     public function testOnSendMessageToTransport()
     {
         $envelope = new Envelope(new \stdClass());
         $event = new SendMessageToTransportsEvent($envelope);
 
-        $listener = new TraceAddExitListener('', new NullLogger());
+        $listener = new TraceAddExitSubscriber('', new NullLogger());
         $result = $listener->onSendMessageToTransport($event);
 
         $this->assertNull($result);
@@ -37,7 +37,7 @@ class TraceAddExitListenerTest extends TestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->expects($this->once())->method('info');
 
-        $listener = new TraceAddExitListener('', $logger);
+        $listener = new TraceAddExitSubscriber('', $logger);
         $listener->onSendMessageToTransport($event);
     }
 }
