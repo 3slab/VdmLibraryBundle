@@ -18,27 +18,27 @@ use Symfony\Component\Messenger\MessageBusInterface;
  *
  * @package Vdm\Bundle\LibraryBundle\MessageHandler
  */
-class DefaultHandler implements MessageSubscriberInterface
+abstract class DefaultHandler implements MessageSubscriberInterface
 {
     /** 
-     * @var LoggerInterface $messengerLogger
+     * @var LoggerInterface $logger
     */
-    protected $messengerLogger;
+    protected $logger;
 
     /** 
      * @var MessageBusInterface $bus
     */
     protected $bus;
 
-    public function __construct(LoggerInterface $messengerLogger, MessageBusInterface $bus)
+    public function __construct(LoggerInterface $vdmLogger, MessageBusInterface $bus)
     {
-        $this->messengerLogger = $messengerLogger;
+        $this->logger = $vdmLogger;
         $this->bus = $bus;
     }
 
     /**
      * Default handler implementation.
-     * Does nothing on message because it is override by project code.
+     * Does nothing on message because it should be overriden in project code.
      * 
      * @codeCoverageIgnore
      *
@@ -46,9 +46,9 @@ class DefaultHandler implements MessageSubscriberInterface
      */
     public function __invoke(Message $message)
     {
-        $this->messengerLogger->debug("Execution of default handler");
-
-        // If the Handler dispatches the message further, you will need to add the HandledStamp to the message during dispatch.
+        $this->logger->warning(
+            "No change to Vdm\Bundle\LibraryBundle\MessageHandler\DefaultHandler implementation"
+        );
     }
 
     /**
