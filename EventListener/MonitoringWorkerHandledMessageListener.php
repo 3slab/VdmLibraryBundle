@@ -33,12 +33,12 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
      * MonitoringWorkerHandledMessageListener constructor.
      *
      * @param StatsStorageInterface $storage
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StatsStorageInterface $storage, LoggerInterface $messengerLogger = null)
+    public function __construct(StatsStorageInterface $storage, LoggerInterface $vdmLogger = null)
     {
         $this->storage = $storage;
-        $this->logger = $messengerLogger;
+        $this->logger = $vdmLogger;
     }
 
     /**

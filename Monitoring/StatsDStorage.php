@@ -43,13 +43,13 @@ class StatsDStorage implements StatsStorageInterface
      */
     private $appName;
 
-    public function __construct($config = 'datadog:', string $appName, LoggerInterface $messengerLogger)
+    public function __construct($config = 'datadog:', string $appName, LoggerInterface $vdmLogger)
     {
         if (false === class_exists(DogStatsd::class)) {
             throw new \LogicException('Seems client library is not installed. Please install "datadog/php-datadogstatsd"');
         }
 
-        $this->logger = $messengerLogger;
+        $this->logger = $vdmLogger;
         $this->appName = $appName;
         $this->config = $this->prepareConfig($config);
         

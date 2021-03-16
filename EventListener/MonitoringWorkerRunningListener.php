@@ -37,16 +37,16 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
      *
      * @param ErrorDuringMessageHandlerListener $trackerErrorListener
      * @param StatsStorageInterface $storage
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
     public function __construct(
         ErrorDuringMessageHandlerListener $trackerErrorListener,
         StatsStorageInterface $storage,
-        LoggerInterface $messengerLogger = null
+        LoggerInterface $vdmLogger = null
     ) {
         $this->trackerErrorListener = $trackerErrorListener;
         $this->storage = $storage;
-        $this->logger = $messengerLogger ?? new NullLogger();
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

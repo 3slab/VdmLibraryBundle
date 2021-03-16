@@ -30,11 +30,11 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
     /**
      * ErrorDuringMessageHandlerListener constructor.
      *
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(LoggerInterface $messengerLogger = null)
+    public function __construct(LoggerInterface $vdmLogger = null)
     {
-        $this->logger = $messengerLogger ?? new NullLogger();
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

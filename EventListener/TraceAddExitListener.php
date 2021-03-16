@@ -31,12 +31,12 @@ class TraceAddExitListener implements EventSubscriberInterface
      * TraceAddExitListener constructor.
      *
      * @param string $appName
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(string $appName, LoggerInterface $messengerLogger = null)
+    public function __construct(string $appName, LoggerInterface $vdmLogger = null)
     {
         $this->appName = $appName;
-        $this->logger = $messengerLogger ?? new NullLogger();
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

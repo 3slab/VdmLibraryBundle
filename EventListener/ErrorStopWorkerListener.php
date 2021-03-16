@@ -31,12 +31,12 @@ class ErrorStopWorkerListener implements EventSubscriberInterface
      * ErrorStopWorkerListener constructor.
      *
      * @param ErrorDuringMessageHandlerListener $trackerErrorListener
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(ErrorDuringMessageHandlerListener $trackerErrorListener, LoggerInterface $messengerLogger = null)
+    public function __construct(ErrorDuringMessageHandlerListener $trackerErrorListener, LoggerInterface $vdmLogger = null)
     {
         $this->trackerErrorListener = $trackerErrorListener;
-        $this->logger = $messengerLogger ?? new NullLogger();
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

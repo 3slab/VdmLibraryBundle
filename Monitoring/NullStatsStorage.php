@@ -38,11 +38,11 @@ class NullStatsStorage implements StatsStorageInterface
 
     /**
      * NullStatsStorage constructor.
-     * @param LoggerInterface $messengerLogger
+     * @param LoggerInterface $vdmLogger
      */
-    public function __construct($config, string $appName, LoggerInterface $messengerLogger)
+    public function __construct($config, string $appName, LoggerInterface $vdmLogger)
     {
-        $this->logger = $messengerLogger;
+        $this->logger = $vdmLogger;
         $this->config = $config;
     }
     

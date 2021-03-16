@@ -17,11 +17,11 @@ class StatsStorageFactory
 
     /**
      * NullStatsStorage constructor.
-     * @param LoggerInterface $messengerLogger
+     * @param LoggerInterface $vdmLogger
      */
-    public function __construct(LoggerInterface $messengerLogger)
+    public function __construct(LoggerInterface $vdmLogger)
     {
-        $this->logger = $messengerLogger;
+        $this->logger = $vdmLogger;
     }
 
     public function registerStatStorageClass($class)

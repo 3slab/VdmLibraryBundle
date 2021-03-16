@@ -76,19 +76,19 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class CustomHandler implements MessageHandlerInterface
 {
-    protected $messengerLogger;
+    protected $vdmLogger;
 
     protected $bus;
 
-    public function __construct(LoggerInterface $messengerLogger, MessageBusInterface $bus)
+    public function __construct(LoggerInterface $vdmLogger, MessageBusInterface $bus)
     {
-        $this->messengerLogger = $messengerLogger;
+        $this->vdmLogger = $vdmLogger;
         $this->bus = $bus;
     }
 
     public function __invoke(Message $message)
     {
-        $this->messengerLogger->debug("Execution of custom handler");
+        $this->vdmLogger->debug("Execution of custom handler");
 
         $this->bus->dispatch($message);
     }

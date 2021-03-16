@@ -31,11 +31,11 @@ class StopWorkerMessageHandledListener implements EventSubscriberInterface
      * StopWorkerMessageHandledListener constructor.
      *
      * @param StatsStorageInterface $storage
-     * @param LoggerInterface|null $messengerLogger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StopWorkerService $stopWorker, LoggerInterface $messengerLogger = null)
+    public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
     {
-        $this->logger = $messengerLogger;
+        $this->logger = $vdmLogger;
         $this->stopWorker = $stopWorker;
     }
 
