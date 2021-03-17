@@ -9,55 +9,39 @@
 namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Trace\TraceAddEnterSubscriber;
-use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Model\Trace;
+use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Message\NotTraceableMessage;
 
 class TraceAddEnterSubscriberTest extends TestCase
 {
-    public function testOnWorkerMessageReceived()
+    public function testNoTraceAddedIfNotTraceableMessage()
     {
-        $envelope = new Envelope(new \stdClass());
-        $event = new WorkerMessageReceivedEvent($envelope, '');
+        $message = new NotTraceableMessage();
+        $envelope = new Envelope($message);
+        $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new TraceAddEnterSubscriber('', new NullLogger());
-        $result = $listener->onWorkerMessageReceived($event);
-
-        $this->assertNull($result);
-    }
-
-    /**
-     * @dataProvider dataProviderTestOnWorkerMessageReceivedAdd
-     */
-    public function testOnWorkerMessageReceivedAdd($methodCall, $envelopeValue)
-    {
-        $envelope = new Envelope($envelopeValue);
-        $event = new WorkerMessageReceivedEvent($envelope, '');
-        
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->expects($methodCall)->method('info');
-
-        $listener = new TraceAddEnterSubscriber('', $logger);
+        $listener = new TraceAddEnterSubscriber('');
         $listener->onWorkerMessageReceived($event);
+
+        $this->assertFalse($message->isAddTraceCalled);
     }
 
-    public function dataProviderTestOnWorkerMessageReceivedAdd()
+    public function testTraceAddedIfTraceableMessage()
     {
-        yield [
-            $this->never(),
-            new \stdClass()
-        ];
-        yield [
-            $this->never(),
-            new Message('')
-        ];
-        yield [
-            $this->once(),
-            new Message('test'),
-            []
-        ];
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+        $event = new WorkerMessageReceivedEvent($envelope, 'collect');
+
+        $listener = new TraceAddEnterSubscriber('myapp');
+        $listener->onWorkerMessageReceived($event);
+
+        $traces = $message->getTraces();
+        $this->assertCount(1, $traces);
+        $this->assertEquals('myapp-collect', $traces[0]->getName());
+        $this->assertEquals(Trace::ENTER, $traces[0]->getEvent());
     }
 }

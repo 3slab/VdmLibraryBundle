@@ -9,35 +9,57 @@
 namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Trace\TraceAddExitSubscriber;
-use Vdm\Bundle\LibraryBundle\Model\Message;
+use Vdm\Bundle\LibraryBundle\Model\Trace;
+use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Message\NotTraceableMessage;
 
 class TraceAddExitSubscriberTest extends TestCase
 {
-    public function testOnSendMessageToTransport()
+    public function testNoTraceAddedIfNotTraceableMessage()
     {
-        $envelope = new Envelope(new \stdClass());
-        $event = new SendMessageToTransportsEvent($envelope);
+        $message = new NotTraceableMessage();
+        $envelope = new Envelope($message);
+        $event = new SendMessageToTransportsEvent($envelope, '');
 
-        $listener = new TraceAddExitSubscriber('', new NullLogger());
-        $result = $listener->onSendMessageToTransport($event);
+        $listener = new TraceAddExitSubscriber('');
+        $listener->onSendMessageToTransport($event);
 
-        $this->assertNull($result);
+        $this->assertFalse($message->isAddTraceCalled);
     }
 
-    public function testOnSendMessageToTransportAdd()
+    public function testTraceAddedIfTraceableMessageWithoutPreviousTraces()
     {
-        $envelope = new Envelope(new Message(''));
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
         $event = new SendMessageToTransportsEvent($envelope);
-        
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->expects($this->once())->method('info');
 
-        $listener = new TraceAddExitSubscriber('', $logger);
+        $listener = new TraceAddExitSubscriber('myapp');
         $listener->onSendMessageToTransport($event);
+
+        $traces = $message->getTraces();
+        $this->assertCount(1, $traces);
+        $this->assertEquals('myapp', $traces[0]->getName());
+        $this->assertEquals(Trace::EXIT, $traces[0]->getEvent());
+    }
+
+    public function testTraceAddedIfTraceableMessageWithPreviousTraces()
+    {
+        $message = new DefaultMessage();
+        $message->addTrace(new Trace('trace1', Trace::EXIT));
+        $message->addTrace(new Trace('trace2', Trace::ENTER));
+
+        $envelope = new Envelope($message);
+        $event = new SendMessageToTransportsEvent($envelope);
+
+        $listener = new TraceAddExitSubscriber('myapp');
+        $listener->onSendMessageToTransport($event);
+
+        $traces = $message->getTraces();
+        $this->assertCount(3, $traces);
+        $this->assertEquals('trace2', $traces[2]->getName());
+        $this->assertEquals(Trace::EXIT, $traces[2]->getEvent());
     }
 }

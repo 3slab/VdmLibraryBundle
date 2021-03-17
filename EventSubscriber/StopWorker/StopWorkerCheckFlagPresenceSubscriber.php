@@ -6,14 +6,20 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
-class StopWorkerRunningListener implements EventSubscriberInterface
+/**
+ * Class StopWorkerCheckFlagPresenceSubscriber
+ *
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker
+ */
+class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
 {
     /**
      * @var StopWorkerService $stopWorker
@@ -26,15 +32,15 @@ class StopWorkerRunningListener implements EventSubscriberInterface
     private $logger;
 
     /**
-     * StopWorkerRunningListener constructor.
+     * StopWorkerMessageFailedListener constructor.
      *
      * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger
      */
     public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
     {
-        $this->logger = $vdmLogger;
         $this->stopWorker = $stopWorker;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**
@@ -44,10 +50,9 @@ class StopWorkerRunningListener implements EventSubscriberInterface
      */
     public function onWorkerRunning(WorkerRunningEvent $event)
     {
-        $this->logger->debug('Check stop flag to true');
         if ($this->stopWorker->getFlag()) {
             $event->getWorker()->stop();
-            $this->logger->debug('Worker stopped because of true stop flag');
+            $this->logger->debug('Stop flag presence detected during WorkerRunningEvent event so worker is stopping');
         }
     }
 
@@ -55,7 +60,7 @@ class StopWorkerRunningListener implements EventSubscriberInterface
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerRunningEvent::class => 'onWorkerRunning',

@@ -13,7 +13,7 @@ namespace Vdm\Bundle\LibraryBundle\Model;
  *
  * @package Vdm\Bundle\LibraryBundle\Model
  */
-class Message implements TraceableMessageInterface
+abstract class Message implements IsEmptyMessageInterface, TraceableMessageInterface
 {
     use TraceableTrait;
 
@@ -34,7 +34,7 @@ class Message implements TraceableMessageInterface
      * @param Metadata[] $metadatas
      * @param Trace[] $traces
      */
-    public function __construct($payload, array $metadatas = [], array $traces = [])
+    public function __construct($payload = null, array $metadatas = [], array $traces = [])
     {
         $this->payload = $payload;
         $this->metadatas = $metadatas;
@@ -92,5 +92,13 @@ class Message implements TraceableMessageInterface
     public function addMetadata(Metadata $metadata): void
     {
         $this->metadatas[] = $metadata;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->getPayload());
     }
 }

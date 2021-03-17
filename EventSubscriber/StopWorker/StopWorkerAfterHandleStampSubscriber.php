@@ -6,16 +6,23 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker;
 
-use Vdm\Bundle\LibraryBundle\Model\Message;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
-class StopWorkerMessageFailedListener implements EventSubscriberInterface
+/**
+ * Class StopWorkerAfterHandleStampSubscriber
+ *
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker
+ */
+class StopWorkerAfterHandleStampSubscriber implements EventSubscriberInterface
 {
     /**
      * @var StopWorkerService $stopWorker
@@ -35,8 +42,8 @@ class StopWorkerMessageFailedListener implements EventSubscriberInterface
      */
     public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
     {
-        $this->logger = $vdmLogger;
         $this->stopWorker = $stopWorker;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**
@@ -46,34 +53,44 @@ class StopWorkerMessageFailedListener implements EventSubscriberInterface
      */
     public function onWorkerMessageFailedEvent(WorkerMessageFailedEvent $event)
     {
-        $message = $event->getEnvelope()->getMessage();
-        
-        if (!$message instanceof Message) {
-            return;
-        }
+        $this->hasStopAfterHandlerStamp($event, 'WorkerMessageFailedEvent');
+    }
 
+    /**
+     * Method executed on WorkerMessageHandledEvent event
+     *
+     * @param WorkerMessageHandledEvent $event
+     */
+    public function onWorkerMessageHandledEvent(WorkerMessageHandledEvent $event)
+    {
+        $this->hasStopAfterHandlerStamp($event, 'WorkerMessageHandledEvent');
+    }
+
+    /**
+     * @param AbstractWorkerMessageEvent $event
+     * @param string $eventName
+     */
+    protected function hasStopAfterHandlerStamp(AbstractWorkerMessageEvent $event, string $eventName)
+    {
         $stamps = $event->getEnvelope()->all();
         if (in_array(StopAfterHandleStamp::class, array_keys($stamps))) {
-            $this->logger->debug('WorkerMessageHandledEvent - StopAfterHandleStamp detected so whe stop the worker');
+            $this->logger->debug(
+                'StopAfterHandleStamp detected on envelop during event {eventName} so we schedule to stop the worker',
+                ['eventName' => $eventName]
+            );
             $this->stopWorker->setFlag(true);
         }
-        
-        $payload = $message->getPayload();
-        if (empty($payload)) {
-            $this->logger->debug('WorkerMessageHandledEvent - Empty payload detected so we stop worker');
-            $this->stopWorker->setFlag(true);
-        }
-        
     }
 
     /**
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             WorkerMessageFailedEvent::class => 'onWorkerMessageFailedEvent',
+            WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
         ];
     }
 }
