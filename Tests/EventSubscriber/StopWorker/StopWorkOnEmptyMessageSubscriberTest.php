@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\StopWorker;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
@@ -29,8 +29,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageFailedEvent($envelope, 'collect', new \Exception());
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageFailedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageFailedEvent($event);
 
         $this->assertFalse($message->isEmptyCalled);
         $this->assertFalse($stopWorker->getFlag());
@@ -45,8 +45,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageFailedEvent($envelope, 'collect', new \Exception());
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageFailedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageFailedEvent($event);
 
         $this->assertFalse($stopWorker->getFlag());
     }
@@ -60,8 +60,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageFailedEvent($envelope, 'collect', new \Exception());
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageFailedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageFailedEvent($event);
 
         $this->assertTrue($stopWorker->getFlag());
     }
@@ -75,8 +75,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageHandledEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageHandledEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageHandledEvent($event);
 
         $this->assertFalse($message->isEmptyCalled);
         $this->assertFalse($stopWorker->getFlag());
@@ -91,8 +91,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageHandledEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageHandledEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageHandledEvent($event);
 
         $this->assertFalse($stopWorker->getFlag());
     }
@@ -106,8 +106,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageHandledEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageHandledEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageHandledEvent($event);
 
         $this->assertTrue($stopWorker->getFlag());
     }
@@ -121,8 +121,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageReceivedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageReceivedEvent($event);
 
         $this->assertFalse($message->isEmptyCalled);
         $this->assertFalse($stopWorker->getFlag());
@@ -138,8 +138,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageReceivedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageReceivedEvent($event);
 
         $this->assertFalse($stopWorker->getFlag());
         $this->assertTrue($event->shouldHandle());
@@ -154,8 +154,8 @@ class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 
         $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new StopWorkOnEmptyMessageSubscriber($stopWorker);
-        $listener->onWorkerMessageReceivedEvent($event);
+        $subscriber = new StopWorkOnEmptyMessageSubscriber($stopWorker);
+        $subscriber->onWorkerMessageReceivedEvent($event);
 
         $this->assertTrue($stopWorker->getFlag());
         $this->assertFalse($event->shouldHandle());

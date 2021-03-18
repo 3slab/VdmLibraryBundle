@@ -35,7 +35,7 @@ class StopWorkerAfterHandleStampSubscriber implements EventSubscriberInterface
     private $logger;
 
     /**
-     * StopWorkerMessageFailedListener constructor.
+     * StopWorkerAfterHandleStampSubscriber constructor.
      *
      * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger

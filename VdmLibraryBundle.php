@@ -11,15 +11,14 @@ namespace Vdm\Bundle\LibraryBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetStatsStorageCompilerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadDefaultHandlerPass;
-use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\UnloadStopWorkerOnErrorPass;
 
 class VdmLibraryBundle extends Bundle
 {
+    /**
+     * @param ContainerBuilder $container
+     */
     public function build(ContainerBuilder $container)
     {
-        $container->addCompilerPass(new UnloadDefaultHandlerPass());
-        $container->addCompilerPass(new UnloadStopWorkerOnErrorPass());
         $container->addCompilerPass(new SetStatsStorageCompilerPass());
     }
 }

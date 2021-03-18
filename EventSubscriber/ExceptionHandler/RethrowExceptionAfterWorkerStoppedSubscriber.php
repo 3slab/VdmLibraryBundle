@@ -6,15 +6,21 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\RuntimeException;
+use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
-class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
+/**
+ * Class RethrowExceptionAfterWorkerStoppedSubscriber
+ *
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler
+ */
+class RethrowExceptionAfterWorkerStoppedSubscriber implements EventSubscriberInterface
 {
     /**
      * @var LoggerInterface|null
@@ -22,19 +28,19 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
     private $logger;
 
     /**
-     * @var ErrorDuringMessageHandlerListener
+     * @var StopWorkerService $stopWorker
      */
-    private $trackerErrorListener;
+    private $stopWorker;
 
     /**
-     * ErrorRethrowAfterWorkerStoppedListener constructor.
+     * RethrowExceptionAfterWorkerStoppedSubscriber constructor.
      *
-     * @param ErrorDuringMessageHandlerListener $trackerErrorListener
+     * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(ErrorDuringMessageHandlerListener $trackerErrorListener, LoggerInterface $vdmLogger = null)
+    public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
     {
-        $this->trackerErrorListener = $trackerErrorListener;
+        $this->stopWorker = $stopWorker;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
 
@@ -43,17 +49,15 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
      *
      * @param WorkerStoppedEvent $event
      */
-    public function onWorkerStopped(WorkerStoppedEvent $event): void
+    public function onWorkerStoppedEvent(WorkerStoppedEvent $event): void
     {
-        $throwable = $this->trackerErrorListener->getThrownException();
-
-        if (!($throwable instanceof \Throwable)) {
+        $throwable = $this->stopWorker->getThrowable();
+        if (!$throwable) {
             return;
         }
 
         $this->logger->info(
-            'WorkerStoppedEvent- Worker stopped because an error happened' .
-            ' during handling. Rethrowing exception ...'
+            'Worker stopped because an of an exception during message handling. Rethrowing exception ...'
         );
 
         // Rethrow caught exception in handler after worker stopped to exit cli with an error code different from 0
@@ -64,11 +68,11 @@ class ErrorRethrowAfterWorkerStoppedListener implements EventSubscriberInterface
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             // Execute after monitoring tracking listener
-            WorkerStoppedEvent::class => ['onWorkerStopped', -200],
+            WorkerStoppedEvent::class => ['onWorkerStoppedEvent', -200],
         ];
     }
 }

@@ -18,7 +18,7 @@ use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 class MonitoringWorkerRunningListener implements EventSubscriberInterface
 {
     /**
-     * @var ErrorDuringMessageHandlerListener
+     * @var MessageFailedInWorkerSubscriber
      */
     private $trackerErrorListener;
 
@@ -35,12 +35,12 @@ class MonitoringWorkerRunningListener implements EventSubscriberInterface
     /**
      * MonitoringWorkerHandledMessageListener constructor.
      *
-     * @param ErrorDuringMessageHandlerListener $trackerErrorListener
+     * @param MessageFailedInWorkerSubscriber $trackerErrorListener
      * @param StatsStorageInterface $storage
      * @param LoggerInterface|null $vdmLogger
      */
     public function __construct(
-        ErrorDuringMessageHandlerListener $trackerErrorListener,
+        MessageFailedInWorkerSubscriber $trackerErrorListener,
         StatsStorageInterface $storage,
         LoggerInterface $vdmLogger = null
     ) {

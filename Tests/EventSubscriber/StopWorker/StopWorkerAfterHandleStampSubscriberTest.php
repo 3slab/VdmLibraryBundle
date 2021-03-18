@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\StopWorker;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
@@ -27,8 +27,8 @@ class StopWorkerAfterHandleStampSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new WorkerMessageHandledEvent($envelope, 'collect');
 
-        $listener = new StopWorkerAfterHandleStampSubscriber($stopService);
-        $listener->onWorkerMessageHandledEvent($event);
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onWorkerMessageHandledEvent($event);
 
         $this->assertFalse($stopService->getFlag());
     }
@@ -41,8 +41,8 @@ class StopWorkerAfterHandleStampSubscriberTest extends TestCase
         $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
         $event = new WorkerMessageHandledEvent($envelope, 'collect');
 
-        $listener = new StopWorkerAfterHandleStampSubscriber($stopService);
-        $listener->onWorkerMessageHandledEvent($event);
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onWorkerMessageHandledEvent($event);
 
         $this->assertTrue($stopService->getFlag());
     }
@@ -55,8 +55,8 @@ class StopWorkerAfterHandleStampSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new WorkerMessageFailedEvent($envelope, 'collect', new \Exception());
 
-        $listener = new StopWorkerAfterHandleStampSubscriber($stopService);
-        $listener->onWorkerMessageFailedEvent($event);
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onWorkerMessageFailedEvent($event);
 
         $this->assertFalse($stopService->getFlag());
     }
@@ -69,8 +69,8 @@ class StopWorkerAfterHandleStampSubscriberTest extends TestCase
         $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
         $event = new WorkerMessageFailedEvent($envelope, 'collect', new \Exception());
 
-        $listener = new StopWorkerAfterHandleStampSubscriber($stopService);
-        $listener->onWorkerMessageFailedEvent($event);
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onWorkerMessageFailedEvent($event);
 
         $this->assertTrue($stopService->getFlag());
     }

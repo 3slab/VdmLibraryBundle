@@ -44,7 +44,7 @@ class TraceAddEnterSubscriber implements EventSubscriberInterface
      *
      * @param WorkerMessageReceivedEvent $event
      */
-    public function onWorkerMessageReceived(WorkerMessageReceivedEvent $event)
+    public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
     {
         $message = $event->getEnvelope()->getMessage();
         if (!$message instanceof TraceableMessageInterface) {
@@ -72,7 +72,7 @@ class TraceAddEnterSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            WorkerMessageReceivedEvent::class => 'onWorkerMessageReceived',
+            WorkerMessageReceivedEvent::class => 'onWorkerMessageReceivedEvent',
         ];
     }
 }

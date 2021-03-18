@@ -37,7 +37,7 @@ class StopWorkOnEmptyMessageSubscriber implements EventSubscriberInterface
     private $logger;
 
     /**
-     * StopWorkerMessageFailedListener constructor.
+     * StopWorkOnEmptyMessageSubscriber constructor.
      *
      * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger

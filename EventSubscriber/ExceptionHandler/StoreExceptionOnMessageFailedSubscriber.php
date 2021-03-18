@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -14,26 +14,34 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Stamp\SentToFailureTransportStamp;
+use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
-class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
+/**
+ * Class StoreExceptionOnMessageFailedSubscriber
+ *
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler
+ */
+class StoreExceptionOnMessageFailedSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var StopWorkerService $stopWorker
+     */
+    private $stopWorker;
+
     /**
      * @var LoggerInterface|null
      */
     private $logger;
 
     /**
-     * @var \Exception
-     */
-    private $throwable;
-
-    /**
-     * ErrorDuringMessageHandlerListener constructor.
+     * StoreExceptionOnMessageFailedSubscriber constructor.
      *
+     * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(LoggerInterface $vdmLogger = null)
+    public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
     {
+        $this->stopWorker = $stopWorker;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
 
@@ -42,7 +50,7 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
      *
      * @param WorkerMessageFailedEvent $event
      */
-    public function onMessageFailed(WorkerMessageFailedEvent $event)
+    public function onWorkerMessageFailedEvent(WorkerMessageFailedEvent $event)
     {
         // Retry strategy kicked in
         if ($event->willRetry()) {
@@ -61,31 +69,26 @@ class ErrorDuringMessageHandlerListener implements EventSubscriberInterface
             $throwable = $throwable->getNestedExceptions()[0];
         }
 
-        // Keep trace of exception because current instance injected in other listeners which need to know this
-        $this->throwable = $throwable;
-        
-        $this->logger->info('WorkerMessageFailedEvent - An exception occurred during handling of {class} message', [
-            'class' => \get_class($envelope->getMessage())
-        ]);
-    }
+        $this->stopWorker->setThrowable($throwable);
 
-    /**
-     * @return \Exception
-     */
-    public function getThrownException()
-    {
-        return $this->throwable;
+        $message = $envelope->getMessage();
+        if (is_object($message)) {
+            $this->logger->info('An exception {exceptionClass} occurred during handling of {class} message', [
+                'exceptionClass' => \get_class($throwable),
+                'class' => \get_class($message)
+            ]);
+        }
     }
 
     /**
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             // Should be executed after all listener related to retry or failed transport strategy have run
-            WorkerMessageFailedEvent::class => ['onMessageFailed', -200],
+            WorkerMessageFailedEvent::class => ['onWorkerMessageFailedEvent', -200],
         ];
     }
 }

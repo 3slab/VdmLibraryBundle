@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\Trace;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
@@ -24,8 +24,8 @@ class TraceAddEnterSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new TraceAddEnterSubscriber('');
-        $listener->onWorkerMessageReceived($event);
+        $subscriber = new TraceAddEnterSubscriber('');
+        $subscriber->onWorkerMessageReceivedEvent($event);
 
         $this->assertFalse($message->isAddTraceCalled);
     }
@@ -36,8 +36,8 @@ class TraceAddEnterSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new WorkerMessageReceivedEvent($envelope, 'collect');
 
-        $listener = new TraceAddEnterSubscriber('myapp');
-        $listener->onWorkerMessageReceived($event);
+        $subscriber = new TraceAddEnterSubscriber('myapp');
+        $subscriber->onWorkerMessageReceivedEvent($event);
 
         $traces = $message->getTraces();
         $this->assertCount(1, $traces);

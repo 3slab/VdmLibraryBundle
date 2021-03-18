@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -15,24 +15,24 @@ use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 /**
- * Class StopWorkerCheckFlagPresenceSubscriber
+ * Class StopWorkerOnExceptionSubscriber
  *
- * @package Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler
  */
-class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
+class StopWorkerOnExceptionSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
     /**
      * @var StopWorkerService $stopWorker
      */
     private $stopWorker;
 
     /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * StopWorkerCheckFlagPresenceSubscriber constructor.
+     * StopWorkerOnExceptionSubscriber constructor.
      *
      * @param StopWorkerService $stopWorker
      * @param LoggerInterface|null $vdmLogger
@@ -44,15 +44,15 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Method executed on onWorkerRunning event
+     * Method executed on WorkerRunningEvent event
      *
      * @param WorkerRunningEvent $event
      */
-    public function onWorkerRunningEvent(WorkerRunningEvent $event)
+    public function onWorkerRunningEvent(WorkerRunningEvent $event): void
     {
-        if ($this->stopWorker->getFlag()) {
+        if ($this->stopWorker->getThrowable()) {
             $event->getWorker()->stop();
-            $this->logger->debug('Stop flag presence detected during WorkerRunningEvent event so worker is stopping');
+            $this->logger->debug('Exception thrown during message handling so worker is stopping');
         }
     }
 

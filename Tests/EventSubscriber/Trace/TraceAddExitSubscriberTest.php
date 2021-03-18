@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\Trace;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
@@ -24,8 +24,8 @@ class TraceAddExitSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new SendMessageToTransportsEvent($envelope, '');
 
-        $listener = new TraceAddExitSubscriber('');
-        $listener->onSendMessageToTransport($event);
+        $subscriber = new TraceAddExitSubscriber('');
+        $subscriber->onSendMessageToTransportEvent($event);
 
         $this->assertFalse($message->isAddTraceCalled);
     }
@@ -36,8 +36,8 @@ class TraceAddExitSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new SendMessageToTransportsEvent($envelope);
 
-        $listener = new TraceAddExitSubscriber('myapp');
-        $listener->onSendMessageToTransport($event);
+        $subscriber = new TraceAddExitSubscriber('myapp');
+        $subscriber->onSendMessageToTransportEvent($event);
 
         $traces = $message->getTraces();
         $this->assertCount(1, $traces);
@@ -54,8 +54,8 @@ class TraceAddExitSubscriberTest extends TestCase
         $envelope = new Envelope($message);
         $event = new SendMessageToTransportsEvent($envelope);
 
-        $listener = new TraceAddExitSubscriber('myapp');
-        $listener->onSendMessageToTransport($event);
+        $subscriber = new TraceAddExitSubscriber('myapp');
+        $subscriber->onSendMessageToTransportEvent($event);
 
         $traces = $message->getTraces();
         $this->assertCount(3, $traces);

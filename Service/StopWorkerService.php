@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Service;
 
+use Exception;
+
 class StopWorkerService
 {
     /**
@@ -16,11 +18,17 @@ class StopWorkerService
     private $flag;
 
     /**
+     * @var Exception|null
+     */
+    private $throwable;
+
+    /**
      * StopWorkerService constructor.
      */
     public function __construct()
     {
         $this->flag = false;
+        $this->throwable = null;
     }
 
     /**
@@ -41,6 +49,30 @@ class StopWorkerService
     public function setFlag(bool $flag): self
     {
         $this->flag = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Get $throwable
+     *
+     * @return Exception|null
+     */
+    public function getThrowable(): ?Exception
+    {
+        return $this->throwable;
+    }
+
+    /**
+     * Set $throwable
+     *
+     * @param Exception|null $exception
+     *
+     * @return StopWorkerService
+     */
+    public function setThrowable(?Exception $exception): self
+    {
+        $this->throwable = $exception;
 
         return $this;
     }

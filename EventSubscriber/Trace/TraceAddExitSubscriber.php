@@ -28,7 +28,7 @@ class TraceAddExitSubscriber implements EventSubscriberInterface
     private $logger;
 
     /**
-     * TraceAddExitListener constructor.
+     * TraceAddExitSubscriber constructor.
      *
      * @param string $appName
      * @param LoggerInterface|null $vdmLogger
@@ -44,7 +44,7 @@ class TraceAddExitSubscriber implements EventSubscriberInterface
      *
      * @param SendMessageToTransportsEvent $event
      */
-    public function onSendMessageToTransport(SendMessageToTransportsEvent $event)
+    public function onSendMessageToTransportEvent(SendMessageToTransportsEvent $event)
     {
         $message = $event->getEnvelope()->getMessage();
         if (!$message instanceof TraceableMessageInterface) {
@@ -75,7 +75,7 @@ class TraceAddExitSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            SendMessageToTransportsEvent::class => 'onSendMessageToTransport',
+            SendMessageToTransportsEvent::class => 'onSendMessageToTransportEvent',
         ];
     }
 }

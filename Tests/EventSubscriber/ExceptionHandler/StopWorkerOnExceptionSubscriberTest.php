@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\StopWorker;
+namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\ExceptionHandler;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
@@ -14,7 +14,12 @@ use Symfony\Component\Messenger\Worker;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker\StopWorkerCheckFlagPresenceSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
-class StopWorkerCheckFlagPresenceSubscriberTest extends TestCase
+/**
+ * Class StopWorkerOnExceptionSubscriberTest
+ *
+ * @package Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\ExceptionHandler
+ */
+class StopWorkerOnExceptionSubscriberTest extends TestCase
 {
     public function testWorkerNotStoppingIfFlagNotSet()
     {
