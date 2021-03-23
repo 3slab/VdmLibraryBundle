@@ -55,15 +55,10 @@ class TraceAddExitSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Messenger does not provide the sent transport name on this event because the message
-        // could be sent to multiple transports. As a ack, for now, we get the last enter trace
-        // and use the same name for the exit trace
-        $trace = $message->getLastTrace();
-        $traceName = $trace ? $trace->getName() : $this->appName;
-        $message->addTrace(new Trace($traceName, Trace::EXIT));
+        $message->addTrace(new Trace($this->appName, Trace::EXIT));
 
         $this->logger->debug('Trace {traceType} added to message with name {traceName}', [
-            'traceName' => $traceName,
+            'traceName' => $this->appName,
             'traceType' => Trace::EXIT
         ]);
     }

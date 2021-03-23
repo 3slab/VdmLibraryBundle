@@ -41,7 +41,24 @@ class TraceAddEnterSubscriberTest extends TestCase
 
         $traces = $message->getTraces();
         $this->assertCount(1, $traces);
-        $this->assertEquals('myapp-collect', $traces[0]->getName());
+        $this->assertEquals('myapp', $traces[0]->getName());
         $this->assertEquals(Trace::ENTER, $traces[0]->getEvent());
+    }
+
+    public function testTraceAddedIfTraceableMessageWithPreviousTraces()
+    {
+        $message = new DefaultMessage();
+        $message->addTrace(new Trace('trace1', Trace::ENTER));
+        $message->addTrace(new Trace('trace2', Trace::EXIT));
+        $envelope = new Envelope($message);
+        $event = new WorkerMessageReceivedEvent($envelope, 'collect');
+
+        $subscriber = new TraceAddEnterSubscriber('myapp');
+        $subscriber->onWorkerMessageReceivedEvent($event);
+
+        $traces = $message->getTraces();
+        $this->assertCount(3, $traces);
+        $this->assertEquals('myapp', $traces[2]->getName());
+        $this->assertEquals(Trace::ENTER, $traces[2]->getEvent());
     }
 }

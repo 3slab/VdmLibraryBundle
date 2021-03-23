@@ -55,12 +55,10 @@ class TraceAddEnterSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $receiverName = $event->getReceiverName();
-        $traceName = sprintf('%s-%s', $this->appName, $receiverName);
-        $message->addTrace(new Trace($traceName, Trace::ENTER));
+        $message->addTrace(new Trace($this->appName, Trace::ENTER));
 
         $this->logger->debug('Trace {traceType} added to message with name {traceName}', [
-            'traceName' => $traceName,
+            'traceName' => $this->appName,
             'traceType' => Trace::ENTER
         ]);
     }

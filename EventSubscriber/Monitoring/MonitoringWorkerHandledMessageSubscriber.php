@@ -6,8 +6,9 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\EventSubscriber;
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
+use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Vdm\Bundle\LibraryBundle\Model\Message;
@@ -16,29 +17,36 @@ use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
+use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
 
-class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
+/**
+ * Class MonitoringWorkerHandledMessageSubscriber
+ *
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring
+ */
+class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var StatsStorageInterface
+     * @var MonitoringService
      */
-    private $storage;
+    protected $monitoring;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * MonitoringWorkerHandledMessageListener constructor.
      *
-     * @param StatsStorageInterface $storage
+     * @param MonitoringService $monitoring
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StatsStorageInterface $storage, LoggerInterface $vdmLogger = null)
+    public function __construct(MonitoringService $monitoring, LoggerInterface $vdmLogger = null)
     {
-        $this->storage = $storage;
-        $this->logger = $vdmLogger;
+        $this->monitoring = $monitoring;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**
@@ -46,42 +54,30 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
      *
      * @param WorkerMessageHandledEvent $event
      */
-    public function onWorkerMessageHandled(WorkerMessageHandledEvent $event)
+    public function onWorkerMessageHandledEvent(WorkerMessageHandledEvent $event)
     {
         $envelope = $event->getEnvelope();
-
         if (!$this->isMessageSent($envelope)) {
             return;
         }
 
-        $message = $envelope->getMessage();
-
-        if (!$message instanceof Message) {
-            return;
-        }
-
-        // Send produced stats because we check for sentstamp above
-        $handledStat = new HandledStat(1);
-        $this->storage->sendHandledStat($handledStat);
-
-        if (null !== $this->logger) {
-            $this->logger->info('WorkerMessageHandledEvent - Handled stats sent');
-        }
+        $this->monitoring->increment(Monitoring::HANDLED_STAT, 1);
+        $this->logger->debug('handled message metric incremented');
     }
 
     /**
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
-            WorkerMessageHandledEvent::class => 'onWorkerMessageHandled',
+            WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
         ];
     }
 
     /**
-     * Check if enveloppe has HandleStamp
+     * Check if envelope has HandleStamp
      *
      * @param Envelope $envelope
      *
@@ -90,7 +86,6 @@ class MonitoringWorkerHandledMessageListener implements EventSubscriberInterface
     protected function isMessageSent(Envelope  $envelope): bool
     {
         $handledStamp = $envelope->last(HandledStamp::class);
-
         if (!$handledStamp) {
             return false;
         }

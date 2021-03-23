@@ -59,7 +59,7 @@ class TraceAddExitSubscriberTest extends TestCase
 
         $traces = $message->getTraces();
         $this->assertCount(3, $traces);
-        $this->assertEquals('trace2', $traces[2]->getName());
+        $this->assertEquals('myapp', $traces[2]->getName());
         $this->assertEquals(Trace::EXIT, $traces[2]->getEvent());
     }
 }

@@ -13,6 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
+use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageInterface;
 
 /**
  * Class VdmLibraryExtension
@@ -26,8 +27,9 @@ class VdmLibraryExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $container->registerForAutoconfiguration(StatsStorageInterface::class)
-            ->addTag('vdm_library.stats_storage')
+        $container
+            ->registerForAutoconfiguration(StorageInterface::class)
+            ->addTag('vdm_library.monitoring.storage_class')
         ;
 
         $loader = new YamlFileLoader(
@@ -47,7 +49,7 @@ class VdmLibraryExtension extends Extension
     /**
      * {@inheritDoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'vdm_library';
     }
