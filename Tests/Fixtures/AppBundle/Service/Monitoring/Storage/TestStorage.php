@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\Service\Monitoring\Storage;
+namespace Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Service\Monitoring\Storage;
 
 use Psr\Log\LoggerInterface;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageInterface;

@@ -12,8 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\NullStorage;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StatsDStorage;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageFactory;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
-use Vdm\Bundle\LibraryBundle\Tests\Service\Monitoring\Storage\TestStorage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Service\Monitoring\Storage\TestStorage;
 
 /**
  * Class StorageFactoryTest

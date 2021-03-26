@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @package    3slab/VdmLibraryDoctrineOrmTransportBundle
+ * @package    3slab/VdmLibraryBundle
  * @copyright  2020 Suez Smart Solutions 3S.lab
- * @license    https://github.com/3slab/VdmLibraryDoctrineOrmTransportBundle/blob/master/LICENSE
+ * @license    https://github.com/3slab/VdmLibraryBundle /blob/master/LICENSE
  */
 
 namespace Vdm\Bundle\LibraryBundle\Tests\Transport\Manual;
@@ -14,7 +14,8 @@ use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use TypeError;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Transport\MyManualExecutor;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 use Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualExecutorCollection;
 use Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualTransport;
 use Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualTransportFactory;

@@ -15,7 +15,7 @@ use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerHandledMessageSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 
 class MonitoringWorkerHandledMessageSubscriberTest extends TestCase
 {

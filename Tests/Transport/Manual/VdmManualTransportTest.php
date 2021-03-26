@@ -10,7 +10,7 @@ namespace Vdm\Bundle\LibraryBundle\Tests\Transport\Manuel;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 use Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualExecutorInterface;
 use Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualTransport;
 

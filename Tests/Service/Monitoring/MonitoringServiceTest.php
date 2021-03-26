@@ -9,8 +9,6 @@
 namespace Vdm\Bundle\LibraryBundle\Tests\Service\Monitoring;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
-use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageInterface;
 

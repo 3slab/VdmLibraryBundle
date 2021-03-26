@@ -9,7 +9,6 @@
 namespace Vdm\Bundle\LibraryBundle\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Configuration;
 

@@ -13,8 +13,8 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Trace\TraceAddExitSubscriber;
 use Vdm\Bundle\LibraryBundle\Model\Trace;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
-use Vdm\Bundle\LibraryBundle\Tests\Message\NotTraceableMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\NotTraceableMessage;
 
 class TraceAddExitSubscriberTest extends TestCase
 {

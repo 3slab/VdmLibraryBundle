@@ -10,7 +10,6 @@ namespace Vdm\Bundle\LibraryBundle\Tests\MessageHandler;
 
 use PHPUnit\Framework\TestCase;
 use Vdm\Bundle\LibraryBundle\MessageHandler\DefaultHandler;
-use Vdm\Bundle\LibraryBundle\Model\Message;
 
 /**
  * Class DefaultHandler

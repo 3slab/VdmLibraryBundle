@@ -6,18 +6,14 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\Message;
+namespace Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message;
+
+use Vdm\Bundle\LibraryBundle\Model\Message;
 
 /**
- * Class NotIsEmptyMessage
+ * Class DefaultMessage
  * @package Vdm\Bundle\LibraryBundle\Tests\Message
  */
-class NotIsEmptyMessage
+class DefaultMessage extends Message
 {
-    public $isEmptyCalled = false;
-
-    public function isEmpty()
-    {
-        $this->isEmptyCalled = true;
-    }
 }

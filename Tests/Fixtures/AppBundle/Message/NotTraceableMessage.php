@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\Message;
+namespace Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message;
 
 /**
  * Class NotTraceableMessage

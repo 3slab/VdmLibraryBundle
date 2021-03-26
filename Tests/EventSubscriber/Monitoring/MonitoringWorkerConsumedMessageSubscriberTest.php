@@ -14,7 +14,7 @@ use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerConsumedMessageSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 
 class MonitoringWorkerConsumedMessageSubscriberTest extends TestCase
 {

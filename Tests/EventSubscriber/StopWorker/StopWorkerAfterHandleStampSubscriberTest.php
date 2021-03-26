@@ -15,7 +15,7 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker\StopWorkerAfterHandleStampSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 
 class StopWorkerAfterHandleStampSubscriberTest extends TestCase
 {

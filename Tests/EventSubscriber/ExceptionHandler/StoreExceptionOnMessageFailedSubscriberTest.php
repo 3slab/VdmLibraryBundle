@@ -15,7 +15,7 @@ use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Stamp\SentToFailureTransportStamp;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler\StoreExceptionOnMessageFailedSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 
 class StoreExceptionOnMessageFailedSubscriberTest extends TestCase
 {

@@ -1,13 +1,21 @@
 <?php
 
+/**
+ * @package    3slab/VdmLibraryBundle
+ * @copyright  2020 Suez Smart Solutions 3S.lab
+ * @license    https://github.com/3slab/VdmLibraryBundle /blob/master/LICENSE
+ */
+
 namespace Vdm\Bundle\LibraryBundle\Tests;
 
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\RouteCollectionBuilder;
+use Vdm\Bundle\LibraryBundle\VdmLibraryBundle;
 
 class Kernel extends BaseKernel
 {
@@ -15,24 +23,43 @@ class Kernel extends BaseKernel
 
     private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
+    /**
+     * @var array
+     */
+    protected $additionnalBundles = [];
+
+    /**
+     * @var string
+     */
+    protected $customProjectDir;
+
+    public function __construct(string $customProjectDir)
+    {
+        $_SERVER['SHELL_VERBOSITY'] = -1;
+        parent::__construct('test', true);
+        $this->customProjectDir = $customProjectDir;
+    }
+
+    public function addBundles(array $bundles = [])
+    {
+        $this->additionnalBundles = $bundles;
+    }
+
     public function registerBundles(): iterable
     {
-        $contents = require $this->getProjectDir().'/config/bundles.php';
-        foreach ($contents as $class => $envs) {
-            if ($envs[$this->environment] ?? $envs['all'] ?? false) {
-                yield new $class();
-            }
-        }
+        return array_merge([
+            new FrameworkBundle(),
+            new VdmLibraryBundle(),
+        ], $this->additionnalBundles);
     }
 
     public function getProjectDir(): string
     {
-        return \dirname(__DIR__);
+        return \dirname(__DIR__) . '/' . $this->customProjectDir;
     }
 
     protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
-        $container->addResource(new FileResource($this->getProjectDir().'/config/bundles.php'));
         $container->setParameter('container.dumper.inline_class_loader', \PHP_VERSION_ID < 70400 || $this->debug);
         $container->setParameter('container.dumper.inline_factories', true);
         $confDir = $this->getProjectDir().'/config';

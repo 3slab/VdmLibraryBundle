@@ -15,8 +15,8 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker\StopWorkOnEmptyMessageSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
-use Vdm\Bundle\LibraryBundle\Tests\Message\DefaultMessage;
-use Vdm\Bundle\LibraryBundle\Tests\Message\NotIsEmptyMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
+use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\NotIsEmptyMessage;
 
 class StopWorkOnEmptyMessageSubscriberTest extends TestCase
 {
