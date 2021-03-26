@@ -46,7 +46,7 @@ class StorageFactory
     public function registerStorageClass(string $class): void
     {
         // Useless if, just for typehint in IDE.
-        if (class_exists($class)) {
+        if (method_exists($class, 'getType')) {
             $this->storageClasses[$class::getType()] = $class;
         }
     }
@@ -62,11 +62,11 @@ class StorageFactory
      */
     public function build(string $type, array $options, string $appName): StorageInterface
     {
-        if (!array_key_exists($type, $this->storageClasses)) {
-            $this->logger->warning("monitoring storage $type does not exist. Fallback to null storage");
-            $type = 'null';
+        if (array_key_exists($type, $this->storageClasses)) {
+            return new $this->storageClasses[$type]($options, $appName, $this->logger);
         }
 
-        return new $this->storageClasses[$type]($options, $appName, $this->logger);
+        $this->logger->warning("monitoring storage $type does not exist. Fallback to null storage");
+        return new NullStorage($options, $appName, $this->logger);
     }
 }

@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\MessageHandler;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -25,20 +26,19 @@ abstract class DefaultHandler implements MessageSubscriberInterface
     */
     protected $logger;
 
-    /** 
-     * @var MessageBusInterface $bus
-    */
-    protected $bus;
-
-    public function __construct(LoggerInterface $vdmLogger, MessageBusInterface $bus)
+    /**
+     * DefaultHandler constructor.
+     *
+     * @param LoggerInterface|null $vdmLogger
+     */
+    public function __construct(LoggerInterface $vdmLogger = null)
     {
-        $this->logger = $vdmLogger;
-        $this->bus = $bus;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**
      * Default handler implementation.
-     * Does nothing on message because it should be overriden in project code.
+     * Does nothing on message because it should be overridden in project code.
      * 
      * @codeCoverageIgnore
      *

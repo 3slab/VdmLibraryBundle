@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Transport\Manual;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\TransportException;
 use Symfony\Component\Messenger\Transport\TransportInterface;
@@ -28,12 +29,12 @@ class VdmManualTransport implements TransportInterface
     /**
      * VdmManualTransport constructor.
      * @param VdmManualExecutorInterface $executor
-     * @param LoggerInterface $logger
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(VdmManualExecutorInterface $executor, LoggerInterface $logger)
+    public function __construct(VdmManualExecutorInterface $executor, LoggerInterface $vdmLogger = null)
     {
         $this->executor = $executor;
-        $this->logger = $logger;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

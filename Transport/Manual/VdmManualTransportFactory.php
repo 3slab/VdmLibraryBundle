@@ -10,6 +10,7 @@ namespace Vdm\Bundle\LibraryBundle\Transport\Manual;
 
 use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Messenger\Transport\TransportFactoryInterface;
@@ -21,7 +22,7 @@ class VdmManualTransportFactory implements TransportFactoryInterface
     protected const DSN_PROTOCOL_MANUAL = 'vdm+manual://';
 
     /**
-     * @var LoggerInterface $logger
+     * @var LoggerInterface|null $logger
      */
     protected $logger;
 
@@ -32,15 +33,15 @@ class VdmManualTransportFactory implements TransportFactoryInterface
 
     /**
      * @param VdmManualExecutorCollection $executors
-     * @param LoggerInterface $logger
+     * @param LoggerInterface|null $logger
      */
     public function __construct(
         VdmManualExecutorCollection $executors,
-        LoggerInterface $logger
+        LoggerInterface $logger = null
     )
     {
         $this->executors = $executors;
-        $this->logger = $logger;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
