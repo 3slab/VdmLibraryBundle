@@ -46,7 +46,7 @@ class MonitoringWorkerRunningFlushSubscriber implements EventSubscriberInterface
     public function onWorkerRunningEvent(WorkerRunningEvent $event)
     {
         $this->monitoring->flush();
-        $this->logger->info('metric storage flushed');
+        $this->logger->debug('metric storage flushed');
     }
 
     /**

@@ -19,6 +19,7 @@
         }
     },
     "require": {
+        "ext-json": "*",
         "symfony/console": "^5.0",
         "symfony/framework-bundle": "^5.0",
         "symfony/serializer-pack": "*",

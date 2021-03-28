@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Model;
 
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 /**
  * interface TraceableMessageInterface
  *
@@ -31,6 +33,7 @@ interface TraceableMessageInterface
     public function addTrace(Trace $trace): void;
 
     /**
+     * @Ignore()
      * @return Trace|null
      */
     public function getLastTrace(): ?Trace;

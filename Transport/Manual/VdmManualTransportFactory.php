@@ -33,15 +33,15 @@ class VdmManualTransportFactory implements TransportFactoryInterface
 
     /**
      * @param VdmManualExecutorCollection $executors
-     * @param LoggerInterface|null $logger
+     * @param LoggerInterface|null $vdmLogger
      */
     public function __construct(
         VdmManualExecutorCollection $executors,
-        LoggerInterface $logger = null
+        LoggerInterface $vdmLogger = null
     )
     {
         $this->executors = $executors;
-        $this->logger = $logger ?? new NullLogger();
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**

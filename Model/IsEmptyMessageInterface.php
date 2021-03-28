@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Model;
 
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 /**
  * interface IsEmptyMessageInterface
  *
@@ -16,6 +18,7 @@ namespace Vdm\Bundle\LibraryBundle\Model;
 interface IsEmptyMessageInterface
 {
     /**
+     * @Ignore()
      * @return bool
      */
     public function isEmpty(): bool;

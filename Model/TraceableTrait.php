@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Model;
 
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 /**
  * trait TraceableTrait
  *
@@ -45,6 +47,7 @@ trait TraceableTrait
     }
 
     /**
+     * @Ignore()
      * @return Trace|null
      */
     public function getLastTrace(): ?Trace

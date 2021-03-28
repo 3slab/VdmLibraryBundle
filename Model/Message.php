@@ -8,24 +8,22 @@
 
 namespace Vdm\Bundle\LibraryBundle\Model;
 
+use Symfony\Component\Serializer\Annotation\Ignore;
+
 /**
  * Class Model
  *
  * @package Vdm\Bundle\LibraryBundle\Model
  */
-abstract class Message implements IsEmptyMessageInterface, TraceableMessageInterface
+abstract class Message implements HasMetadataMessageInterface, IsEmptyMessageInterface, TraceableMessageInterface
 {
+    use HasMetadataTrait;
     use TraceableTrait;
-
-    /**
-     * @var Metadata[]
-     */
-    private $metadatas;
 
     /**
      * @var string|int|float|bool|array|null
      */
-    private $payload;
+    protected $payload;
 
     /**
      * Model constructor.
@@ -57,48 +55,21 @@ abstract class Message implements IsEmptyMessageInterface, TraceableMessageInter
         $this->payload = $payload;
     }
 
-
     /**
-     * @return Metadata[]
-     */
-    public function getMetadatas(): array
-    {
-        return $this->metadatas;
-    }
-
-    /**
-     * @param string $key
-     *
-     * @return Metadata[]
-     */
-    public function getMetadatasByKey(string $key): array
-    {
-        return array_filter($this->metadatas, function(Metadata $metadata) use ($key) {
-            return $metadata->getKey() === $key;
-        });
-    }
-
-    /**
-     * @param Metadata[] $metadatas
-     */
-    public function setMetadatas(array $metadatas): void
-    {
-        $this->metadatas = $metadatas;
-    }
-
-    /**
-     * @param Metadata $metadata
-     */
-    public function addMetadata(Metadata $metadata): void
-    {
-        $this->metadatas[] = $metadata;
-    }
-
-    /**
+     * @Ignore()
      * {@inheritDoc}
      */
     public function isEmpty(): bool
     {
         return empty($this->getPayload());
+    }
+
+    /**
+     * @param Message $message
+     * @return Message
+     */
+    public static function createFrom(Message $message): Message
+    {
+        return new static($message->getPayload(), $message->getMetadatas(), $message->getTraces());
     }
 }

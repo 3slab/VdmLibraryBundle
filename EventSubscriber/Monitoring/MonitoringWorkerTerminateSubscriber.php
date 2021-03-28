@@ -58,7 +58,7 @@ class MonitoringWorkerTerminateSubscriber implements EventSubscriberInterface
         $this->logger->debug('worker stopped metric sent');
 
         $this->monitoring->flush();
-        $this->logger->info('metric storage flushed');
+        $this->logger->debug('metric storage flushed');
     }
 
     /**
