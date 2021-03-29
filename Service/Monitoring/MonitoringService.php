@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\Service\Monitoring;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageInterface;
 
 /**
@@ -23,13 +25,20 @@ class MonitoringService
     protected $storage;
 
     /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * MonitoringService constructor.
      *
      * @param StorageInterface $storage
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StorageInterface $storage)
+    public function __construct(StorageInterface $storage, LoggerInterface $vdmLogger = null)
     {
         $this->storage = $storage;
+        $this->logger = $vdmLogger ?? new NullLogger();
     }
 
     /**
@@ -40,7 +49,13 @@ class MonitoringService
      */
     public function update(string $key, $value): void
     {
-        $this->storage->update($key, $value);
+        try {
+            $this->storage->update($key, $value);
+        } catch (\Exception $e) {
+            $this->logger->error("error occurred when updating $key metric", [
+                'exception' => $e
+            ]);
+        }
     }
 
     /**
@@ -51,7 +66,13 @@ class MonitoringService
      */
     public function increment(string $key, int $value): void
     {
-        $this->storage->increment($key, $value);
+        try {
+            $this->storage->increment($key, $value);
+        } catch (\Exception $e) {
+            $this->logger->error("error occurred when incrementing $key metric", [
+                'exception' => $e
+            ]);
+        }
     }
 
     /**
@@ -59,6 +80,12 @@ class MonitoringService
      */
     public function flush(): void
     {
-        $this->storage->flush();
+        try {
+            $this->storage->flush();
+        } catch (\Exception $e) {
+            $this->logger->error("error occurred when flushing metrics", [
+                'exception' => $e
+            ]);
+        }
     }
 }
