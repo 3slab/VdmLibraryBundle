@@ -35,7 +35,8 @@ class ConfigurationTest extends TestCase
                 'monitoring' => [
                     'type' => 'null',
                     'options' => []
-                ]
+                ],
+                'print_msg' => false
             ],
             $config
         );
@@ -52,7 +53,8 @@ class ConfigurationTest extends TestCase
                         'key1' => 'value1',
                         'key2' => 'value2'
                     ]
-                ]
+                ],
+                'print_msg' => true
             ]
         ];
 

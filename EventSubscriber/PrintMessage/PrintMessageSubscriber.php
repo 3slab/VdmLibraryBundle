@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * @package    3slab/VdmLibraryBundle
+ * @copyright  2020 Suez Smart Solutions 3S.lab
+ * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
+ */
+
+namespace Vdm\Bundle\LibraryBundle\EventSubscriber\PrintMessage;
+
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+
+/**
+ * Class PrintMessageSubscriber
+ * @package Vdm\Bundle\LibraryBundle\EventSubscriber\PrintMessage
+ */
+class PrintMessageSubscriber implements EventSubscriberInterface
+{
+    /**
+     * @var bool
+     */
+    protected $printMsg;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * PrintMessageSubscriber constructor.
+     * @param bool $printMsg
+     * @param LoggerInterface|null $logger
+     */
+    public function __construct(bool $printMsg = false, LoggerInterface $vdmLogger = null)
+    {
+        $this->printMsg = $printMsg;
+        $this->logger = $vdmLogger ?? new NullLogger();
+    }
+
+    /**
+     * Method executed on WorkerMessageReceivedEvent event
+     *
+     * @param WorkerMessageReceivedEvent $event
+     */
+    public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
+    {
+        $this->printMessageInEnvelope($event->getEnvelope());
+    }
+
+    /**
+     * Method executed on SendMessageToTransportsEvent event
+     *
+     * @param SendMessageToTransportsEvent $event
+     */
+    public function onSendMessageToTransportEvent(SendMessageToTransportsEvent $event)
+    {
+        $this->printMessageInEnvelope($event->getEnvelope());
+    }
+
+    /**
+     * @param Envelope $envelope
+     */
+    public function printMessageInEnvelope(Envelope $envelope)
+    {
+        if ($this->printMsg) {
+            $this->logger->debug('dumping message');
+            dump($envelope->getMessage());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @codeCoverageIgnore
+     */
+    public static function getSubscribedEvents(): array
+    {
+        // Ensure that this subscriber run before/after all the others
+        return [
+            WorkerMessageReceivedEvent::class => ['onWorkerMessageReceivedEvent', 9999],
+            SendMessageToTransportsEvent::class => ['onSendMessageToTransportEvent', -9999],
+        ];
+    }
+}

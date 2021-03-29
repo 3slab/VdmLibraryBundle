@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('app_name')->defaultValue('default')->end()
+                ->booleanNode('print_msg')->defaultFalse()->end()
                 ->arrayNode('monitoring')
                     ->addDefaultsIfNotSet()
                     ->children()

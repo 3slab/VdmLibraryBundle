@@ -42,6 +42,7 @@ class VdmLibraryExtensionTest extends LibraryKernelTestCase
         $container = static::$kernel->getContainer();
 
         $this->assertEquals('myapptest', $container->getParameter('vdm_library.app_name'));
+        $this->assertTrue($container->getParameter('vdm_library.print_msg'));
         $this->assertEquals('test', $container->getParameter('vdm_library.monitoring_type'));
         $this->assertEquals(['myoptions'], $container->getParameter('vdm_library.monitoring_options'));
     }
