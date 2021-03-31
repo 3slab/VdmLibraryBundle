@@ -45,6 +45,8 @@ class AbstractExcelFormatter
 
     protected const COLUMN_RANGE = [];
 
+    protected const ROW_RANGE = [];
+
     protected const IGNORE_CELLS = [];
 
     protected const DATE_FIELDS = [];
@@ -94,7 +96,9 @@ class AbstractExcelFormatter
         $this->worksheets[$worksheetTitle]['headers'] = [];
         $this->worksheets[$worksheetTitle]['countColumn'] = 0;
         $this->worksheets[$worksheetTitle]['ignoreCells'] = static::IGNORE_CELLS[$worksheetTitle] ?? [];
-        foreach ($worksheet->getRowIterator() as $index => $row) {
+        $startRow = static::ROW_RANGE[$worksheetTitle]['start'] ?? 1;
+        $endRow = static::ROW_RANGE[$worksheetTitle]['end'] ?? null;
+        foreach ($worksheet->getRowIterator($startRow, $endRow) as $index => $row) {
             yield from $this->readRow($row, $index, $worksheetTitle);
         }
     }
