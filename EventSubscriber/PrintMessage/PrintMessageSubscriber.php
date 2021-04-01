@@ -27,6 +27,11 @@ class PrintMessageSubscriber implements EventSubscriberInterface
     protected $printMsg;
 
     /**
+     * @var bool
+     */
+    protected $logMsg;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -34,11 +39,13 @@ class PrintMessageSubscriber implements EventSubscriberInterface
     /**
      * PrintMessageSubscriber constructor.
      * @param bool $printMsg
-     * @param LoggerInterface|null $logger
+     * @param bool $logMsg
+     * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(bool $printMsg = false, LoggerInterface $vdmLogger = null)
+    public function __construct(bool $printMsg = false, bool $logMsg = false, LoggerInterface $vdmLogger = null)
     {
         $this->printMsg = $printMsg;
+        $this->logMsg = $logMsg;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
 
@@ -67,9 +74,19 @@ class PrintMessageSubscriber implements EventSubscriberInterface
      */
     public function printMessageInEnvelope(Envelope $envelope)
     {
+        $message = $envelope->getMessage();
+
         if ($this->printMsg) {
-            $this->logger->debug('dumping message');
-            dump($envelope->getMessage());
+            echo '-------------------------'.PHP_EOL;
+            echo '---- dumping message ----'.PHP_EOL;
+            echo '-------------------------'.PHP_EOL;
+            dump($message);
+            echo '-------------------------'.PHP_EOL;
+            echo '-------------------------'.PHP_EOL;
+        }
+
+        if ($this->logMsg) {
+            $this->logger->debug('{message}', ['message' => $message]);
         }
     }
 

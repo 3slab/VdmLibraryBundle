@@ -11,7 +11,6 @@ namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
-use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
@@ -57,7 +56,7 @@ class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterfa
     public function onWorkerMessageHandledEvent(WorkerMessageHandledEvent $event)
     {
         $envelope = $event->getEnvelope();
-        if (!$this->isMessageSent($envelope)) {
+        if (!$this->isMessageHandled($envelope)) {
             return;
         }
 
@@ -83,7 +82,7 @@ class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterfa
      *
      * @return bool
      */
-    protected function isMessageSent(Envelope  $envelope): bool
+    protected function isMessageHandled(Envelope  $envelope): bool
     {
         $handledStamp = $envelope->last(HandledStamp::class);
         if (!$handledStamp) {

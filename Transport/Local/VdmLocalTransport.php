@@ -68,9 +68,8 @@ class VdmLocalTransport implements TransportInterface
             throw new InvalidArgumentException("consumer transport local cannot have a null file");
         }
 
-        $this->logger->info("local transport get message in file $this->file");
         $data = json_decode(file_get_contents($this->file), true);
-        $this->logger->info('{message}', ['message' => json_encode($data, JSON_PRETTY_PRINT)]);
+        $this->logger->debug("local transport get message {message}", ['message' => $data]);
 
         $envelope = $this->serializer->decode($data);
         $envelope = $envelope->with(new StopAfterHandleStamp());
@@ -83,7 +82,7 @@ class VdmLocalTransport implements TransportInterface
      */
     public function ack(Envelope $envelope): void
     {
-        $this->logger->info("local transport ack message");
+        $this->logger->debug("local transport ack message");
     }
 
     /**
@@ -91,7 +90,7 @@ class VdmLocalTransport implements TransportInterface
      */
     public function reject(Envelope $envelope): void
     {
-        $this->logger->info("local transport reject message");
+        $this->logger->debug("local transport reject message");
     }
 
     /**
@@ -99,9 +98,8 @@ class VdmLocalTransport implements TransportInterface
      */
     public function send(Envelope $envelope): Envelope
     {
-        $this->logger->info("local transport send message");
         $data = $this->serializer->encode($envelope);
-        $this->logger->info('{message}', ['message' => json_encode($data, JSON_PRETTY_PRINT)]);
+        $this->logger->debug("local transport send message {message}", ['message' => $data]);
 
 
         $outputFile = $this->file;
