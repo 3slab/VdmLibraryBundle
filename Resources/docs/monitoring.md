@@ -18,6 +18,7 @@ It tracks the following information :
 ## Configuration
 
 ```
+#config/packages/vdm_library.yaml
 vdm_library:
     monitoring:
         type: null
@@ -38,6 +39,7 @@ The `monitoring.options` is passed to [DogStatsd constructor](https://github.com
 
 
 ```
+#config/packages/vdm_library.yaml
 vdm_library:
     monitoring:
         type: statsd
