@@ -35,7 +35,7 @@ class StopWorkerOnExceptionSubscriberTest extends TestCase
         $subscriber->onWorkerRunningEvent($event);
     }
 
-    public function testWorkerNotStoppingIfFlagIsSet()
+    public function testWorkerStoppingIfFlagIsSet()
     {
         $stopWorker = new StopWorkerService();
         $stopWorker->setFlag(true);
@@ -47,6 +47,21 @@ class StopWorkerOnExceptionSubscriberTest extends TestCase
         $event = new WorkerRunningEvent($worker, false);
 
         $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker);
+        $subscriber->onWorkerRunningEvent($event);
+    }
+
+    public function testWorkerNotStoppingIfFlagIsSetButFeatureDisabled()
+    {
+        $stopWorker = new StopWorkerService();
+        $stopWorker->setFlag(true);
+
+        $worker = $this->createMock(Worker::class);
+        $worker->expects($this->never())
+            ->method('stop');
+
+        $event = new WorkerRunningEvent($worker, false);
+
+        $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker, false);
         $subscriber->onWorkerRunningEvent($event);
     }
 }

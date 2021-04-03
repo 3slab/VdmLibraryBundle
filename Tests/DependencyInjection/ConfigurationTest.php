@@ -36,7 +36,8 @@ class ConfigurationTest extends TestCase
                     'type' => 'null',
                     'options' => []
                 ],
-                'print_msg' => false
+                'print_msg' => false,
+                'stop_on_error' => true
             ],
             $config
         );
@@ -54,7 +55,8 @@ class ConfigurationTest extends TestCase
                         'key2' => 'value2'
                     ]
                 ],
-                'print_msg' => true
+                'print_msg' => true,
+                'stop_on_error' => false
             ]
         ];
 

@@ -27,6 +27,11 @@ class StopWorkerOnExceptionSubscriber implements EventSubscriberInterface
     private $logger;
 
     /**
+     * @var bool
+     */
+    private $stopOnError;
+
+    /**
      * @var StopWorkerService $stopWorker
      */
     private $stopWorker;
@@ -35,11 +40,13 @@ class StopWorkerOnExceptionSubscriber implements EventSubscriberInterface
      * StopWorkerOnExceptionSubscriber constructor.
      *
      * @param StopWorkerService $stopWorker
+     * @param bool $stopOnError
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
+    public function __construct(StopWorkerService $stopWorker, bool $stopOnError = true, LoggerInterface $vdmLogger = null)
     {
         $this->stopWorker = $stopWorker;
+        $this->stopOnError = $stopOnError;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
 
@@ -50,7 +57,7 @@ class StopWorkerOnExceptionSubscriber implements EventSubscriberInterface
      */
     public function onWorkerRunningEvent(WorkerRunningEvent $event): void
     {
-        if ($this->stopWorker->getThrowable()) {
+        if ($this->stopOnError && $this->stopWorker->getThrowable()) {
             $event->getWorker()->stop();
             $this->logger->debug('Exception thrown during message handling so worker is stopping');
         }

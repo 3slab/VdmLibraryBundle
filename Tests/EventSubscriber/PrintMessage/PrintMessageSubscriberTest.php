@@ -48,6 +48,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnWorkerMessageReceivedEventPrintDisabled()
     {
+        $this->setOutputCallback(function() {});
+
         $message = new \stdClass();
         $envelope = new Envelope($message);
 
@@ -59,6 +61,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnWorkerMessageReceivedEventPrintEnabled()
     {
+        $this->setOutputCallback(function() {});
+
         $message = new \stdClass();
         $envelope = new Envelope($message);
 
@@ -70,6 +74,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnSendMessageToTransportEventPrintDisabled()
     {
+        $this->setOutputCallback(function() {});
+
         $message = new \stdClass();
         $envelope = new Envelope($message);
 
@@ -81,6 +87,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnSendMessageToTransportEventPrintEnabled()
     {
+        $this->setOutputCallback(function() {});
+
         $message = new \stdClass();
         $envelope = new Envelope($message);
 

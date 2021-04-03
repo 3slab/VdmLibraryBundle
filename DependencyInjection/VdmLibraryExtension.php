@@ -42,6 +42,7 @@ class VdmLibraryExtension extends Extension
 
         $container->setParameter('vdm_library.app_name', $config['app_name']);
         $container->setParameter('vdm_library.print_msg', $config['print_msg']);
+        $container->setParameter('vdm_library.stop_on_error', $config['stop_on_error']);
         $container->setParameter('vdm_library.monitoring_type', $config['monitoring']['type']);
         $container->setParameter('vdm_library.monitoring_options', $config['monitoring']['options']);
     }

@@ -27,6 +27,11 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
     private $stopWorker;
 
     /**
+     * @var bool
+     */
+    private $stopOnError;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -35,11 +40,13 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
      * StopWorkerCheckFlagPresenceSubscriber constructor.
      *
      * @param StopWorkerService $stopWorker
+     * @param bool $stopOnError
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StopWorkerService $stopWorker, LoggerInterface $vdmLogger = null)
+    public function __construct(StopWorkerService $stopWorker, bool $stopOnError = true, LoggerInterface $vdmLogger = null)
     {
         $this->stopWorker = $stopWorker;
+        $this->stopOnError = $stopOnError;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
 
@@ -50,7 +57,7 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
      */
     public function onWorkerRunningEvent(WorkerRunningEvent $event)
     {
-        if ($this->stopWorker->getFlag()) {
+        if ($this->stopOnError && $this->stopWorker->getFlag()) {
             $event->getWorker()->stop();
             $this->logger->debug('Stop flag presence detected during WorkerRunningEvent event so worker is stopping');
         }

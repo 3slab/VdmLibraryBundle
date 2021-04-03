@@ -7,6 +7,7 @@ services:
         bind:
             $appName: '%vdm_library.app_name%'
             $printMsg: '%vdm_library.print_msg%'
+            $stopOnError: '%vdm_library.stop_on_error%'
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

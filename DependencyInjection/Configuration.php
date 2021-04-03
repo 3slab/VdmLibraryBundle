@@ -30,6 +30,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('app_name')->defaultValue('default')->end()
                 ->booleanNode('print_msg')->defaultFalse()->end()
+                ->booleanNode('stop_on_error')->defaultTrue()->end()
                 ->arrayNode('monitoring')
                     ->addDefaultsIfNotSet()
                     ->children()
