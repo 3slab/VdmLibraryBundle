@@ -10,6 +10,7 @@ namespace Vdm\Bundle\LibraryBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\ConsumeMessagesCommandCompilerPass;
 use Vdm\Bundle\LibraryBundle\DependencyInjection\Compiler\SetStorageCompilerPass;
 
 class VdmLibraryBundle extends Bundle
@@ -20,5 +21,6 @@ class VdmLibraryBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new SetStorageCompilerPass());
+        $container->addCompilerPass(new ConsumeMessagesCommandCompilerPass());
     }
 }
