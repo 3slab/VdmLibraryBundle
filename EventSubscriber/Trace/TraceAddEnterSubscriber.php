@@ -8,6 +8,8 @@
 
 namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Trace;
 
+use Symfony\Component\Messenger\Envelope;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\Model\Trace;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -46,7 +48,25 @@ class TraceAddEnterSubscriber implements EventSubscriberInterface
      */
     public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
     {
-        $message = $event->getEnvelope()->getMessage();
+        $this->addEnterTrace($event->getEnvelope());
+    }
+
+    /**
+     * Method executed on WorkerMessageReceivedEvent event
+     *
+     * @param CollectWorkerMessageReceivedEvent $event
+     */
+    public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
+    {
+        $this->addEnterTrace($event->getEnvelope());
+    }
+
+    /**
+     * @param Envelope $envelope
+     */
+    protected function addEnterTrace(Envelope $envelope)
+    {
+        $message = $envelope->getMessage();
         if (!$message instanceof TraceableMessageInterface) {
             $this->logger->debug(
                 'Trace {traceType} not added as message does not implement TraceableMessageInterface',
@@ -70,6 +90,7 @@ class TraceAddEnterSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageReceivedEvent::class => 'onCollectWorkerMessageReceivedEvent',
             WorkerMessageReceivedEvent::class => 'onWorkerMessageReceivedEvent',
         ];
     }

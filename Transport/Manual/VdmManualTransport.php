@@ -13,8 +13,9 @@ use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\TransportException;
 use Symfony\Component\Messenger\Transport\TransportInterface;
+use Vdm\Bundle\LibraryBundle\Transport\TransportCollectableInterface;
 
-class VdmManualTransport implements TransportInterface
+class VdmManualTransport implements TransportInterface, TransportCollectableInterface
 {
     /**
      * @var VdmManualExecutorInterface

@@ -17,8 +17,9 @@ use Symfony\Component\Messenger\Stamp\ErrorDetailsStamp;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Messenger\Transport\TransportInterface;
 use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
+use Vdm\Bundle\LibraryBundle\Transport\TransportCollectableInterface;
 
-class VdmLocalTransport implements TransportInterface
+class VdmLocalTransport implements TransportInterface, TransportCollectableInterface
 {
     /**
      * @var Filesystem

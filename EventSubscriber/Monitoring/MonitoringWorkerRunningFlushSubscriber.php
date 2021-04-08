@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerRunningEvent;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
 
 class MonitoringWorkerRunningFlushSubscriber implements EventSubscriberInterface
@@ -39,11 +40,29 @@ class MonitoringWorkerRunningFlushSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Method executed on onWorkerRunning event
+     * Method executed on WorkerRunning event
      *
      * @param WorkerRunningEvent $event
      */
     public function onWorkerRunningEvent(WorkerRunningEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Method executed on CollectWorkerRunning event
+     *
+     * @param CollectWorkerRunningEvent $event
+     */
+    public function onCollectWorkerRunningEvent(CollectWorkerRunningEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Flush monitoring stat to storage
+     */
+    protected function handleMonitoring()
     {
         $this->monitoring->flush();
         $this->logger->debug('metric storage flushed');
@@ -56,6 +75,7 @@ class MonitoringWorkerRunningFlushSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerRunningEvent::class => 'onCollectWorkerRunningEvent',
             WorkerRunningEvent::class => 'onWorkerRunningEvent',
         ];
     }

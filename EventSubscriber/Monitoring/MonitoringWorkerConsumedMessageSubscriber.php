@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
 use Psr\Log\NullLogger;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
@@ -49,6 +50,24 @@ class MonitoringWorkerConsumedMessageSubscriber implements EventSubscriberInterf
      */
     public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
     {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageReceivedEvent event
+     *
+     * @param CollectWorkerMessageReceivedEvent $event
+     */
+    public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Increment consumed stat in monitoring
+     */
+    protected function handleMonitoring()
+    {
         $this->monitoring->increment(Monitoring::CONSUMED_STAT, 1);
         $this->logger->debug('consumed message metric incremented');
     }
@@ -60,6 +79,7 @@ class MonitoringWorkerConsumedMessageSubscriber implements EventSubscriberInterf
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageReceivedEvent::class => 'onCollectWorkerMessageReceivedEvent',
             WorkerMessageReceivedEvent::class => 'onWorkerMessageReceivedEvent',
         ];
     }

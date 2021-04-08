@@ -14,6 +14,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
 
@@ -67,6 +69,26 @@ class StopWorkerAfterHandleStampSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * Method executed on CollectWorkerMessageFailedEvent event
+     *
+     * @param CollectWorkerMessageFailedEvent $event
+     */
+    public function onCollectWorkerMessageFailedEvent(CollectWorkerMessageFailedEvent $event)
+    {
+        $this->hasStopAfterHandlerStamp($event, 'CollectWorkerMessageFailedEvent');
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageHandledEvent event
+     *
+     * @param CollectWorkerMessageHandledEvent $event
+     */
+    public function onCollectWorkerMessageHandledEvent(CollectWorkerMessageHandledEvent $event)
+    {
+        $this->hasStopAfterHandlerStamp($event, 'CollectWorkerMessageHandledEvent');
+    }
+
+    /**
      * @param AbstractWorkerMessageEvent $event
      * @param string $eventName
      */
@@ -89,6 +111,8 @@ class StopWorkerAfterHandleStampSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageFailedEvent::class => 'onCollectWorkerMessageFailedEvent',
+            CollectWorkerMessageHandledEvent::class => 'onCollectWorkerMessageHandledEvent',
             WorkerMessageFailedEvent::class => 'onWorkerMessageFailedEvent',
             WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
         ];

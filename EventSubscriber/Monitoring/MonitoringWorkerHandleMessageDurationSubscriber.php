@@ -15,6 +15,9 @@ use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Psr\Log\LoggerInterface;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
 
@@ -55,9 +58,7 @@ class MonitoringWorkerHandleMessageDurationSubscriber implements EventSubscriber
      */
     public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
     {
-        $this->stopwatch->reset();
-        $this->stopwatch->start('time');
-        $this->logger->debug('duration metric start collection');;
+        $this->timeStatInit();
     }
 
     /**
@@ -81,16 +82,60 @@ class MonitoringWorkerHandleMessageDurationSubscriber implements EventSubscriber
     }
 
     /**
+     * Method executed on CollectWorkerMessageReceivedEvent event
+     *
+     * @param CollectWorkerMessageReceivedEvent $event
+     */
+    public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
+    {
+        $this->timeStatInit();
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageFailedEvent event
+     *
+     * @param CollectWorkerMessageFailedEvent $event
+     */
+    public function onCollectWorkerMessageFailedEvent(CollectWorkerMessageFailedEvent $event)
+    {
+        $this->timeStatStorage();
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageHandledEvent event
+     *
+     * @param CollectWorkerMessageHandledEvent $event
+     */
+    public function onCollectWorkerMessageHandledEvent(CollectWorkerMessageHandledEvent $event): void
+    {
+        $this->timeStatStorage();
+    }
+
+
+    /**
      * {@inheritDoc}
      * @codeCoverageIgnore
      */
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageReceivedEvent::class => 'onCollectWorkerMessageReceivedEvent',
+            CollectWorkerMessageHandledEvent::class => 'onCollectWorkerMessageHandledEvent',
+            CollectWorkerMessageFailedEvent::class => 'onCollectWorkerMessageFailedEvent',
             WorkerMessageReceivedEvent::class => 'onWorkerMessageReceivedEvent',
             WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
             WorkerMessageFailedEvent::class => 'onWorkerMessageFailedEvent',
         ];
+    }
+
+    /**
+     * Start "handling time" metric collection
+     */
+    protected function timeStatInit(): void
+    {
+        $this->stopwatch->reset();
+        $this->stopwatch->start('time');
+        $this->logger->debug('duration metric start collection');;
     }
 
     /**

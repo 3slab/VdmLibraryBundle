@@ -11,7 +11,9 @@ namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\Monitoring;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Symfony\Component\Messenger\Worker;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerRunningEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerRunningFlushSubscriber;
+use Vdm\Bundle\LibraryBundle\Service\CollectWorker;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
 
 class MonitoringWorkerRunningFlushSubscriberTest extends TestCase
@@ -29,5 +31,20 @@ class MonitoringWorkerRunningFlushSubscriberTest extends TestCase
 
         $subscriber = new MonitoringWorkerRunningFlushSubscriber($storage);
         $subscriber->onWorkerRunningEvent($event);
+    }
+
+    public function testCollectWorkerRunningFlushMetric()
+    {
+        $storage = $this->createMock(MonitoringService::class);
+        $storage->expects($this->once())
+            ->method('flush')
+            ->with();
+
+        $worker = $this->createMock(CollectWorker::class);
+
+        $event = new CollectWorkerRunningEvent($worker, false);
+
+        $subscriber = new MonitoringWorkerRunningFlushSubscriber($storage);
+        $subscriber->onCollectWorkerRunningEvent($event);
     }
 }

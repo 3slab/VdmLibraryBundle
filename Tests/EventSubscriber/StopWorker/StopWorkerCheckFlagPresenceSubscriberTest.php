@@ -11,12 +11,14 @@ namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\StopWorker;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
 use Symfony\Component\Messenger\Worker;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerRunningEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker\StopWorkerCheckFlagPresenceSubscriber;
+use Vdm\Bundle\LibraryBundle\Service\CollectWorker;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 class StopWorkerCheckFlagPresenceSubscriberTest extends TestCase
 {
-    public function testWorkerNotStoppingIfFlagNotSet()
+    public function testWorkerNotStoppingIfFlagNotSetOnWorkerRunningEvent()
     {
         $stopWorker = new StopWorkerService();
 
@@ -30,7 +32,7 @@ class StopWorkerCheckFlagPresenceSubscriberTest extends TestCase
         $subscriber->onWorkerRunningEvent($event);
     }
 
-    public function testWorkerStoppingIfFlagIsSet()
+    public function testWorkerStoppingIfFlagIsSetOnWorkerRunningEvent()
     {
         $stopWorker = new StopWorkerService();
         $stopWorker->setFlag(true);
@@ -45,7 +47,7 @@ class StopWorkerCheckFlagPresenceSubscriberTest extends TestCase
         $subscriber->onWorkerRunningEvent($event);
     }
 
-    public function testWorkerNotStoppingIfFlagIsSetButFeatureIsDisabled()
+    public function testWorkerNotStoppingIfFlagIsSetButFeatureIsDisabledOnWorkerRunningEvent()
     {
         $stopWorker = new StopWorkerService();
         $stopWorker->setFlag(true);
@@ -58,5 +60,49 @@ class StopWorkerCheckFlagPresenceSubscriberTest extends TestCase
 
         $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker, false);
         $subscriber->onWorkerRunningEvent($event);
+    }
+
+    public function testWorkerNotStoppingIfFlagNotSetOnCollectWorkerRunningEvent()
+    {
+        $stopWorker = new StopWorkerService();
+
+        $worker = $this->createMock(CollectWorker::class);
+        $worker->expects($this->never())
+            ->method('stop');
+
+        $event = new CollectWorkerRunningEvent($worker, false);
+
+        $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker);
+        $subscriber->onCollectWorkerRunningEvent($event);
+    }
+
+    public function testWorkerStoppingIfFlagIsSetOnCollectWorkerRunningEvent()
+    {
+        $stopWorker = new StopWorkerService();
+        $stopWorker->setFlag(true);
+
+        $worker = $this->createMock(CollectWorker::class);
+        $worker->expects($this->once())
+            ->method('stop');
+
+        $event = new CollectWorkerRunningEvent($worker, false);
+
+        $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker);
+        $subscriber->onCollectWorkerRunningEvent($event);
+    }
+
+    public function testWorkerNotStoppingIfFlagIsSetButFeatureIsDisabledOnCollectWorkerRunningEvent()
+    {
+        $stopWorker = new StopWorkerService();
+        $stopWorker->setFlag(true);
+
+        $worker = $this->createMock(CollectWorker::class);
+        $worker->expects($this->never())
+            ->method('stop');
+
+        $event = new CollectWorkerRunningEvent($worker, false);
+
+        $subscriber = new StopWorkerCheckFlagPresenceSubscriber($stopWorker, false);
+        $subscriber->onCollectWorkerRunningEvent($event);
     }
 }

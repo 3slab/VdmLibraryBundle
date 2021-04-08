@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
 use Psr\Log\NullLogger;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerStartedEvent;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
@@ -53,6 +54,24 @@ class MonitoringWorkerStartedSubscriber implements EventSubscriberInterface
      */
     public function onWorkerStartedEvent(WorkerStartedEvent $event)
     {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Method executed on CollectWorkerStartedEvent event
+     *
+     * @param CollectWorkerStartedEvent $event
+     */
+    public function onCollectWorkerStartedEvent(CollectWorkerStartedEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Set running stat
+     */
+    protected function handleMonitoring(): void
+    {
         $this->monitoring->update(Monitoring::RUNNING_STAT, 1);
         $this->logger->debug('worker started metric sent');
     }
@@ -64,6 +83,7 @@ class MonitoringWorkerStartedSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerStartedEvent::class => 'onCollectWorkerStartedEvent',
             WorkerStartedEvent::class => 'onWorkerStartedEvent',
         ];
     }

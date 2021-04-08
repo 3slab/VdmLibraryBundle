@@ -14,6 +14,9 @@ use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerHandleMessageMemorySubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
@@ -65,5 +68,27 @@ class MonitoringWorkerHandleMessageMemorySubscriberTest extends TestCase
         $subscriber = new MonitoringWorkerHandleMessageMemorySubscriber($this->storage);
         $subscriber->onWorkerMessageReceivedEvent(new WorkerMessageReceivedEvent($this->envelope, 'collect'));
         $subscriber->onWorkerMessageFailedEvent($event);
+    }
+
+    public function testCollectWorkerMessageHandledSendMetric()
+    {
+        $event = new CollectWorkerMessageHandledEvent($this->envelope, 'collect');
+
+        $subscriber = new MonitoringWorkerHandleMessageMemorySubscriber($this->storage);
+        $subscriber->onCollectWorkerMessageReceivedEvent(
+            new CollectWorkerMessageReceivedEvent($this->envelope, 'collect')
+        );
+        $subscriber->onCollectWorkerMessageHandledEvent($event);
+    }
+
+    public function testCollectWorkerMessageFailedSendMetric()
+    {
+        $event = new CollectWorkerMessageFailedEvent($this->envelope, 'collect', new \Exception('here'));
+
+        $subscriber = new MonitoringWorkerHandleMessageMemorySubscriber($this->storage);
+        $subscriber->onCollectWorkerMessageReceivedEvent(
+            new CollectWorkerMessageReceivedEvent($this->envelope, 'collect')
+        );
+        $subscriber->onCollectWorkerMessageFailedEvent($event);
     }
 }

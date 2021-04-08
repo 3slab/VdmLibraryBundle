@@ -9,6 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
 use Psr\Log\NullLogger;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
@@ -49,6 +50,24 @@ class MonitoringWorkerMessageFailedSubscriber implements EventSubscriberInterfac
      */
     public function onWorkerMessageFailedEvent(WorkerMessageFailedEvent $event)
     {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageFailedEvent event
+     *
+     * @param CollectWorkerMessageFailedEvent $event
+     */
+    public function onCollectWorkerMessageFailedEvent(CollectWorkerMessageFailedEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Handle increment error stat
+     */
+    protected function handleMonitoring()
+    {
         $this->monitoring->increment(Monitoring::ERROR_STAT, 1);
         $this->logger->debug('error message metric incremented');
     }
@@ -60,6 +79,7 @@ class MonitoringWorkerMessageFailedSubscriber implements EventSubscriberInterfac
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageFailedEvent::class => 'onCollectWorkerMessageFailedEvent',
             WorkerMessageFailedEvent::class => 'onWorkerMessageFailedEvent',
         ];
     }

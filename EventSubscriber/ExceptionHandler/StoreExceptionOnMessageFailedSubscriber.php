@@ -14,6 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Stamp\SentToFailureTransportStamp;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 /**
@@ -52,6 +53,24 @@ class StoreExceptionOnMessageFailedSubscriber implements EventSubscriberInterfac
      */
     public function onWorkerMessageFailedEvent(WorkerMessageFailedEvent $event)
     {
+        $this->storeException($event);
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageFailedEvent event
+     *
+     * @param CollectWorkerMessageFailedEvent $event
+     */
+    public function onCollectWorkerMessageFailedEvent(CollectWorkerMessageFailedEvent $event)
+    {
+        $this->storeException($event);
+    }
+
+    /**
+     * @param WorkerMessageFailedEvent|CollectWorkerMessageFailedEvent $event
+     */
+    public function storeException($event)
+    {
         // Retry strategy kicked in
         if ($event->willRetry()) {
             return;
@@ -88,6 +107,7 @@ class StoreExceptionOnMessageFailedSubscriber implements EventSubscriberInterfac
     {
         return [
             // Should be executed after all listener related to retry or failed transport strategy have run
+            CollectWorkerMessageFailedEvent::class => ['onCollectWorkerMessageFailedEvent', -200],
             WorkerMessageFailedEvent::class => ['onWorkerMessageFailedEvent', -200],
         ];
     }

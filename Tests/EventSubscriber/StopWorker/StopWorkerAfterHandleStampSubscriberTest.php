@@ -12,6 +12,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker\StopWorkerAfterHandleStampSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 use Vdm\Bundle\LibraryBundle\Stamp\StopAfterHandleStamp;
@@ -71,6 +73,62 @@ class StopWorkerAfterHandleStampSubscriberTest extends TestCase
 
         $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
         $subscriber->onWorkerMessageFailedEvent($event);
+
+        $this->assertTrue($stopService->getFlag());
+    }
+
+    public function testOnCollectWorkerMessageHandledEventWithoutStopAfterHandleStamp()
+    {
+        $stopService = new StopWorkerService();
+
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+        $event = new CollectWorkerMessageHandledEvent($envelope, 'collect');
+
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onCollectWorkerMessageHandledEvent($event);
+
+        $this->assertFalse($stopService->getFlag());
+    }
+
+    public function testOnCollectWorkerMessageHandledEventWithStopAfterHandleStamp()
+    {
+        $stopService = new StopWorkerService();
+
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
+        $event = new CollectWorkerMessageHandledEvent($envelope, 'collect');
+
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onCollectWorkerMessageHandledEvent($event);
+
+        $this->assertTrue($stopService->getFlag());
+    }
+
+    public function testOnCollectWorkerMessageFailedEventWithoutStopAfterHandleStamp()
+    {
+        $stopService = new StopWorkerService();
+
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+        $event = new CollectWorkerMessageFailedEvent($envelope, 'collect', new \Exception());
+
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onCollectWorkerMessageFailedEvent($event);
+
+        $this->assertFalse($stopService->getFlag());
+    }
+
+    public function testOnCollectWorkerMessageFailedEventWithStopAfterHandleStamp()
+    {
+        $stopService = new StopWorkerService();
+
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message, [new StopAfterHandleStamp()]);
+        $event = new CollectWorkerMessageFailedEvent($envelope, 'collect', new \Exception());
+
+        $subscriber = new StopWorkerAfterHandleStampSubscriber($stopService);
+        $subscriber->onCollectWorkerMessageFailedEvent($event);
 
         $this->assertTrue($stopService->getFlag());
     }

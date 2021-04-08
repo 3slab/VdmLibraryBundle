@@ -9,8 +9,11 @@
 namespace Vdm\Bundle\LibraryBundle\Stamp;
 
 use Symfony\Component\Messenger\Stamp\NonSendableStampInterface;
-use Symfony\Component\Messenger\Stamp\StampInterface;
 
-final class StopAfterHandleStamp implements StampInterface, NonSendableStampInterface
+/**
+ * Class CollectedByWorkerStamp
+ * @package Vdm\Bundle\LibraryBundle\Stamp
+ */
+class CollectedByWorkerStamp implements NonSendableStampInterface
 {
 }

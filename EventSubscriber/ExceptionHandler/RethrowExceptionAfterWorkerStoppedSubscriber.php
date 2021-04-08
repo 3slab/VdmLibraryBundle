@@ -13,6 +13,7 @@ use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\RuntimeException;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerStoppedEvent;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 /**
@@ -51,6 +52,25 @@ class RethrowExceptionAfterWorkerStoppedSubscriber implements EventSubscriberInt
      */
     public function onWorkerStoppedEvent(WorkerStoppedEvent $event): void
     {
+        $this->rethrowWorkerException();
+    }
+
+    /**
+     * Method executed on CollectWorkerStoppedEvent event
+     *
+     * @param CollectWorkerStoppedEvent $event
+     */
+    public function onCollectWorkerStoppedEvent(CollectWorkerStoppedEvent $event): void
+    {
+        $this->rethrowWorkerException();
+    }
+
+    /**
+     * If worker exception caught during message handling, rethrow it on stop event to exit
+     * with an error code different from 0
+     */
+    protected function rethrowWorkerException(): void
+    {
         $throwable = $this->stopWorker->getThrowable();
         if (!$throwable) {
             return;
@@ -72,6 +92,7 @@ class RethrowExceptionAfterWorkerStoppedSubscriber implements EventSubscriberInt
     {
         return [
             // Execute after monitoring tracking listener
+            CollectWorkerStoppedEvent::class => ['onCollectWorkerStoppedEvent', -200],
             WorkerStoppedEvent::class => ['onWorkerStoppedEvent', -200],
         ];
     }

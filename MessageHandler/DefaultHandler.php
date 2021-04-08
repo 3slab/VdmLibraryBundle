@@ -56,7 +56,7 @@ abstract class DefaultHandler implements MessageSubscriberInterface
      */
     public static function getHandledMessages(): iterable
     {
-        // Low priority to be sure it is loaded after project handler and so removed from DI
+        // Low priority to be sure it is loaded after project handler if method not overridden
         yield Message::class => [
             'priority' => -1000
         ];

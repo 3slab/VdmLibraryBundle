@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\Monitoring;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerMessageFailedSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
@@ -32,5 +33,21 @@ class MonitoringWorkerMessageFailedSubscriberTest extends TestCase
 
         $subscriber = new MonitoringWorkerMessageFailedSubscriber($storage);
         $subscriber->onWorkerMessageFailedEvent($event);
+    }
+
+    public function testCollectWorkerErrorMessageSendMetric()
+    {
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+
+        $storage = $this->createMock(MonitoringService::class);
+        $storage->expects($this->once())
+            ->method('increment')
+            ->with(Monitoring::ERROR_STAT, 1);
+
+        $event = new CollectWorkerMessageFailedEvent($envelope, 'transport', new \Exception('error'));
+
+        $subscriber = new MonitoringWorkerMessageFailedSubscriber($storage);
+        $subscriber->onCollectWorkerMessageFailedEvent($event);
     }
 }

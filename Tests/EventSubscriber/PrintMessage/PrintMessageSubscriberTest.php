@@ -16,6 +16,7 @@ use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\VarDumper\VarDumper;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\PrintMessage\PrintMessageSubscriber;
 
 /**
@@ -68,6 +69,36 @@ class PrintMessageSubscriberTest extends TestCase
 
         $subscriber = new PrintMessageSubscriber(true);
         $subscriber->onWorkerMessageReceivedEvent(new WorkerMessageReceivedEvent($envelope, 'transport'));
+
+        $this->assertEquals($message, $this->varDumperArg);
+    }
+
+    public function testOnCollectWorkerMessageReceivedEventPrintDisabled()
+    {
+        $this->setOutputCallback(function() {});
+
+        $message = new \stdClass();
+        $envelope = new Envelope($message);
+
+        $subscriber = new PrintMessageSubscriber();
+        $subscriber->onCollectWorkerMessageReceivedEvent(
+            new CollectWorkerMessageReceivedEvent($envelope, 'transport')
+        );
+
+        $this->assertNull($this->varDumperArg);
+    }
+
+    public function testOnCollectWorkerMessageReceivedEventPrintEnabled()
+    {
+        $this->setOutputCallback(function() {});
+
+        $message = new \stdClass();
+        $envelope = new Envelope($message);
+
+        $subscriber = new PrintMessageSubscriber(true);
+        $subscriber->onCollectWorkerMessageReceivedEvent(
+            new CollectWorkerMessageReceivedEvent($envelope, 'transport')
+        );
 
         $this->assertEquals($message, $this->varDumperArg);
     }

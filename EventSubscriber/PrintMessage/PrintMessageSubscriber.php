@@ -14,6 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 
 /**
  * Class PrintMessageSubscriber
@@ -47,6 +48,16 @@ class PrintMessageSubscriber implements EventSubscriberInterface
         $this->printMsg = $printMsg;
         $this->logMsg = $logMsg;
         $this->logger = $vdmLogger ?? new NullLogger();
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageReceivedEvent event
+     *
+     * @param CollectWorkerMessageReceivedEvent $event
+     */
+    public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
+    {
+        $this->printMessageInEnvelope($event->getEnvelope());
     }
 
     /**
@@ -98,6 +109,7 @@ class PrintMessageSubscriber implements EventSubscriberInterface
     {
         // Ensure that this subscriber run before/after all the others
         return [
+            CollectWorkerMessageReceivedEvent::class => ['onCollectWorkerMessageReceivedEvent', 9999],
             WorkerMessageReceivedEvent::class => ['onWorkerMessageReceivedEvent', 9999],
             SendMessageToTransportsEvent::class => ['onSendMessageToTransportEvent', -9999],
         ];

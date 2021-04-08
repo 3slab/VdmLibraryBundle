@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerHandledMessageSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
@@ -48,5 +49,36 @@ class MonitoringWorkerHandledMessageSubscriberTest extends TestCase
 
         $subscriber = new MonitoringWorkerHandledMessageSubscriber($storage);
         $subscriber->onWorkerMessageHandledEvent($event);
+    }
+
+    public function testCollectWorkerHandledMessageSendMetric()
+    {
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message, [new HandledStamp(1, 'handler')]);
+
+        $storage = $this->createMock(MonitoringService::class);
+        $storage->expects($this->once())
+            ->method('increment')
+            ->with(Monitoring::HANDLED_STAT, 1);
+
+        $event = new CollectWorkerMessageHandledEvent($envelope, 'collect');
+
+        $subscriber = new MonitoringWorkerHandledMessageSubscriber($storage);
+        $subscriber->onCollectWorkerMessageHandledEvent($event);
+    }
+
+    public function testCollectWorkerHandledMessageMetricNotSentIfNotHandled()
+    {
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+
+        $storage = $this->createMock(MonitoringService::class);
+        $storage->expects($this->never())
+            ->method('increment');
+
+        $event = new CollectWorkerMessageHandledEvent($envelope, 'collect');
+
+        $subscriber = new MonitoringWorkerHandledMessageSubscriber($storage);
+        $subscriber->onCollectWorkerMessageHandledEvent($event);
     }
 }

@@ -12,6 +12,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
+use Symfony\Component\Messenger\Worker;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerRunningEvent;
+use Vdm\Bundle\LibraryBundle\Service\CollectWorker;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 /**
@@ -57,8 +60,26 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
      */
     public function onWorkerRunningEvent(WorkerRunningEvent $event)
     {
+        $this->checkStopWorkerFlag($event->getWorker());
+    }
+
+    /**
+     * Method executed on onCollectWorkerRunning event
+     *
+     * @param CollectWorkerRunningEvent $event
+     */
+    public function onCollectWorkerRunningEvent(CollectWorkerRunningEvent $event)
+    {
+        $this->checkStopWorkerFlag($event->getWorker());
+    }
+
+    /**
+     * @param Worker|CollectWorker $worker
+     */
+    protected function checkStopWorkerFlag($worker)
+    {
         if ($this->stopOnError && $this->stopWorker->getFlag()) {
-            $event->getWorker()->stop();
+            $worker->stop();
             $this->logger->debug('Stop flag presence detected during WorkerRunningEvent event so worker is stopping');
         }
     }
@@ -70,6 +91,7 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerRunningEvent::class => 'onCollectWorkerRunningEvent',
             WorkerRunningEvent::class => 'onWorkerRunningEvent',
         ];
     }

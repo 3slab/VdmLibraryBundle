@@ -15,12 +15,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
 use Symfony\Component\Messenger\Exception\RuntimeException;
 use Symfony\Component\Messenger\Worker;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerStoppedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\ExceptionHandler\RethrowExceptionAfterWorkerStoppedSubscriber;
+use Vdm\Bundle\LibraryBundle\Service\CollectWorker;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 class RethrowExceptionAfterWorkerStoppedSubscriberTest extends TestCase
 {
-    public function testExceptionNotThrownIfNotCaughtDuringMessageHandling()
+    public function testExceptionNotThrownIfNotCaughtDuringMessageHandlingOnWorkerStoppedEvent()
     {
         $stopWorker = new StopWorkerService();
 
@@ -33,7 +35,7 @@ class RethrowExceptionAfterWorkerStoppedSubscriberTest extends TestCase
         $this->assertNull($result);
     }
 
-    public function testWorkerNotStoppingIfExceptionCaught()
+    public function testWorkerNotStoppingIfExceptionCaughtOnWorkerStoppedEvent()
     {
         $this->expectException(RuntimeException::class);
 
@@ -46,5 +48,33 @@ class RethrowExceptionAfterWorkerStoppedSubscriberTest extends TestCase
 
         $subscriber = new RethrowExceptionAfterWorkerStoppedSubscriber($stopWorker);
         $subscriber->onWorkerStoppedEvent($event);
+    }
+
+    public function testExceptionNotThrownIfNotCaughtDuringMessageHandlingOnCollectWorkerStoppedEvent()
+    {
+        $stopWorker = new StopWorkerService();
+
+        $worker = $this->createMock(CollectWorker::class);
+        $event = new CollectWorkerStoppedEvent($worker);
+
+        $subscriber = new RethrowExceptionAfterWorkerStoppedSubscriber($stopWorker);
+        $result = $subscriber->onCollectWorkerStoppedEvent($event);
+
+        $this->assertNull($result);
+    }
+
+    public function testWorkerNotStoppingIfExceptionCaughtOnCollectWorkerStoppedEvent()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $stopWorker = new StopWorkerService();
+        $exception = new Exception('error');
+        $stopWorker->setThrowable($exception);
+
+        $worker = $this->createMock(CollectWorker::class);
+        $event = new CollectWorkerStoppedEvent($worker);
+
+        $subscriber = new RethrowExceptionAfterWorkerStoppedSubscriber($stopWorker);
+        $subscriber->onCollectWorkerStoppedEvent($event);
     }
 }

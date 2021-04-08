@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\Tests\EventSubscriber\Monitoring;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring\MonitoringWorkerConsumedMessageSubscriber;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
@@ -18,7 +19,7 @@ use Vdm\Bundle\LibraryBundle\Tests\Fixtures\AppBundle\Message\DefaultMessage;
 
 class MonitoringWorkerConsumedMessageSubscriberTest extends TestCase
 {
-    public function testWorkerConsumedMessageSendMetric()
+    public function testWorkerConsumedMessageSendMetricOnWorkerMessageReceivedEvent()
     {
         $message = new DefaultMessage();
         $envelope = new Envelope($message);
@@ -32,5 +33,21 @@ class MonitoringWorkerConsumedMessageSubscriberTest extends TestCase
 
         $subscriber = new MonitoringWorkerConsumedMessageSubscriber($storage);
         $subscriber->onWorkerMessageReceivedEvent($event);
+    }
+
+    public function testWorkerConsumedMessageSendMetricOnCollectWorkerMessageReceivedEvent()
+    {
+        $message = new DefaultMessage();
+        $envelope = new Envelope($message);
+
+        $storage = $this->createMock(MonitoringService::class);
+        $storage->expects($this->once())
+            ->method('increment')
+            ->with(Monitoring::CONSUMED_STAT, 1);
+
+        $event = new CollectWorkerMessageReceivedEvent($envelope, 'collect');
+
+        $subscriber = new MonitoringWorkerConsumedMessageSubscriber($storage);
+        $subscriber->onCollectWorkerMessageReceivedEvent($event);
     }
 }

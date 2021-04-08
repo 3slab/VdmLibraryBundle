@@ -11,6 +11,7 @@ namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
 use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
@@ -55,7 +56,26 @@ class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterfa
      */
     public function onWorkerMessageHandledEvent(WorkerMessageHandledEvent $event)
     {
-        $envelope = $event->getEnvelope();
+        $this->handleMonitoring($event->getEnvelope());
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageHandledEvent event
+     *
+     * @param CollectWorkerMessageHandledEvent $event
+     */
+    public function onCollectWorkerMessageHandledEvent(CollectWorkerMessageHandledEvent $event)
+    {
+        $this->handleMonitoring($event->getEnvelope());
+    }
+
+    /**
+     * Increment handled stat in monitoring
+     *
+     * @param Envelope $envelope
+     */
+    protected function handleMonitoring(Envelope $envelope)
+    {
         if (!$this->isMessageHandled($envelope)) {
             return;
         }
@@ -71,6 +91,7 @@ class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterfa
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageHandledEvent::class => 'onCollectWorkerMessageHandledEvent',
             WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
         ];
     }

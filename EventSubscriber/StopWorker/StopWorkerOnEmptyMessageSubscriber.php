@@ -15,16 +15,19 @@ use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageFailedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
 use Vdm\Bundle\LibraryBundle\Model\IsEmptyMessageInterface;
 use Vdm\Bundle\LibraryBundle\Model\Message;
 use Vdm\Bundle\LibraryBundle\Service\StopWorkerService;
 
 /**
- * Class StopWorkOnEmptyMessageSubscriber
+ * Class StopWorkerOnEmptyMessageSubscriber
  *
  * @package Vdm\Bundle\LibraryBundle\EventSubscriber\StopWorker
  */
-class StopWorkOnEmptyMessageSubscriber implements EventSubscriberInterface
+class StopWorkerOnEmptyMessageSubscriber implements EventSubscriberInterface
 {
     /**
      * @var StopWorkerService $stopWorker
@@ -79,6 +82,36 @@ class StopWorkOnEmptyMessageSubscriber implements EventSubscriberInterface
     }
 
     /**
+     * Method executed on CollectWorkerMessageFailedEvent event
+     *
+     * @param CollectWorkerMessageFailedEvent $event
+     */
+    public function onCollectWorkerMessageFailedEvent(CollectWorkerMessageFailedEvent $event)
+    {
+        $this->isEmptyMessage($event, 'CollectWorkerMessageFailedEvent');
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageHandledEvent event
+     *
+     * @param CollectWorkerMessageHandledEvent $event
+     */
+    public function onCollectWorkerMessageHandledEvent(CollectWorkerMessageHandledEvent $event)
+    {
+        $this->isEmptyMessage($event, 'CollectWorkerMessageReceivedEvent');
+    }
+
+    /**
+     * Method executed on CollectWorkerMessageReceivedEvent event
+     *
+     * @param CollectWorkerMessageReceivedEvent $event
+     */
+    public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
+    {
+        $this->isEmptyMessage($event, 'CollectWorkerMessageReceivedEvent');
+    }
+
+    /**
      * @param AbstractWorkerMessageEvent $event
      * @param string $eventName
      */
@@ -99,10 +132,11 @@ class StopWorkOnEmptyMessageSubscriber implements EventSubscriberInterface
         );
         $this->stopWorker->setFlag(true);
 
-        if ($event instanceof WorkerMessageReceivedEvent) {
+        if ($event instanceof WorkerMessageReceivedEvent || $event instanceof CollectWorkerMessageReceivedEvent) {
             $event->shouldHandle(false);
             $this->logger->debug(
-                'Set ShouldHandle flag on WorkerMessageReceivedEvent event to false as the message is empty'
+                'Set ShouldHandle flag on {eventName} event to false as the message is empty',
+                ['eventName' => $eventName]
             );
         }
     }
@@ -114,6 +148,9 @@ class StopWorkOnEmptyMessageSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
+            CollectWorkerMessageFailedEvent::class => 'onCollectWorkerMessageFailedEvent',
+            CollectWorkerMessageHandledEvent::class => 'onCollectWorkerMessageHandledEvent',
+            CollectWorkerMessageReceivedEvent::class => 'onCollectWorkerMessageReceivedEvent',
             WorkerMessageFailedEvent::class => 'onWorkerMessageFailedEvent',
             WorkerMessageHandledEvent::class => 'onWorkerMessageHandledEvent',
             WorkerMessageReceivedEvent::class => 'onWorkerMessageReceivedEvent',
