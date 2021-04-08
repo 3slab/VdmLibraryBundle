@@ -104,7 +104,7 @@ class StatsDStorage implements StorageInterface
         $config['global_tags'] = [
             'appName' => $this->appName,
         ];
-        
+
         return array_replace([
             'host' => 'localhost',
             'port' => 9125,

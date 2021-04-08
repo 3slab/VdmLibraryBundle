@@ -38,7 +38,7 @@ class MonitoringWorkerHandleMessageMemorySubscriberTest extends TestCase
         $this->storage = $this->createMock(MonitoringService::class);
         $this->storage->expects($this->once())
             ->method('update')
-            ->will($this->returnCallback(function($key, $value) {
+            ->will($this->returnCallback(function ($key, $value) {
                 $this->assertEquals(Monitoring::MEMORY_STAT, $key);
                 $this->assertEquals(memory_get_usage(true), $value);
             }));

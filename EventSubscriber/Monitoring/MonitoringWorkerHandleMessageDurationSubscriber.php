@@ -135,7 +135,7 @@ class MonitoringWorkerHandleMessageDurationSubscriber implements EventSubscriber
     {
         $this->stopwatch->reset();
         $this->stopwatch->start('time');
-        $this->logger->debug('duration metric start collection');;
+        $this->logger->debug('duration metric start collection');
     }
 
     /**

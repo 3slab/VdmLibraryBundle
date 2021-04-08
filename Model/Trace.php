@@ -15,8 +15,8 @@ namespace Vdm\Bundle\LibraryBundle\Model;
  */
 class Trace
 {
-    CONST ENTER = 'enter';
-    const EXIT = 'exit';
+    public const ENTER = 'enter';
+    public const EXIT = 'exit';
 
     /**
      * @var string

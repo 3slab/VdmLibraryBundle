@@ -21,7 +21,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
  */
 abstract class DefaultHandler implements MessageSubscriberInterface
 {
-    /** 
+    /**
      * @var LoggerInterface $logger
     */
     protected $logger;
@@ -39,7 +39,7 @@ abstract class DefaultHandler implements MessageSubscriberInterface
     /**
      * Default handler implementation.
      * Does nothing on message because it should be overridden in project code.
-     * 
+     *
      * @codeCoverageIgnore
      *
      * @param Message $message

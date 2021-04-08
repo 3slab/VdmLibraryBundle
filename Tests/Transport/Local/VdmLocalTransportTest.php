@@ -30,7 +30,7 @@ class VdmLocalTransportTest extends TestCase
 
     public function testGet()
     {
-        $file = __DIR__.DIRECTORY_SEPARATOR.'file.json';
+        $file = __DIR__ . DIRECTORY_SEPARATOR . 'file.json';
         $message = new \stdClass();
 
         $serializer = $this->createMock(SerializerInterface::class);
@@ -80,8 +80,8 @@ class VdmLocalTransportTest extends TestCase
 
     public function testSendWithError()
     {
-        $file = __DIR__.DIRECTORY_SEPARATOR.'file.json';
-        $errorFile = __DIR__.DIRECTORY_SEPARATOR.'file-failed.json';
+        $file = __DIR__ . DIRECTORY_SEPARATOR . 'file.json';
+        $errorFile = __DIR__ . DIRECTORY_SEPARATOR . 'file-failed.json';
 
         $data = ['key' => 'value'];
         $message = new DefaultMessage($data);

@@ -103,7 +103,7 @@ class MonitoringWorkerHandledMessageSubscriber implements EventSubscriberInterfa
      *
      * @return bool
      */
-    protected function isMessageHandled(Envelope  $envelope): bool
+    protected function isMessageHandled(Envelope $envelope): bool
     {
         $handledStamp = $envelope->last(HandledStamp::class);
         if (!$handledStamp) {

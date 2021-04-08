@@ -41,9 +41,9 @@ class StopWorkerService
 
     /**
      * Set $flag
-     * 
+     *
      * @var bool $flag
-     * 
+     *
      * @return StopWorkerService
      */
     public function setFlag(bool $flag): self

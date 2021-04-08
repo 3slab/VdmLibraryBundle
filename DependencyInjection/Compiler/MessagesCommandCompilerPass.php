@@ -40,11 +40,17 @@ class MessagesCommandCompilerPass implements CompilerPassInterface
 
         $consumeCommandDefinition->setArgument(1, new Reference('messenger.receiver_locator'));
         $consumeCommandDefinition->setArgument(2, new Reference('event_dispatcher'));
-        $consumeCommandDefinition->setArgument(3, new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        $consumeCommandDefinition->setArgument(
+            3,
+            new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)
+        );
 
         $collectCommandDefinition->setArgument(1, new Reference('messenger.receiver_locator'));
         $collectCommandDefinition->setArgument(2, new Reference('event_dispatcher'));
-        $collectCommandDefinition->setArgument(3, new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+        $collectCommandDefinition->setArgument(
+            3,
+            new Reference('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE)
+        );
 
         $receiverNames = $sfConsumeCommandDefinition->getArgument(4);
         $consumeCommandDefinition->setArgument(4, array_values($receiverNames));

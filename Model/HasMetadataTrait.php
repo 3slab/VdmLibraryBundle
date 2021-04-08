@@ -39,7 +39,7 @@ trait HasMetadataTrait
      */
     public function getMetadatasByKey(string $key): array
     {
-        return array_filter($this->metadatas, function(Metadata $metadata) use ($key) {
+        return array_filter($this->metadatas, function (Metadata $metadata) use ($key) {
             return $metadata->getKey() === $key;
         });
     }

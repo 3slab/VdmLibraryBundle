@@ -21,7 +21,8 @@ use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StatsDStorage;
  */
 class StatsDStorageTest extends TestCase
 {
-    public function accessProtected($obj, $prop) {
+    public function accessProtected($obj, $prop)
+    {
         $reflection = new ReflectionClass($obj);
         $property = $reflection->getProperty($prop);
         $property->setAccessible(true);

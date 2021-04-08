@@ -107,7 +107,7 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
         if ($envelope->last(ErrorDetailsStamp::class)) {
             $extension = pathinfo($this->file, PATHINFO_EXTENSION);
             $baseName = basename($this->file, ".{$extension}");
-            $basePath = pathinfo($this->file, PATHINFO_DIRNAME).DIRECTORY_SEPARATOR;
+            $basePath = pathinfo($this->file, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
             $outputFile = "{$basePath}{$baseName}-failed.{$extension}";
         }
 

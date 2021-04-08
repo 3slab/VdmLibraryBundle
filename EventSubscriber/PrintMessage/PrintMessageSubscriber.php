@@ -88,12 +88,12 @@ class PrintMessageSubscriber implements EventSubscriberInterface
         $message = $envelope->getMessage();
 
         if ($this->printMsg) {
-            echo '-------------------------'.PHP_EOL;
-            echo '---- dumping message ----'.PHP_EOL;
-            echo '-------------------------'.PHP_EOL;
+            echo '-------------------------' . PHP_EOL;
+            echo '---- dumping message ----' . PHP_EOL;
+            echo '-------------------------' . PHP_EOL;
             dump($message);
-            echo '-------------------------'.PHP_EOL;
-            echo '-------------------------'.PHP_EOL;
+            echo '-------------------------' . PHP_EOL;
+            echo '-------------------------' . PHP_EOL;
         }
 
         if ($this->logMsg) {

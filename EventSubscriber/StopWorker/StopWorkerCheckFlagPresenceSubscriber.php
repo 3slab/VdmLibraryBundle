@@ -46,8 +46,11 @@ class StopWorkerCheckFlagPresenceSubscriber implements EventSubscriberInterface
      * @param bool $stopOnError
      * @param LoggerInterface|null $vdmLogger
      */
-    public function __construct(StopWorkerService $stopWorker, bool $stopOnError = true, LoggerInterface $vdmLogger = null)
-    {
+    public function __construct(
+        StopWorkerService $stopWorker,
+        bool $stopOnError = true,
+        LoggerInterface $vdmLogger = null
+    ) {
         $this->stopWorker = $stopWorker;
         $this->stopOnError = $stopOnError;
         $this->logger = $vdmLogger ?? new NullLogger();

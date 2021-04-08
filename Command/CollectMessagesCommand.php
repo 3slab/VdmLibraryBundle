@@ -66,13 +66,15 @@ class CollectMessagesCommand extends Command
                 new InputArgument(
                     'collectors',
                     InputArgument::IS_ARRAY,
-                    'Names of the collectors/transports to consume in order of priority', $defaultcollectorName ? [$defaultcollectorName] : []
+                    'Names of the collectors/transports to consume in order of priority',
+                    $defaultcollectorName ? [$defaultcollectorName] : []
                 ),
                 new InputOption(
                     'bus',
                     'b',
                     InputOption::VALUE_REQUIRED,
-                    'Name of the bus to which received messages should be dispatched (if not passed, bus is determined automatically)'
+                    'Name of the bus to which received messages should be dispatched (if not passed, bus is 
+                    determined automatically)'
                 ),
             ])
             ->setDescription('Collect messages')
@@ -107,7 +109,12 @@ EOF
 
             $io->writeln('Choose which collectors you want to collect messages from in order of priority.');
             if (\count($this->collectorNames) > 1) {
-                $io->writeln(sprintf('Hint: to collect from multiple, use a list of their names, e.g. <comment>%s</comment>', implode(', ', $this->collectorNames)));
+                $io->writeln(
+                    sprintf(
+                        'Hint: to collect from multiple, use a list of their names, e.g. <comment>%s</comment>',
+                        implode(', ', $this->collectorNames)
+                    )
+                );
             }
 
             $question = new ChoiceQuestion('Select collectors to collect:', $this->collectorNames, 0);
@@ -147,13 +154,23 @@ EOF
         }
 
         $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
-        $io->success(sprintf('Collecting messages from transport%s "%s".', \count($collectors) > 0 ? 's' : '', implode(', ', $collectorNames)));
+        $io->success(
+            sprintf(
+                'Collecting messages from transport%s "%s".',
+                \count($collectors) > 0 ? 's' : '',
+                implode(', ', $collectorNames)
+            )
+        );
 
         if (OutputInterface::VERBOSITY_VERBOSE > $output->getVerbosity()) {
             $io->comment('Re-run the command with a -vv option to see logs about collected messages.');
         }
 
-        $bus = $input->getOption('bus') ? $this->routableBus->getMessageBus($input->getOption('bus')) : $this->routableBus;
+        if ($input->getOption('bus')) {
+            $bus = $this->routableBus->getMessageBus($input->getOption('bus'));
+        } else {
+            $bus = $this->routableBus;
+        }
 
         $worker = new CollectWorker($collectors, $bus, $this->eventDispatcher, $this->logger);
         $worker->run();

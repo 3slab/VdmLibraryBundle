@@ -217,10 +217,10 @@ class CollectWorkerTest extends TestCase
             ->expects($this->exactly(4))
             ->method('dispatch')
             ->willReturnCallback(function ($event) {
-               if ($event instanceof CollectWorkerMessageReceivedEvent) {
-                   $event->shouldHandle(false);
-               }
-               return new \stdClass();
+                if ($event instanceof CollectWorkerMessageReceivedEvent) {
+                    $event->shouldHandle(false);
+                }
+                return new \stdClass();
             })
             ->withConsecutive(
                 [$this->isInstanceOf(CollectWorkerStartedEvent::class)],
@@ -248,7 +248,6 @@ class CollectWorkerTest extends TestCase
         $worker = new CollectWorker($this->receivers, $this->bus, $this->dispatcher);
         $worker->run();
     }
-
 
     public function testEventDispatchedWhenShouldStop()
     {

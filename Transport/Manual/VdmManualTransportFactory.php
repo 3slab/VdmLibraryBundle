@@ -38,8 +38,7 @@ class VdmManualTransportFactory implements TransportFactoryInterface
     public function __construct(
         VdmManualExecutorCollection $executors,
         LoggerInterface $vdmLogger = null
-    )
-    {
+    ) {
         $this->executors = $executors;
         $this->logger = $vdmLogger ?? new NullLogger();
     }
@@ -82,12 +81,20 @@ class VdmManualTransportFactory implements TransportFactoryInterface
     {
         $executorServiceId = str_replace(self::DSN_PROTOCOL_MANUAL, '', $dsn);
         if (!$this->executors->has($executorServiceId)) {
-            throw new ServiceNotFoundException(sprintf('Service %s not found when attempting to create messenger transport %s', $executorServiceId, $dsn));
+            throw new ServiceNotFoundException(
+                sprintf(
+                    'Service %s not found when attempting to create messenger transport %s',
+                    $executorServiceId,
+                    $dsn
+                )
+            );
         }
 
         $executor = $this->executors->get($executorServiceId);
         if (!$executor instanceof VdmManualExecutorInterface) {
-            throw new InvalidConfigurationException(sprintf('Service %s does not implements interface VdmManualExecutorInterface', $executorServiceId));
+            throw new InvalidConfigurationException(
+                sprintf('Service %s does not implements interface VdmManualExecutorInterface', $executorServiceId)
+            );
         }
 
         $executor->setTransportSerializer($serializer);

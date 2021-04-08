@@ -49,7 +49,11 @@ class CollectWorker
         $this->receivers = $receivers;
         $this->bus = $bus;
         $this->logger = $logger;
-        $this->eventDispatcher = class_exists(Event::class) ? LegacyEventDispatcherProxy::decorate($eventDispatcher) : $eventDispatcher;
+        if (class_exists(Event::class)) {
+            $this->eventDispatcher = LegacyEventDispatcherProxy::decorate($eventDispatcher);
+        } else {
+            $this->eventDispatcher = $eventDispatcher;
+        }
     }
 
     /**
@@ -94,7 +98,9 @@ class CollectWorker
         }
 
         try {
-            $envelope = $this->bus->dispatch($envelope->with(new ReceivedStamp($transportName), new CollectedByWorkerStamp()));
+            $envelope = $this->bus->dispatch(
+                $envelope->with(new ReceivedStamp($transportName), new CollectedByWorkerStamp())
+            );
         } catch (\Throwable $throwable) {
             $rejectFirst = $throwable instanceof RejectRedeliveredMessageException;
             if ($rejectFirst) {

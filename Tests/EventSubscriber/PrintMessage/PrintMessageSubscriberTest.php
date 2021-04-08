@@ -49,7 +49,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnWorkerMessageReceivedEventPrintDisabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
@@ -62,7 +63,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnWorkerMessageReceivedEventPrintEnabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
@@ -75,7 +77,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnCollectWorkerMessageReceivedEventPrintDisabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
@@ -90,7 +93,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnCollectWorkerMessageReceivedEventPrintEnabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
@@ -105,7 +109,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnSendMessageToTransportEventPrintDisabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
@@ -118,7 +123,8 @@ class PrintMessageSubscriberTest extends TestCase
 
     public function testOnSendMessageToTransportEventPrintEnabled()
     {
-        $this->setOutputCallback(function() {});
+        $this->setOutputCallback(function () {
+        });
 
         $message = new \stdClass();
         $envelope = new Envelope($message);
