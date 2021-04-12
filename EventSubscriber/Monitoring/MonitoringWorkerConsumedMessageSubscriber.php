@@ -10,9 +10,6 @@ namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
 use Psr\Log\NullLogger;
 use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageReceivedEvent;
-use Vdm\Bundle\LibraryBundle\Model\Message;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\ConsumerStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;

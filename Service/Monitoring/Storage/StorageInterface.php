@@ -9,7 +9,7 @@
 namespace Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage;
 
 /**
- * Interface StatsStorageInterface
+ * Interface StorageInterface
  *
  * @package Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage
  */

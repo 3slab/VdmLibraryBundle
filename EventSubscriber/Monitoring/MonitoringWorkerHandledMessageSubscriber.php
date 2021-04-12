@@ -12,8 +12,6 @@ use Psr\Log\NullLogger;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Vdm\Bundle\LibraryBundle\Event\CollectWorkerMessageHandledEvent;
-use Vdm\Bundle\LibraryBundle\Monitoring\Model\HandledStat;
-use Vdm\Bundle\LibraryBundle\Monitoring\StatsStorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
