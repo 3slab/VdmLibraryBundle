@@ -27,16 +27,18 @@ interface StorageInterface
      *
      * @param string $key
      * @param int $value
+     * @param array|null $tags
      */
-    public function increment(string $key, int $value): void;
+    public function increment(string $key, int $value, array $tags = null): void;
 
     /**
      * Update the value of a metric
      *
      * @param string $key
      * @param $value
+     * @param array|null $tags
      */
-    public function update(string $key, $value): void;
+    public function update(string $key, $value, array $tags = null): void;
 
     /**
      * Flush storage

@@ -46,11 +46,12 @@ class MonitoringService
      *
      * @param string $key
      * @param $value
+     * @param array|null $tags
      */
-    public function update(string $key, $value): void
+    public function update(string $key, $value, array $tags = null): void
     {
         try {
-            $this->storage->update($key, $value);
+            $this->storage->update($key, $value, $tags);
         } catch (\Exception $e) {
             $this->logger->error("error occurred when updating $key metric", [
                 'exception' => $e
@@ -63,11 +64,12 @@ class MonitoringService
      *
      * @param string $key
      * @param int $value
+     * @param array|null $tags
      */
-    public function increment(string $key, int $value): void
+    public function increment(string $key, int $value, array $tags = null): void
     {
         try {
-            $this->storage->increment($key, $value);
+            $this->storage->increment($key, $value, $tags);
         } catch (\Exception $e) {
             $this->logger->error("error occurred when incrementing $key metric", [
                 'exception' => $e

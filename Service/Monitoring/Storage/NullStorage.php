@@ -54,14 +54,14 @@ class NullStorage implements StorageInterface
     /**
      * {@inheritDoc}
      */
-    public function increment(string $key, int $value): void
+    public function increment(string $key, int $value, array $tags = null): void
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function update(string $key, $value): void
+    public function update(string $key, $value, array $tags = null): void
     {
     }
 

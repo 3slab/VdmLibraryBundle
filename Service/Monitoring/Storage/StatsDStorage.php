@@ -71,17 +71,17 @@ class StatsDStorage implements StorageInterface
     /**
      * {@inheritDoc}
      */
-    public function increment(string $key, int $value): void
+    public function increment(string $key, int $value, array $tags = null): void
     {
-        $this->datadog->increment($key, 1.0, null, $value);
+        $this->datadog->increment($key, 1.0, $tags, $value);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function update(string $key, $value): void
+    public function update(string $key, $value, array $tags = null): void
     {
-        $this->datadog->gauge($key, $value);
+        $this->datadog->gauge($key, $value, 1.0, $tags);
     }
 
     /**
