@@ -57,7 +57,7 @@ class PrintMessageSubscriber implements EventSubscriberInterface
      */
     public function onCollectWorkerMessageReceivedEvent(CollectWorkerMessageReceivedEvent $event)
     {
-        $this->printMessageInEnvelope($event->getEnvelope());
+        $this->printMessageInEnvelope($event->getEnvelope(), 'message_received');
     }
 
     /**
@@ -67,7 +67,7 @@ class PrintMessageSubscriber implements EventSubscriberInterface
      */
     public function onWorkerMessageReceivedEvent(WorkerMessageReceivedEvent $event)
     {
-        $this->printMessageInEnvelope($event->getEnvelope());
+        $this->printMessageInEnvelope($event->getEnvelope(), 'message_received');
     }
 
     /**
@@ -77,23 +77,32 @@ class PrintMessageSubscriber implements EventSubscriberInterface
      */
     public function onSendMessageToTransportEvent(SendMessageToTransportsEvent $event)
     {
-        $this->printMessageInEnvelope($event->getEnvelope());
+        $this->printMessageInEnvelope($event->getEnvelope(), 'message_sent');
     }
 
     /**
      * @param Envelope $envelope
+     * @param string|null $eventName
      */
-    public function printMessageInEnvelope(Envelope $envelope)
+    public function printMessageInEnvelope(Envelope $envelope, string $eventName)
     {
         $message = $envelope->getMessage();
 
+        $headerTitle = '---- dumping message ' . $eventName . ' ----';
+        $dashLine = '';
+        for ($i = 0; $i < strlen($headerTitle); $i++) {
+            $dashLine .= '-';
+        }
+
         if ($this->printMsg) {
-            echo '-------------------------' . PHP_EOL;
-            echo '---- dumping message ----' . PHP_EOL;
-            echo '-------------------------' . PHP_EOL;
+            echo PHP_EOL;
+            echo $dashLine . PHP_EOL;
+            echo $headerTitle . PHP_EOL;
+            echo $dashLine . PHP_EOL;
             dump($message);
-            echo '-------------------------' . PHP_EOL;
-            echo '-------------------------' . PHP_EOL;
+            echo $dashLine . PHP_EOL;
+            echo $dashLine . PHP_EOL;
+            echo PHP_EOL;
         }
 
         if ($this->logMsg) {
