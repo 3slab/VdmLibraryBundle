@@ -18,8 +18,3 @@ services:
     Vdm\Bundle\LibraryBundle\Transport\Manual\VdmManualExecutorCollection:
         # inject all services tagged with vdm.manual_executor as first argument
         arguments: [!tagged_locator { tag: 'vdm.manual_executor',  index_by: 'key', default_index_method: 'getCode' }]
-
-    Vdm\Bundle\LibraryBundle\Log\VdmLogger:
-        arguments: ['@logger']
-        tags:
-            - { name: monolog.logger, channel: vdm }
