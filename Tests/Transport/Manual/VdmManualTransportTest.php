@@ -6,7 +6,7 @@
  * @license    https://github.com/3slab/VdmLibraryBundle/blob/master/LICENSE
  */
 
-namespace Vdm\Bundle\LibraryBundle\Tests\Transport\Manuel;
+namespace Vdm\Bundle\LibraryBundle\Tests\Transport\Manual;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Envelope;
