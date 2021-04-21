@@ -66,10 +66,20 @@ abstract class Message implements HasMetadataMessageInterface, IsEmptyMessageInt
 
     /**
      * @param Message $message
+     * @param null $payload
+     * @param array|null $metadatas
+     * @param array|null $traces
      * @return Message
      */
-    public static function createFrom(Message $message): Message
-    {
-        return new static($message->getPayload(), $message->getMetadatas(), $message->getTraces());
+    public static function createFrom(
+        Message $message,
+        $payload = null,
+        array $metadatas = null,
+        array $traces = null
+    ): Message {
+        $payload = $payload ?? $message->getPayload();
+        $metadatas = $metadatas ?? $message->getMetadatas();
+        $traces = $traces ?? $message->getTraces();
+        return new static($payload, $metadatas, $traces);
     }
 }

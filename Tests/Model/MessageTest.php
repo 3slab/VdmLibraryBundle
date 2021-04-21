@@ -95,5 +95,26 @@ class MessageTest extends TestCase
         $this->assertEquals($payload, $message->getPayload());
         $this->assertEquals($metadatas, $message->getMetadatas());
         $this->assertEquals($traces, $message->getTraces());
+
+        $message = AnotherMessage::createFrom($default, 'anotherpayload');
+
+        $this->assertInstanceOf(AnotherMessage::class, $message);
+        $this->assertEquals('anotherpayload', $message->getPayload());
+        $this->assertEquals($metadatas, $message->getMetadatas());
+        $this->assertEquals($traces, $message->getTraces());
+
+        $message = AnotherMessage::createFrom($default, null, []);
+
+        $this->assertInstanceOf(AnotherMessage::class, $message);
+        $this->assertEquals($payload, $message->getPayload());
+        $this->assertEquals([], $message->getMetadatas());
+        $this->assertEquals($traces, $message->getTraces());
+
+        $message = AnotherMessage::createFrom($default, null, null, []);
+
+        $this->assertInstanceOf(AnotherMessage::class, $message);
+        $this->assertEquals($payload, $message->getPayload());
+        $this->assertEquals($metadatas, $message->getMetadatas());
+        $this->assertEquals([], $message->getTraces());
     }
 }
