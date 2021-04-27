@@ -9,21 +9,20 @@
 namespace Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring;
 
 use Psr\Log\NullLogger;
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Messenger\Event\WorkerStoppedEvent;
+use Vdm\Bundle\LibraryBundle\Event\CollectWorkerStoppedEvent;
 use Vdm\Bundle\LibraryBundle\Monitoring\Model\RunningStat;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\Monitoring;
 use Vdm\Bundle\LibraryBundle\Service\Monitoring\MonitoringService;
-use Vdm\Bundle\LibraryBundle\Service\Monitoring\Storage\StorageInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Messenger\Event\WorkerStartedEvent;
 
 /**
- * Class MonitoringWorkerTerminateSubscriber
+ * Class MonitoringWorkerStoppedSubscriber
  *
  * @package Vdm\Bundle\LibraryBundle\EventSubscriber\Monitoring
  */
-class MonitoringWorkerTerminateSubscriber implements EventSubscriberInterface
+class MonitoringWorkerStoppedSubscriber implements EventSubscriberInterface
 {
     /**
      * @var MonitoringService
@@ -50,9 +49,27 @@ class MonitoringWorkerTerminateSubscriber implements EventSubscriberInterface
     /**
      * Method executed on ConsoleTerminateEvent event
      *
-     * @param ConsoleTerminateEvent $event
+     * @param WorkerStoppedEvent $event
      */
-    public function onConsoleTerminateEvent(ConsoleTerminateEvent $event)
+    public function onWorkerStoppedEvent(WorkerStoppedEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Method executed on CollectWorkerStoppedEvent event
+     *
+     * @param WorkerStoppedEvent $event
+     */
+    public function onCollectWorkerStoppedEvent(CollectWorkerStoppedEvent $event)
+    {
+        $this->handleMonitoring();
+    }
+
+    /**
+     * Set worker stopped state and flush monitoring stat to storage
+     */
+    protected function handleMonitoring()
     {
         $this->monitoring->update(Monitoring::RUNNING_STAT, 0);
         $this->logger->debug('worker stopped metric sent');
@@ -68,7 +85,8 @@ class MonitoringWorkerTerminateSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            ConsoleTerminateEvent::class => 'onConsoleTerminateEvent',
+            WorkerStoppedEvent::class => 'onWorkerStoppedEvent',
+            CollectWorkerStoppedEvent::class => 'onCollectWorkerStoppedEvent',
         ];
     }
 }
