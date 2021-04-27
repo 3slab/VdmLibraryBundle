@@ -24,11 +24,12 @@ RUN apk update && apk upgrade \
         icu-dev \
         libxslt-dev \
         rabbitmq-c-dev \
+        postgresql-dev \
   && pecl install apcu amqp-1.11.0beta mongodb \
   && docker-php-ext-enable apcu\
   && docker-php-ext-enable amqp\
   && docker-php-ext-enable mongodb\
-  && docker-php-ext-install gd intl xsl zip opcache sockets
+  && docker-php-ext-install gd intl xsl zip opcache sockets pdo pdo_mysql pdo_pgsql
 
 #Download rdkafka
 ENV LIBRDKAFKA_VERSION 1.6.1
