@@ -39,5 +39,20 @@ class VdmLocalTransportFactoryTest extends TestCase
         $transport = $factory->createTransport("vdm+local://$file", [], $serializer);
 
         $this->assertInstanceOf(VdmLocalTransport::class, $transport);
+        $this->assertEquals($file, $transport->getFile());
+    }
+
+    public function testCreateTransportWithParams()
+    {
+        $serializer = $this->createMock(SerializerInterface::class);
+        $file = __FILE__;
+
+        $factory = new VdmLocalTransportFactory();
+        /** @var VdmLocalTransport $transport */
+        $transport = $factory->createTransport("vdm+local://$file?encode=json", [], $serializer);
+
+        $this->assertInstanceOf(VdmLocalTransport::class, $transport);
+        $this->assertEquals($file, $transport->getFile());
+        $this->assertEquals(['encode' => 'json'], $transport->getParams());
     }
 }

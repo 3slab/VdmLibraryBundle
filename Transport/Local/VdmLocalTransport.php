@@ -32,6 +32,11 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
     protected $file;
 
     /**
+     * @var array|null
+     */
+    protected $params;
+
+    /**
      * @var SerializerInterface
      */
     protected $serializer;
@@ -51,13 +56,31 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
     public function __construct(
         Filesystem $filesystem,
         ?string $file,
+        ?array $params,
         SerializerInterface $serializer,
         LoggerInterface $logger = null
     ) {
         $this->filesystem = $filesystem;
         $this->file = $file;
+        $this->params = $params;
         $this->serializer = $serializer;
         $this->logger = $logger ?? new NullLogger();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getParams(): ?array
+    {
+        return $this->params;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFile(): ?string
+    {
+        return $this->file;
     }
 
     /**
@@ -74,6 +97,11 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
         }
 
         $data = json_decode(file_get_contents($this->file), true);
+        // ugly hack to allow pretty json in the file for easier reviewing
+        if (isset($data['body']) && isset($this->params['encodeBody']) && $this->params['encodeBody'] === 'json') {
+            $data['body'] = json_encode($data['body']);
+        }
+
         $this->logger->debug("local transport get message {message}", ['message' => $data]);
 
         $envelope = $this->serializer->decode($data);
@@ -112,6 +140,11 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
             $baseName = basename($this->file, ".{$extension}");
             $basePath = pathinfo($this->file, PATHINFO_DIRNAME) . DIRECTORY_SEPARATOR;
             $outputFile = "{$basePath}{$baseName}-failed.{$extension}";
+        }
+
+        // ugly hack to allow pretty json in the file for easier reviewing
+        if (isset($data['body']) && isset($this->params['encodeBody']) && $this->params['encodeBody'] === 'json') {
+            $data['body'] = json_decode($data['body'], true);
         }
 
         if (!is_null($outputFile)) {

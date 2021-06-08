@@ -24,7 +24,7 @@ class VdmLocalTransportTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $serializer = $this->createMock(SerializerInterface::class);
-        $transport = new VdmLocalTransport(new Filesystem(), null, $serializer);
+        $transport = new VdmLocalTransport(new Filesystem(), null, [], $serializer);
         $transport->get();
     }
 
@@ -33,7 +33,7 @@ class VdmLocalTransportTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $serializer = $this->createMock(SerializerInterface::class);
-        $transport = new VdmLocalTransport(new Filesystem(), '/my/path/to/my/file', $serializer);
+        $transport = new VdmLocalTransport(new Filesystem(), '/my/path/to/my/file', [], $serializer);
         $transport->get();
     }
 
@@ -49,7 +49,27 @@ class VdmLocalTransportTest extends TestCase
             ->with(['key' => 'value'])
             ->willReturn(new Envelope($message));
 
-        $transport = new VdmLocalTransport(new Filesystem(), $file, $serializer);
+        $transport = new VdmLocalTransport(new Filesystem(), $file, [], $serializer);
+        $values = $transport->get();
+
+        $this->assertCount(1, $values);
+        $this->assertInstanceOf(StopAfterHandleStamp::class, $values[0]->last(StopAfterHandleStamp::class));
+        $this->assertEquals($message, $values[0]->getMessage());
+    }
+
+    public function testGetEncodeBody()
+    {
+        $file = __DIR__ . DIRECTORY_SEPARATOR . 'file-encode-body.json';
+        $message = new DefaultMessage(1);
+
+        $serializer = $this->createMock(SerializerInterface::class);
+        $serializer
+            ->expects($this->once())
+            ->method('decode')
+            ->with(['body' => '{"payload":1}'])
+            ->willReturn(new Envelope($message));
+
+        $transport = new VdmLocalTransport(new Filesystem(), $file, ['encodeBody' => 'json'], $serializer);
         $values = $transport->get();
 
         $this->assertCount(1, $values);
@@ -81,11 +101,43 @@ class VdmLocalTransportTest extends TestCase
             ->method('chmod')
             ->with(__FILE__, 0777);
 
-        $transport = new VdmLocalTransport($filesystem, __FILE__, $serializer);
+        $transport = new VdmLocalTransport($filesystem, __FILE__, [], $serializer);
         $value = $transport->send($envelope);
 
         $this->assertEquals($envelope, $value);
     }
+
+    public function testSendEncodeBody()
+    {
+        $data = ['body' => ['payload' => ['key' => 'value']]];
+        $dataEncodeBody = ['body' => "{\"payload\":{\"key\":\"value\"}}"];
+        $message = new DefaultMessage($data['body']['payload']);
+        $envelope = new Envelope($message);
+        $output = json_encode($data, JSON_PRETTY_PRINT);
+
+        $serializer = $this->createMock(SerializerInterface::class);
+        $serializer
+            ->expects($this->once())
+            ->method('encode')
+            ->with($envelope)
+            ->willReturn($dataEncodeBody);
+
+        $filesystem = $this->createMock(Filesystem::class);
+        $filesystem
+            ->expects($this->once())
+            ->method('dumpFile')
+            ->with(__FILE__, $output);
+        $filesystem
+            ->expects($this->once())
+            ->method('chmod')
+            ->with(__FILE__, 0777);
+
+        $transport = new VdmLocalTransport($filesystem, __FILE__, ['encodeBody' => 'json'], $serializer);
+        $value = $transport->send($envelope);
+
+        $this->assertEquals($envelope, $value);
+    }
+
 
     public function testSendWithError()
     {
@@ -114,7 +166,7 @@ class VdmLocalTransportTest extends TestCase
             ->method('chmod')
             ->with($errorFile, 0777);
 
-        $transport = new VdmLocalTransport($filesystem, $file, $serializer);
+        $transport = new VdmLocalTransport($filesystem, $file, [], $serializer);
         $value = $transport->send($envelope);
 
         $this->assertEquals($envelope, $value);

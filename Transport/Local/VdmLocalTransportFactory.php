@@ -43,9 +43,14 @@ class VdmLocalTransportFactory implements TransportFactoryInterface
      */
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
-        $file = str_replace(self::DSN_PROTOCOL_LOCAL, '', $dsn);
+        $dsnWithoutProtocol = str_replace(self::DSN_PROTOCOL_LOCAL, '', $dsn);
+        $explodedDsn = explode('?', $dsnWithoutProtocol);
 
-        return new VdmLocalTransport(new Filesystem(), $file, $serializer, $this->logger);
+        $file = $explodedDsn[0];
+        $params = [];
+        !empty($explodedDsn[1]) ? parse_str($explodedDsn[1], $params) : [];
+
+        return new VdmLocalTransport(new Filesystem(), $file, $params, $serializer, $this->logger);
     }
 
     /**
