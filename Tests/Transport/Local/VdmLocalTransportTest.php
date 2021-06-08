@@ -28,6 +28,15 @@ class VdmLocalTransportTest extends TestCase
         $transport->get();
     }
 
+    public function testGetFileDoesNotExists()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $serializer = $this->createMock(SerializerInterface::class);
+        $transport = new VdmLocalTransport(new Filesystem(), '/my/path/to/my/file', $serializer);
+        $transport->get();
+    }
+
     public function testGet()
     {
         $file = __DIR__ . DIRECTORY_SEPARATOR . 'file.json';

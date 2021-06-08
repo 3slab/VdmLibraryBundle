@@ -44,9 +44,6 @@ class VdmLocalTransportFactory implements TransportFactoryInterface
     public function createTransport(string $dsn, array $options, SerializerInterface $serializer): TransportInterface
     {
         $file = str_replace(self::DSN_PROTOCOL_LOCAL, '', $dsn);
-        if (!(new Filesystem())->exists($file)) {
-            throw new InvalidArgumentException("file $file not found to create local transport");
-        }
 
         return new VdmLocalTransport(new Filesystem(), $file, $serializer, $this->logger);
     }

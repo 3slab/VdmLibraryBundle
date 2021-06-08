@@ -69,6 +69,10 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
             throw new InvalidArgumentException("consumer transport local cannot have a null file");
         }
 
+        if (!$this->filesystem->exists($this->file)) {
+            throw new InvalidArgumentException("file $this->file does not exist to simulate consumption");
+        }
+
         $data = json_decode(file_get_contents($this->file), true);
         $this->logger->debug("local transport get message {message}", ['message' => $data]);
 
@@ -101,7 +105,6 @@ class VdmLocalTransport implements TransportInterface, TransportCollectableInter
     {
         $data = $this->serializer->encode($envelope);
         $this->logger->debug("local transport send message {message}", ['message' => $data]);
-
 
         $outputFile = $this->file;
         if ($envelope->last(ErrorDetailsStamp::class)) {

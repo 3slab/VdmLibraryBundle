@@ -30,16 +30,6 @@ class VdmLocalTransportFactoryTest extends TestCase
         $this->assertTrue($factory->supports('vdm+local:///my/path/to/my/file', []));
     }
 
-    public function testCreateTransportFileDoesNotExist()
-    {
-        $this->expectException(InvalidArgumentException::class);
-
-        $serializer = $this->createMock(SerializerInterface::class);
-
-        $factory = new VdmLocalTransportFactory();
-        $factory->createTransport('vdm+local:///my/path/to/my/file', [], $serializer);
-    }
-
     public function testCreateTransport()
     {
         $serializer = $this->createMock(SerializerInterface::class);
