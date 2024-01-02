@@ -32,8 +32,8 @@ RUN apk update && apk upgrade \
   && docker-php-ext-install gd intl xsl zip opcache sockets pdo pdo_mysql pdo_pgsql
 
 #Download rdkafka
-ENV LIBRDKAFKA_VERSION 1.6.1
-ENV EXT_RDKAFKA_VERSION 5.0.0
+ENV LIBRDKAFKA_VERSION 2.3.0
+ENV EXT_RDKAFKA_VERSION 6.0.3
 
 RUN git clone --depth 1 --branch v$LIBRDKAFKA_VERSION https://github.com/edenhill/librdkafka.git \
   && cd librdkafka \
@@ -48,7 +48,7 @@ RUN pecl channel-update pecl.php.net \
   && rm -rf /librdkafka
 
 RUN wget https://getcomposer.org/installer -O composer-setup.php \
-  && php ./composer-setup.php  --install-dir=/usr/local/bin \
+  && php ./composer-setup.php --version=2.6.6 --install-dir=/usr/local/bin \
   && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 WORKDIR /var/www/html
