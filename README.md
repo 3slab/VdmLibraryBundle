@@ -59,6 +59,14 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
     * [Setup a VDM.compute instance to process meteo data](./Resources/docs/examples/vdm-compute.md)
     * [Setup a VDM.store instance to store meteo data](./Resources/docs/examples/vdm-store.md)
     
+## Image:
+
+```shell
+export DOCKER_VDM_LIBRARY_VERSION=3.0.1
+docker build -t 3slab/vdm-library-bundle:$DOCKER_VDM_LIBRARY_VERSION .
+docker push 3slab/vdm-library-bundle:$DOCKER_VDM_LIBRARY_VERSION
+```
+
 ## License
 
 This bundle is distributed around the [MIT License](./LICENSE)
