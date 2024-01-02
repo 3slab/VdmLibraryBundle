@@ -25,9 +25,9 @@ class SendCommand extends Command
      */
     private $bus;
 
-    public function __construct(string $name = null, MessageBusInterface $bus)
+    public function __construct(MessageBusInterface $bus)
     {
-        parent::__construct($name);
+        parent::__construct();
         $this->bus = $bus;
     }
 
