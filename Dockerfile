@@ -24,11 +24,11 @@ RUN apk update && apk upgrade \
         icu-dev \
         libxslt-dev \
         rabbitmq-c-dev \
-  && pecl install apcu amqp mongodb \
-  && docker-php-ext-enable apcu\
-  && docker-php-ext-enable amqp\
-  && docker-php-ext-enable mongodb\
-  && docker-php-ext-install iconv gd intl xsl json dom zip opcache sockets
+  && pecl install apcu amqp-1.11.0 mongodb-1.12.0 \
+  && docker-php-ext-enable apcu \
+  && docker-php-ext-enable amqp \
+  && docker-php-ext-enable mongodb \
+  && docker-php-ext-install gd intl xsl json dom zip opcache sockets
 
 #Download rdkafka
 ENV LIBRDKAFKA_VERSION 1.4.0
@@ -41,15 +41,13 @@ RUN git clone --depth 1 --branch v$LIBRDKAFKA_VERSION https://github.com/edenhil
   && make install
 
 #Install rdkafka
-RUN pecl channel-update pecl.php.net \
-  && pecl install rdkafka-$EXT_RDKAFKA_VERSION \
+RUN pecl install rdkafka-$EXT_RDKAFKA_VERSION \
   && docker-php-ext-enable rdkafka \
   && rm -rf /librdkafka
 
 RUN wget https://getcomposer.org/installer -O composer-setup.php \
-  && php ./composer-setup.php  --install-dir=/usr/local/bin \
-  && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer \
-  && composer global require hirak/prestissimo
+  && php ./composer-setup.php --version=2.6.6 --install-dir=/usr/local/bin \
+  && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer
 
 WORKDIR /var/www/html
 
