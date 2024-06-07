@@ -63,8 +63,8 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
 
 ```shell
 export DOCKER_VDM_LIBRARY_VERSION=3.0.1
-docker build -t 3slab/vdm-library-bundle:$DOCKER_VDM_LIBRARY_VERSION .
-docker push 3slab/vdm-library-bundle:$DOCKER_VDM_LIBRARY_VERSION
+docker build -t 3slab/vdm-library-base:$DOCKER_VDM_LIBRARY_VERSION .
+docker push 3slab/vdm-library-base:$DOCKER_VDM_LIBRARY_VERSION
 ```
 
 ## License
