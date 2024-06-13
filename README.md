@@ -62,3 +62,11 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
 ## License
 
 This bundle is distributed around the [MIT License](./LICENSE)
+
+## Image:
+
+```shell
+export DOCKER_VDM_LIBRARY_VERSION=2.0.10
+docker build -t 3slab/vdm-library-base:$DOCKER_VDM_LIBRARY_VERSION .
+docker push 3slab/vdm-library-base:$DOCKER_VDM_LIBRARY_VERSION
+```

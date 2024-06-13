@@ -24,7 +24,7 @@ RUN apk update && apk upgrade \
         icu-dev \
         libxslt-dev \
         rabbitmq-c-dev \
-  && pecl install apcu amqp-1.11.0 mongodb-1.12.0 \
+  && pecl install apcu-5.1.23 amqp-1.11.0 mongodb-1.13.0 \
   && docker-php-ext-enable apcu \
   && docker-php-ext-enable amqp \
   && docker-php-ext-enable mongodb \
