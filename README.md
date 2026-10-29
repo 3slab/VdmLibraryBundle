@@ -59,6 +59,22 @@ its [messenger component](https://symfony.com/doc/current/components/messenger.h
     * [Setup a VDM.compute instance to process meteo data](./Resources/docs/examples/vdm-compute.md)
     * [Setup a VDM.store instance to store meteo data](./Resources/docs/examples/vdm-store.md)
     
+## Image
+
+```shell
+docker build \
+  --label org.opencontainers.image.source=https://github.com/3slab/VdmLibraryBundle \
+  --label org.opencontainers.image.revision=$(git rev-parse HEAD) \
+  --label org.opencontainers.image.version=2.0.2 \
+  -t 3sdockerregistry.azurecr.io/3slab/vdm-library-base:2.0.2 .
+docker push 3sdockerregistry.azurecr.io/3slab/vdm-library-base:2.0.2
+```
+
+| Image | PHP | Source |
+|---|---|---|
+| 2.0.2 | 7.4.34-dev, rebuilt from `PHP-7.4-CVE-2026-109618-109619` | tag `docker-2.0.2` |
+| 2.0.1 | 7.3.33 (not fixed) | branch `2.x`, 2024-01-02 |
+
 ## License
 
 This bundle is distributed around the [MIT License](./LICENSE)
